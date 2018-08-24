@@ -1,0 +1,3 @@
+[submodule "scpi-server/scpi-parser"]
+	path = scpi-server/scpi-parser
+	url = https://github.com/RedPitaya/scpi-parser.git

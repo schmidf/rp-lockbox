@@ -1,0 +1,28 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Sun Apr  1 18:40:21 2018
+[*]
+[dumpfile] "limit_block_tb.vcd"
+[dumpfile_mtime] "Sun Apr  1 18:38:17 2018"
+[dumpfile_size] 1980
+[savefile] "wave_config.gtkw"
+[timestart] 0
+[size] 2736 1695
+[pos] -51 -51
+*-14.163550 43580 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] testbench.
+[sst_width] 375
+[signals_width] 475
+[sst_expanded] 1
+[sst_vpaned_height] 493
+@28
+testbench.limit.clk_i
+@420
+testbench.limit.max_val_i[13:0]
+testbench.limit.min_val_i[13:0]
+testbench.limit.signal_i[13:0]
+testbench.limit.signal_o[13:0]
+@28
+testbench.limit.railed_o[1:0]
+[pattern_trace] 1
+[pattern_trace] 0

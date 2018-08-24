@@ -1,0 +1,13 @@
+*.o
+*.a
+*.so
+**/.Xil/
+*.log
+**/.srcs/
+**/out/
+usage_statistics_webtalk.*
+synReport.txt*
+scpi-server/lockbox-server
+*.swp
+**/prj/**/sdk
+build/

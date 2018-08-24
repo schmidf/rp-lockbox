@@ -1,0 +1,71 @@
+[*]
+[*] GTKWave Analyzer v3.3.92 (w)1999-2018 BSI
+[*] Sat Aug  4 11:48:58 2018
+[*]
+[dumpfile] "pid_tb.vcd"
+[dumpfile_mtime] "Sat Aug  4 10:10:13 2018"
+[dumpfile_size] 30360900
+[savefile] "wave_config.gtkw"
+[timestart] 0
+[size] 2736 1695
+[pos] -1 -1
+*-25.279945 147000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] pid_tb.
+[treeopen] pid_tb.pid.
+[sst_width] 375
+[signals_width] 571
+[sst_expanded] 1
+[sst_vpaned_height] 493
+@200
+-Inputs
+@8420
+pid_tb.dat_a_in[13:0]
+pid_tb.dat_b_in[13:0]
+@200
+-Outputs
+@8420
+pid_tb.limit_a_out[13:0]
+pid_tb.limit_b_out[13:0]
+@200
+-Limiter state
+@28
+pid_tb.dat_a_railed[1:0]
+pid_tb.dat_b_railed[1:0]
+@200
+-PID11 state
+@420
+pid_tb.pid.set_11_sp[13:0]
+pid_tb.pid.set_11_kp[23:0]
+pid_tb.pid.set_11_ki[23:0]
+pid_tb.pid.set_11_kd[13:0]
+@28
+pid_tb.pid.relock_11.locked_f
+@200
+-PID12 state
+@420
+pid_tb.pid.set_12_sp[13:0]
+pid_tb.pid.set_12_kp[23:0]
+pid_tb.pid.set_12_ki[23:0]
+pid_tb.pid.set_12_kd[13:0]
+@28
+pid_tb.pid.relock_12.locked_f
+@200
+-PID21 state
+@420
+pid_tb.pid.set_21_sp[13:0]
+pid_tb.pid.set_21_kp[23:0]
+pid_tb.pid.set_21_ki[23:0]
+pid_tb.pid.set_21_kd[13:0]
+@28
+pid_tb.pid.relock_21.locked_f
+@200
+-PID22 state
+@421
+pid_tb.pid.set_22_sp[13:0]
+pid_tb.pid.set_22_kp[23:0]
+pid_tb.pid.set_22_ki[23:0]
+pid_tb.pid.set_22_kd[13:0]
+@28
+pid_tb.pid.relock_22.locked_f
+[pattern_trace] 1
+[pattern_trace] 0

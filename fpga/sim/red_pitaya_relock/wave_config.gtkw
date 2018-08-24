@@ -1,0 +1,30 @@
+[*]
+[*] GTKWave Analyzer v3.3.91 (w)1999-2018 BSI
+[*] Sat Jul 14 14:15:49 2018
+[*]
+[dumpfile] "relock_tb.vcd"
+[dumpfile_mtime] "Sat Jul 14 14:14:37 2018"
+[dumpfile_size] 4044565
+[savefile] "wave_config.gtkw"
+[timestart] 0
+[size] 1920 1103
+[pos] -1 -1
+*-25.470945 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] relock_tb.
+[sst_width] 229
+[signals_width] 253
+[sst_expanded] 1
+[sst_vpaned_height] 398
+@420
+relock_tb.limit_max[13:0]
+relock_tb.limit_min[13:0]
+@28
+relock_tb.railed[1:0]
+@420
+relock_tb.signal_i[13:0]
+@8420
+relock_tb.relock_o[13:0]
+@29
+relock_tb.relock.clear_o
+[pattern_trace] 1
+[pattern_trace] 0
