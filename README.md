@@ -10,7 +10,7 @@ into a feedback controller (lockbox) optimized for optics experiments.
 
 ## Installation
 Build the software and FPGA configuration from source (see below) or download a binary archive
-[here](TODO).
+[here](https://github.com/schmidf/rp-lockbox/releases).
 
 Set up the Red Pitaya following the [official manual](https://redpitaya.readthedocs.io/en/latest/index.html).
 
