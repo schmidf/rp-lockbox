@@ -54,6 +54,10 @@ The lockbox can be controlled by sending SCPI commands via a TCP/IP connection o
 [official documentation](https://redpitaya.readthedocs.io/en/latest/appsFeatures/remoteControl/remoteControl.html)
 for examples how to to this in various programming languages.
 
+A python module and GUI application for controlling the lockbox can be found in the
+[examples/python](examples/python) folder. A standalone executable version of the GUI for windows
+can be downloaded [here](https://github.com/schmidf/rp-lockbox/releases).
+
 The available SCPI commands are documented [here](doc/SCPI_commands.rst).
 
 ### PIDs
