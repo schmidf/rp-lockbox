@@ -106,6 +106,11 @@ Set up required environment variables:
 source settings.sh
 ```
 
+Check out the scpi-parser submodule:
+```
+git submodule update --init
+```
+
 The three components can be built separately:
 ```
 make fpga
