@@ -13,10 +13,155 @@
 
 #include "pid.h"
 #include "../../api/src/pid.h"
+//#include "../../api/src/limit.h"
 
 #include "common.h"
 #include "scpi/parser.h"
 #include "scpi/units.h"
+
+/*Zalivako*/
+/*Saves current configuration to a file. If something is wrong -- don't care, just write to a log*/
+scpi_result_t RP_SaveToFile(scpi_t *context) {
+    int32_t j;
+    uint32_t ui;
+    bool b;
+    float f;
+    FILE *fp=NULL;
+    
+    //system("rw");
+    fp = fopen("/home/redpitaya/pid_settings.conf","wb");
+
+    if (fp == NULL) { 
+        RP_LOG(LOG_ERR, "WARNING: Can not open settings file for pid settings saving.");
+        return SCPI_RES_ERR;
+    }
+
+    for (j=0; j<4; j++) {
+        rp_PIDGetSetpoint(j, &f);
+        fwrite(&f, sizeof(float), 1, fp);
+
+        rp_PIDGetKp(j, &f);
+        fwrite(&f, sizeof(float), 1, fp);
+ 
+        rp_PIDGetKi(j, &f);
+        fwrite(&f, sizeof(float), 1, fp);
+
+        rp_PIDGetKd(j, &ui);
+        fwrite(&ui, sizeof(uint32_t), 1, fp);
+
+        rp_PIDGetIntReset(j, &b);
+        fwrite(&b, sizeof(bool), 1, fp);
+        
+        rp_PIDGetInverted(j, &b);
+        fwrite(&b, sizeof(bool), 1, fp);
+
+        rp_PIDGetResetWhenRailed(j, &b);
+        fwrite(&b, sizeof(bool), 1, fp);
+
+        rp_PIDGetIntHold(j, &b);
+        fwrite(&b, sizeof(bool), 1, fp);
+        
+        rp_PIDGetRelock(j, &b);
+        fwrite(&b, sizeof(bool), 1, fp);
+
+        rp_PIDGetRelockStepsize(j, &f);
+        fwrite(&f, sizeof(float), 1, fp);
+
+        rp_PIDGetRelockMinimum(j, &f);
+        fwrite(&f, sizeof(float), 1, fp);
+
+        rp_PIDGetRelockMaximum(j, &f);
+        fwrite(&f, sizeof(float), 1, fp);
+    }
+
+    rp_LimitGetMin(RP_CH_1, &f);
+    fwrite(&f, sizeof(float), 1, fp);
+
+    rp_LimitGetMax(RP_CH_1, &f);
+    fwrite(&f, sizeof(float), 1, fp);
+
+    rp_LimitGetMin(RP_CH_2, &f);
+    fwrite(&f, sizeof(float), 1, fp);
+
+    rp_LimitGetMax(RP_CH_2, &f);
+    fwrite(&f, sizeof(float), 1, fp);
+
+    fclose(fp);
+    //system("r");
+    return SCPI_RES_OK;
+}
+
+
+/*Zalivako*/
+/*Load configuration from a file if it exists.*/
+scpi_result_t RP_LoadFromFile(scpi_t *context) {
+    int32_t j;
+    uint32_t ui;
+    bool b;
+    float f;
+    FILE *fp=NULL;
+    
+    fp = fopen("/home/redpitaya/pid_settings.conf","rb");
+
+    if (fp == NULL) { 
+        return SCPI_RES_OK;
+    }
+
+    for (j=0; j<4; j++) {
+        fread(&f, sizeof(float), 1, fp);
+        rp_PIDSetSetpoint(j, f);
+
+        fread(&f, sizeof(float), 1, fp);
+        rp_PIDSetKp(j, f);
+ 
+        fread(&f, sizeof(float), 1, fp);
+        rp_PIDSetKi(j, f);
+
+        fread(&ui, sizeof(uint32_t), 1, fp);
+        rp_PIDSetKd(j, ui);
+
+        fread(&b, sizeof(bool), 1, fp);
+        rp_PIDSetIntReset(j, b);
+        
+        fread(&b, sizeof(bool), 1, fp);
+        rp_PIDSetInverted(j, b);
+
+        fread(&b, sizeof(bool), 1, fp);
+        rp_PIDSetResetWhenRailed(j, b);
+
+        fread(&b, sizeof(bool), 1, fp);
+        rp_PIDSetIntHold(j, b);
+        
+        fread(&b, sizeof(bool), 1, fp);
+        rp_PIDSetRelock(j, b);
+
+        fread(&f, sizeof(float), 1, fp);
+        rp_PIDSetRelockStepsize(j, f);
+
+        fread(&f, sizeof(float), 1, fp);
+        rp_PIDSetRelockMinimum(j, f);
+
+        fread(&f, sizeof(float), 1, fp);
+        rp_PIDSetRelockMaximum(j, f);
+    }
+
+    fread(&f, sizeof(float), 1, fp);
+    rp_LimitMin(RP_CH_1, f);
+
+    fread(&f, sizeof(float), 1, fp);
+    rp_LimitMax(RP_CH_1, f);
+
+    fread(&f, sizeof(float), 1, fp);
+    rp_LimitMin(RP_CH_2, f);
+
+    fread(&f, sizeof(float), 1, fp);
+    rp_LimitMax(RP_CH_2, f);
+
+    fclose(fp);
+
+    return SCPI_RES_OK;
+}
+
 
 /* Parse pid index from SCPI command */
 static int RP_ParsePIDArgv(scpi_t *context, rp_pid_t *pid) {

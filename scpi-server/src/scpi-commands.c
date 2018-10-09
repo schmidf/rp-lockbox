@@ -239,6 +239,10 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "OUTput#:LIMit:MAX", .callback  = RP_OutputLimitMax,},
     {.pattern = "OUTput#:LIMit:MAX?", .callback = RP_OutputLimitMaxQ,},
 
+    /*Saving and loading PID configuration*/
+    {.pattern = "PIDSaveConf", .callback = RP_SaveToFile,},
+    {.pattern = "PIDLoadConf", .callback = RP_LoadFromFile,},
+
     SCPI_CMD_LIST_END
 };
 

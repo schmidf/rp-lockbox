@@ -30,6 +30,7 @@
 
 #include "scpi/parser.h"
 #include "redpitaya/lockbox.h"
+#include "pid.h"
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -232,6 +233,10 @@ int main(int argc, char *argv[])
     scpi_context.user_context = NULL;
     scpi_context.binary_output = false;
     SCPI_Init(&scpi_context);
+
+    //load saved settings
+    RP_LoadFromFile(NULL);
+
 
     // Create a socket
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
