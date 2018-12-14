@@ -577,7 +577,7 @@ end else begin
       20'h60 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_12_maxval}          ; end 
       20'h64 : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_12_stepsize}          ; end 
 
-      20'h58 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_21_minval}          ; end 
+      20'h68 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_21_minval}          ; end 
       20'h6C : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_21_maxval}          ; end 
       20'h70 : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_21_stepsize}          ; end 
 
