@@ -239,9 +239,9 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "OUTput#:LIMit:MAX", .callback  = RP_OutputLimitMax,},
     {.pattern = "OUTput#:LIMit:MAX?", .callback = RP_OutputLimitMaxQ,},
 
-    /*Saving and loading PID configuration*/
-    {.pattern = "PIDSaveConf", .callback = RP_SaveToFile,},
-    {.pattern = "PIDLoadConf", .callback = RP_LoadFromFile,},
+    /* Saving and loading lockbox configuration*/
+    {.pattern = "LOCKbox:CONFig:SAVE", .callback = RP_SaveLockboxConfig,},
+    {.pattern = "LOCKbox:CONFig:LOAD", .callback = RP_LoadLockboxConfig,},
 
     SCPI_CMD_LIST_END
 };

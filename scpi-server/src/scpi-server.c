@@ -30,7 +30,6 @@
 
 #include "scpi/parser.h"
 #include "redpitaya/lockbox.h"
-#include "pid.h"
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -229,14 +228,15 @@ int main(int argc, char *argv[])
         return (EXIT_FAILURE);
     }
 
+    // load saved settings from disk
+    result = rp_LoadLockboxConfig();
+    if (result != RP_OK)
+        RP_LOG(LOG_ERR, "Failed to load lockbox config from file: %s", rp_GetError(result));
+
     // user_context will be pointer to socket
     scpi_context.user_context = NULL;
     scpi_context.binary_output = false;
     SCPI_Init(&scpi_context);
-
-    //load saved settings
-    RP_LoadFromFile(NULL);
-
 
     // Create a socket
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
