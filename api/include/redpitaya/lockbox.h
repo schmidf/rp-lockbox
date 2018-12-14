@@ -82,6 +82,10 @@ extern "C" {
 #define RP_EFWB   22
 /** Extension module not connected */
 #define RP_EMNC   23
+/** Failed to open config file */
+#define RP_EOCF   24
+/** Incompatible config file version */
+#define RP_EICV   25
 
 #define SPECTR_OUT_SIG_LEN (2*1024)
 
@@ -260,6 +264,34 @@ typedef struct {
     int32_t  fe_ch1_hi_offs; //!< Front end DC offset, channel A
     int32_t  fe_ch2_hi_offs; //!< Front end DC offset, channel B
 } rp_calib_params_t;
+
+/**
+ * Lockbox parameters for saving to and restoring from disk.
+ */
+#define LOCKBOX_CONFIG_VERSION 1
+#define CONFIG_FILE_PATH "/home/redpitaya/pid_settings.conf"
+typedef struct {
+    int config_version;
+    float pid_setpoint[4];
+    float pid_kp[4];
+    float pid_ki[4];
+    uint32_t pid_kd[4];
+    bool pid_int_reset[4];
+    bool pid_inverted[4];
+    bool pid_reset_when_railed[4];
+    bool pid_int_hold[4];
+    bool pid_relock_enabled[4];
+    float pid_relock_stepsize[4];
+    float pid_relock_minimum[4];
+    float pid_relock_maximum[4];
+    float limit_min[2];
+    float limit_max[2];
+    bool gen_enabled[2];
+    float gen_amp[2];
+    float gen_offset[2];
+    float gen_freq[2];
+    rp_waveform_t gen_waveform[2];
+} rp_lockbox_params_t;
 
 
 /** @name General
@@ -1576,6 +1608,22 @@ int rp_LimitGetMin(rp_channel_t channel, float *value);
  * indicate an error.
  */
 int rp_LimitGetMax(rp_channel_t channel, float *value);
+
+/*
+ * Save the current lockbox configuration to CONFIG_FILE_PATH.
+ * @return If the function is successful, the return value is RP_OK.
+ * If the function is unsuccessful, the return value is any of RP_E* values that
+ * indicate an error.
+ */
+int rp_SaveLockboxConfig();
+
+/*
+ * Load the lockbox configuration from CONFIG_FILE_PATH.
+ * @return If the function is successful, the return value is RP_OK.
+ * If the function is unsuccessful, the return value is any of RP_E* values that
+ * indicate an error.
+ */
+int rp_LoadLockboxConfig();
 
 float rp_CmnCnvCntToV(uint32_t field_len, uint32_t cnts, float adc_max_v, uint32_t calibScale, int calib_dc_off, float user_dc_off);
 

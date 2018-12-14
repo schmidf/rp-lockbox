@@ -18,6 +18,24 @@
 #include "scpi/parser.h"
 #include "scpi/units.h"
 
+scpi_result_t RP_SaveLockboxConfig(scpi_t *context) {
+    int result = rp_SaveLockboxConfig();
+    if (result != RP_OK) {
+        RP_LOG("LOCKbox:CONFig:SAVE Failed to save config to file: %s\n", rp_GetError(result));
+        return SCPI_RES_ERR;
+    }
+    return SCPI_RES_OK;
+}
+
+scpi_result_t RP_LoadLockboxConfig(scpi_t *context) {
+    int result = rp_LoadLockboxConfig();
+    if (result != RP_OK) {
+        RP_LOG("LOCKbox:CONFig:LOAD Failed to load config from file: %s\n", rp_GetError(result));
+        return SCPI_RES_ERR;
+    }
+    return SCPI_RES_OK;
+}
+
 /* Parse pid index from SCPI command */
 static int RP_ParsePIDArgv(scpi_t *context, rp_pid_t *pid) {
     int32_t inout[2]; // First int: input index (1-2), second int: output index (1-2)
