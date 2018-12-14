@@ -116,6 +116,8 @@ const char* rp_GetError(int errorCode) {
         case RP_EABA:  return "Failed to acquire bus access";
         case RP_EFRB:  return "Failed to read from the bus";
         case RP_EFWB:  return "Failed to write to the bus";
+        case RP_EOCF:  return "Failed to open config file.";
+        case RP_EICV:  return "Incompatible config file version";
         default:       return "Unknown error";
     }
 }
@@ -915,6 +917,86 @@ int rp_LimitGetMin(rp_channel_t channel, float *value) {
 int rp_LimitGetMax(rp_channel_t channel, float *value) {
     return limit_LimitGetMax(channel, value);
 }
+
+int rp_SaveLockboxConfig() {
+    rp_lockbox_params_t config;
+    config.config_version = LOCKBOX_CONFIG_VERSION;
+    for (int i=0; i<4; i++) {
+        rp_PIDGetSetpoint(i, &config.pid_setpoint[i]);
+        rp_PIDGetKp(i, &config.pid_kp[i]);
+        rp_PIDGetKi(i, &config.pid_ki[i]);
+        rp_PIDGetKd(i, &config.pid_kd[i]);
+        rp_PIDGetIntReset(i, &config.pid_int_reset[i]);
+        rp_PIDGetInverted(i, &config.pid_inverted[i]);
+        rp_PIDGetResetWhenRailed(i, &config.pid_reset_when_railed[i]);
+        rp_PIDGetIntHold(i, &config.pid_int_hold[i]);
+        rp_PIDGetRelock(i, &config.pid_relock_enabled[i]);
+        rp_PIDGetRelockStepsize(i, &config.pid_relock_stepsize[i]);
+        rp_PIDGetRelockMinimum(i, &config.pid_relock_minimum[i]);
+        rp_PIDGetRelockMaximum(i, &config.pid_relock_maximum[i]);
+    }
+    for (int i=0; i<2; i++) {
+        rp_LimitGetMin(i, &config.limit_min[i]);
+        rp_LimitGetMax(i, &config.limit_max[i]);
+        rp_GenOutIsEnabled(i, &config.gen_enabled[i]);
+        rp_GenGetAmp(i, &config.gen_amp[i]);
+        rp_GenGetOffset(i, &config.gen_offset[i]);
+        rp_GenGetFreq(i, &config.gen_freq[i]);
+        rp_GenGetWaveform(i, &config.gen_waveform[i]);
+    }
+    FILE *configfile;
+    configfile = fopen(CONFIG_FILE_PATH, "w");
+
+    if (configfile == NULL)
+        return RP_EOCF;
+
+    fwrite(&config, sizeof(rp_lockbox_params_t), 1, configfile);
+    fclose(configfile);
+    return RP_OK;
+}
+
+int rp_LoadLockboxConfig() {
+    rp_lockbox_params_t config;
+
+    FILE *configfile;
+    configfile = fopen(CONFIG_FILE_PATH, "r");
+
+    if (configfile == NULL)
+        return RP_EOCF;
+    fread(&config, sizeof(rp_lockbox_params_t), 1, configfile);
+    fclose(configfile);
+
+    if (config.config_version != LOCKBOX_CONFIG_VERSION)
+        return RP_EICV;
+
+    for (int i=0; i<4; i++) {
+        rp_PIDSetSetpoint(i, config.pid_setpoint[i]);
+        rp_PIDSetKp(i, config.pid_kp[i]);
+        rp_PIDSetKi(i, config.pid_ki[i]);
+        rp_PIDSetKd(i, config.pid_kd[i]);
+        rp_PIDSetIntReset(i, config.pid_int_reset[i]);
+        rp_PIDSetInverted(i, config.pid_inverted[i]);
+        rp_PIDSetResetWhenRailed(i, config.pid_reset_when_railed[i]);
+        rp_PIDSetIntHold(i, config.pid_int_hold[i]);
+        rp_PIDSetRelock(i, config.pid_relock_enabled[i]);
+        rp_PIDSetRelockStepsize(i, config.pid_relock_stepsize[i]);
+        rp_PIDSetRelockMinimum(i, config.pid_relock_minimum[i]);
+        rp_PIDSetRelockMaximum(i, config.pid_relock_maximum[i]);
+    }
+    for (int i=0; i<2; i++) {
+        rp_LimitMin(i, config.limit_min[i]);
+        rp_LimitMax(i, config.limit_max[i]);
+        if (config.gen_enabled[i])
+            rp_GenOutEnable(i);
+        else
+            rp_GenOutDisable(i);
+        rp_GenAmp(i, config.gen_amp[i]);
+        rp_GenOffset(i, config.gen_offset[i]);
+        rp_GenFreq(i, config.gen_freq[i]);
+        rp_GenWaveform(i, config.gen_waveform[i]);
+    }
+    return RP_OK;
+};
 
 float rp_CmnCnvCntToV(uint32_t field_len, uint32_t cnts, float adc_max_v, uint32_t calibScale, int calib_dc_off, float user_dc_off)
 {
