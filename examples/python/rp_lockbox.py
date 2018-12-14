@@ -366,3 +366,11 @@ class RedPitaya():
         :returns: the maximum output voltage
         """
         return float(self.txrx_txt("OUT{}:LIM:MAX?".format(num_out)))
+
+    def save_lockbox_config(self):
+        """Save the lockbox configuration to the SD-card."""
+        self.tx_txt("LOCK:CONF:SAVE")
+
+    def load_lockbox_config(self):
+        """Load the lockbox configuration from the SD-card."""
+        self.tx_txt("LOCK:CONF:LOAD")

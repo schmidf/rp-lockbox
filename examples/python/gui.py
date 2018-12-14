@@ -52,6 +52,12 @@ class MainWindow(QtWidgets.QMainWindow):
         button_reconnect = QtWidgets.QPushButton('Reconnect')
         button_reconnect.clicked.connect(self.reconnect)
 
+        button_save_parameters = QtWidgets.QPushButton('Save parameters to SD card')
+        button_save_parameters.clicked.connect(self.red_pitaya.save_lockbox_config)
+
+        button_load_parameters = QtWidgets.QPushButton('Load parameters from SD card')
+        button_load_parameters.clicked.connect(self.load_parameters)
+
         central_layout = QtWidgets.QGridLayout()
         self.pid_groups = {}
         self.relock_groups = {}
@@ -69,6 +75,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         central_layout.addWidget(button_reconnect, 2, 0)
         central_layout.addWidget(button_update_parameters, 3, 0)
+        central_layout.addWidget(button_save_parameters, 2, 1)
+        central_layout.addWidget(button_load_parameters, 3, 1)
 
         central_widget = QtWidgets.QWidget(self)
         self.setCentralWidget(central_widget)
@@ -139,6 +147,11 @@ class MainWindow(QtWidgets.QMainWindow):
             relock_group.update_parameters()
         for output_group in self.output_groups.values():
             output_group.update_parameters()
+
+    def load_parameters(self):
+        """Load parameters from the Red Pitaya SD-Card and update the UI elements."""
+        self.red_pitaya.load_lockbox_config()
+        self.update_parameters()
 
 if __name__ == '__main__':
     logging.basicConfig(level=LOGLEVEL)
