@@ -161,7 +161,8 @@ XADC #(
   .INIT_4A(16'h47e0), // Sequencer Average selection // average system voltages & temperature
   .INIT_4B(16'h0000), // Sequencer Average selection
   .INIT_4C(16'h0800), // Sequencer Bipolar selection
-  .INIT_4D(16'h0303), // Sequencer Bipolar selection
+//  .INIT_4D(16'h0303), // Sequencer Bipolar selection // aux inputs bipolar
+  .INIT_4D(16'h0000), // Sequencer Bipolar selection // aux inputs unipolar
   .INIT_4E(16'h0000), // Sequencer Acq time selection
   .INIT_4F(16'h0000), // Sequencer Acq time selection
   // INIT_50 - INIT_58, INIT5C: Alarm Limit Registers
