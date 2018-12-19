@@ -412,108 +412,72 @@ int pid_GetRelockStepsize(rp_pid_t pid, float *stepsize) {
 }
 
 int pid_SetRelockMinimum(rp_pid_t pid, float minimum) {
-    rp_calib_params_t calib = calib_GetParams();
     uint32_t minimum_counts;
-
-    if (pid == RP_PID_11 || pid == RP_PID_21) // Relock input channel B
-        minimum_counts = cmn_CnvVToCnt(DATA_BIT_LENGTH, minimum, SETPOINT_MAX, false, calib.fe_ch2_fs_g_hi, calib.fe_ch2_hi_offs, 0);
-    else if (pid == RP_PID_22 || pid == RP_PID_12) // Relock input channel A
-        minimum_counts = cmn_CnvVToCnt(DATA_BIT_LENGTH, minimum, SETPOINT_MAX, false, calib.fe_ch1_fs_g_hi, calib.fe_ch1_hi_offs, 0);
-    else
-        return RP_EPN;
+    minimum_counts = (uint32_t) ((minimum - ANALOG_IN_MIN_VAL) / (ANALOG_IN_MAX_VAL - ANALOG_IN_MIN_VAL) * ANALOG_IN_MAX_VAL_INTEGER);
 
     switch(pid) {
-        case RP_PID_11: return cmn_SetValue(&pid_reg->relock11_minval, minimum_counts, PID_SETPOINT_MASK);
-        case RP_PID_12: return cmn_SetValue(&pid_reg->relock12_minval, minimum_counts, PID_SETPOINT_MASK);
-        case RP_PID_21: return cmn_SetValue(&pid_reg->relock21_minval, minimum_counts, PID_SETPOINT_MASK);
-        case RP_PID_22: return cmn_SetValue(&pid_reg->relock22_minval, minimum_counts, PID_SETPOINT_MASK);
+        case RP_PID_11: return cmn_SetValue(&pid_reg->relock11_minval, minimum_counts, PID_RELOCK_MASK);
+        case RP_PID_12: return cmn_SetValue(&pid_reg->relock12_minval, minimum_counts, PID_RELOCK_MASK);
+        case RP_PID_21: return cmn_SetValue(&pid_reg->relock21_minval, minimum_counts, PID_RELOCK_MASK);
+        case RP_PID_22: return cmn_SetValue(&pid_reg->relock22_minval, minimum_counts, PID_RELOCK_MASK);
         default: return RP_EPN;
     }
 }
 int pid_GetRelockMinimum(rp_pid_t pid, float *minimum) {
-    rp_calib_params_t calib = calib_GetParams();
     uint32_t minimum_counts;
 
     switch(pid) {
         case RP_PID_11:
-            cmn_GetValue(&pid_reg->relock11_minval, &minimum_counts, PID_SETPOINT_MASK);
+            cmn_GetValue(&pid_reg->relock11_minval, &minimum_counts, PID_RELOCK_MASK);
             break;
         case RP_PID_12:
-            cmn_GetValue(&pid_reg->relock12_minval, &minimum_counts, PID_SETPOINT_MASK);
+            cmn_GetValue(&pid_reg->relock12_minval, &minimum_counts, PID_RELOCK_MASK);
             break;
         case RP_PID_21:
-            cmn_GetValue(&pid_reg->relock21_minval, &minimum_counts, PID_SETPOINT_MASK);
+            cmn_GetValue(&pid_reg->relock21_minval, &minimum_counts, PID_RELOCK_MASK);
             break;
         case RP_PID_22:
-            cmn_GetValue(&pid_reg->relock22_minval, &minimum_counts, PID_SETPOINT_MASK);
+            cmn_GetValue(&pid_reg->relock22_minval, &minimum_counts, PID_RELOCK_MASK);
             break;
         default: return RP_EPN;
     }
 
-    if(pid == RP_PID_11 || pid == RP_PID_21) { // Relock input channel B
-        *minimum = cmn_CnvCntToV(DATA_BIT_LENGTH, minimum_counts, SETPOINT_MAX,
-            calib.fe_ch2_fs_g_hi, calib.fe_ch2_hi_offs, 0);
-        return RP_OK;
-    }
-    else if (pid == RP_PID_22 || pid == RP_PID_12) { // Relock input channel A
-        *minimum = cmn_CnvCntToV(DATA_BIT_LENGTH, minimum_counts, SETPOINT_MAX,
-            calib.fe_ch1_fs_g_hi, calib.fe_ch1_hi_offs, 0);
-        return RP_OK;
-    }
-    else
-        return RP_EPN;
+    *minimum = (float)minimum_counts / ANALOG_IN_MAX_VAL_INTEGER * (ANALOG_IN_MAX_VAL - ANALOG_IN_MIN_VAL) + ANALOG_IN_MIN_VAL;
+    return RP_OK;
 }
 
 int pid_SetRelockMaximum(rp_pid_t pid, float maximum) {
-    rp_calib_params_t calib = calib_GetParams();
     uint32_t maximum_counts;
-
-    if (pid == RP_PID_11 || pid == RP_PID_21) // Relock input channel B
-        maximum_counts = cmn_CnvVToCnt(DATA_BIT_LENGTH, maximum, SETPOINT_MAX, false, calib.fe_ch2_fs_g_hi, calib.fe_ch2_hi_offs, 0);
-    else if (pid == RP_PID_22 || pid == RP_PID_12) // Relock input channel A
-        maximum_counts = cmn_CnvVToCnt(DATA_BIT_LENGTH, maximum, SETPOINT_MAX, false, calib.fe_ch1_fs_g_hi, calib.fe_ch1_hi_offs, 0);
-    else
-        return RP_EPN;
+    maximum_counts = (uint32_t) ((maximum - ANALOG_IN_MIN_VAL) / (ANALOG_IN_MAX_VAL - ANALOG_IN_MIN_VAL) * ANALOG_IN_MAX_VAL_INTEGER);
 
     switch(pid) {
-        case RP_PID_11: return cmn_SetValue(&pid_reg->relock11_maxval, maximum_counts, PID_SETPOINT_MASK);
-        case RP_PID_12: return cmn_SetValue(&pid_reg->relock12_maxval, maximum_counts, PID_SETPOINT_MASK);
-        case RP_PID_21: return cmn_SetValue(&pid_reg->relock21_maxval, maximum_counts, PID_SETPOINT_MASK);
-        case RP_PID_22: return cmn_SetValue(&pid_reg->relock22_maxval, maximum_counts, PID_SETPOINT_MASK);
+        case RP_PID_11: return cmn_SetValue(&pid_reg->relock11_maxval, maximum_counts, PID_RELOCK_MASK);
+        case RP_PID_12: return cmn_SetValue(&pid_reg->relock12_maxval, maximum_counts, PID_RELOCK_MASK);
+        case RP_PID_21: return cmn_SetValue(&pid_reg->relock21_maxval, maximum_counts, PID_RELOCK_MASK);
+        case RP_PID_22: return cmn_SetValue(&pid_reg->relock22_maxval, maximum_counts, PID_RELOCK_MASK);
         default: return RP_EPN;
     }
 }
 
 int pid_GetRelockMaximum(rp_pid_t pid, float *maximum) {
-    rp_calib_params_t calib = calib_GetParams();
     uint32_t maximum_counts;
 
     switch(pid) {
         case RP_PID_11:
-            cmn_GetValue(&pid_reg->relock11_maxval, &maximum_counts, PID_SETPOINT_MASK);
+            cmn_GetValue(&pid_reg->relock11_maxval, &maximum_counts, PID_RELOCK_MASK);
             break;
         case RP_PID_12:
-            cmn_GetValue(&pid_reg->relock12_maxval, &maximum_counts, PID_SETPOINT_MASK);
+            cmn_GetValue(&pid_reg->relock12_maxval, &maximum_counts, PID_RELOCK_MASK);
             break;
         case RP_PID_21:
-            cmn_GetValue(&pid_reg->relock21_maxval, &maximum_counts, PID_SETPOINT_MASK);
+            cmn_GetValue(&pid_reg->relock21_maxval, &maximum_counts, PID_RELOCK_MASK);
             break;
         case RP_PID_22:
-            cmn_GetValue(&pid_reg->relock22_maxval, &maximum_counts, PID_SETPOINT_MASK);
+            cmn_GetValue(&pid_reg->relock22_maxval, &maximum_counts, PID_RELOCK_MASK);
             break;
         default: return RP_EPN;
     }
-
-    if(pid == RP_PID_11 || pid == RP_PID_21) { // Relock input channel B
-        *maximum = cmn_CnvCntToV(DATA_BIT_LENGTH, maximum_counts, SETPOINT_MAX,
-            calib.fe_ch2_fs_g_hi, calib.fe_ch2_hi_offs, 0);
-        return RP_OK;
-    }
-    else if (pid == RP_PID_22 || pid == RP_PID_12) { // Relock input channel A
-        *maximum = cmn_CnvCntToV(DATA_BIT_LENGTH, maximum_counts, SETPOINT_MAX,
-            calib.fe_ch1_fs_g_hi, calib.fe_ch1_hi_offs, 0);
-        return RP_OK;
-    }
-    else
-        return RP_EPN;
+    
+    *maximum = (float)maximum_counts / ANALOG_IN_MAX_VAL_INTEGER * (ANALOG_IN_MAX_VAL - ANALOG_IN_MIN_VAL) + ANALOG_IN_MIN_VAL;
+    return RP_OK;
 }

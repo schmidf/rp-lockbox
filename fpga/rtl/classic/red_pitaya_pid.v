@@ -59,6 +59,10 @@ module red_pitaya_pid (
    input      [ 14-1: 0] dat_b_i         ,  //!< input data CHB
    input      [    1: 0] railed_a_i      ,  //!< input CHA railed
    input      [    1: 0] railed_b_i      ,  //!< input CHA railed
+   input      [ 12-1: 0] relock_a_i      ,
+   input      [ 12-1: 0] relock_b_i      ,
+   input      [ 12-1: 0] relock_c_i      ,
+   input      [ 12-1: 0] relock_d_i      ,
    output     [ 14-1: 0] dat_a_o         ,  //!< output data CHA
    output     [ 14-1: 0] dat_b_o         ,  //!< output data CHB
   
@@ -81,6 +85,26 @@ localparam  KD_BITS = 24     ;
 localparam  RELOCK_STEP_BITS = 24;
 localparam  RELOCK_STEPSR = 18;
 
+reg                                relock_enabled   [3:0];
+reg         [12-1:0]               relock_minval    [3:0];
+reg         [12-1:0]               relock_maxval    [3:0];
+reg         [RELOCK_STEP_BITS-1:0] relock_stepsize  [3:0];
+wire                               relock_clear_o   [3:0];
+wire signed [14-1:0]               relock_signal_o  [3:0];
+wire                               relock_hold_o    [3:0];
+wire        [12-1:0]               relock_signal_i  [3:0];
+//wire                               relock_hold_i    [3:0];
+wire                               relock_railed_i  [3:0];
+
+assign relock_signal_i[0] = relock_a_i;
+assign relock_signal_i[1] = relock_b_i;
+assign relock_signal_i[2] = relock_c_i;
+assign relock_signal_i[3] = relock_d_i;
+
+assign relock_railed_i[0] = railed_a_i;
+assign relock_railed_i[1] = railed_a_i;
+assign relock_railed_i[2] = railed_b_i;
+assign relock_railed_i[3] = railed_b_i;
 
 //---------------------------------------------------------------------------------
 //  PID 11: In1, Out1
@@ -97,22 +121,14 @@ reg                        set_11_ihold ;
 wire                       pid_11_irst;
 wire                       pid_11_ihold;
 
-reg                                relock_11_enabled;
-reg signed  [14-1:0]               relock_11_minval;
-reg signed  [14-1:0]               relock_11_maxval;
-reg         [RELOCK_STEP_BITS-1:0] relock_11_stepsize;
-wire                               relock_11_clear_o;
-wire signed [14-1:0]               relock_11_signal_o;
-wire                               relock_11_hold_o;
-
 wire signed [15-1:0] pid_11_sum;
 wire signed [14-1:0] pid_11_sat;
 
 assign pid_11_irst = set_11_irst ||
                     (set_11_irst_when_railed && (railed_a_i[0] || railed_a_i[1])) ||
-                    relock_11_clear_o; 
-assign pid_11_ihold = relock_11_hold_o || set_11_ihold;
-assign pid_11_sum = pid_11_out + relock_11_signal_o;
+                    relock_clear_o[0]; 
+assign pid_11_ihold = relock_hold_o[0] || set_11_ihold;
+assign pid_11_sum = pid_11_out + relock_signal_o[0];
 assign pid_11_sat = (^pid_11_sum[15-1:15-2]) ? {pid_11_sum[15-1], {13{~pid_11_sum[15-1]}}} : pid_11_sum[14-1:0];
 
 red_pitaya_pid_block #(
@@ -144,16 +160,16 @@ pid_relock #(
     .STEP_BITS(RELOCK_STEP_BITS)
 ) relock_11 (
     .clk_i(clk_i),
-    .on_i(relock_11_enabled),
-    .min_val_i(relock_11_minval),
-    .max_val_i(relock_11_maxval),
-    .stepsize_i(relock_11_stepsize),
-    .signal_i(dat_b_i),
-    .railed_i(railed_a_i),
+    .on_i(relock_enabled[0]),
+    .min_val_i(relock_minval[0]),
+    .max_val_i(relock_maxval[0]),
+    .stepsize_i(relock_stepsize[0]),
+    .signal_i(relock_signal_i[0]),
+    .railed_i(relock_railed_i[0]),
     .hold_i(set_11_ihold),
-    .hold_o(relock_11_hold_o),
-    .clear_o(relock_11_clear_o),
-    .signal_o(relock_11_signal_o)
+    .hold_o(relock_hold_o[0]),
+    .clear_o(relock_clear_o[0]),
+    .signal_o(relock_signal_o[0])
 );
 
 //---------------------------------------------------------------------------------
@@ -171,21 +187,14 @@ reg             set_21_ihold ;
 wire            pid_21_irst;
 wire            pid_21_ihold;
 
-reg             relock_21_enabled;
-reg signed [14-1:0] relock_21_minval;
-reg signed [14-1:0] relock_21_maxval;
-reg [RELOCK_STEP_BITS-1:0] relock_21_stepsize;
-wire            relock_21_clear_o;
-wire signed [14-1:0] relock_21_signal_o;
-wire            relock_21_hold_o;
 wire signed [15-1:0] pid_21_sum;
 wire signed [14-1:0] pid_21_sat;
 
 assign pid_21_irst = set_21_irst ||
                     (set_21_irst_when_railed && (railed_b_i[0] || railed_b_i[1])) ||
-                    relock_21_clear_o; 
-assign pid_21_ihold = relock_21_hold_o || set_21_ihold;
-assign pid_21_sum = pid_21_out + relock_21_signal_o;
+                    relock_clear_o[2]; 
+assign pid_21_ihold = relock_hold_o[2] || set_21_ihold;
+assign pid_21_sum = pid_21_out + relock_signal_o[2];
 assign pid_21_sat = (^pid_21_sum[15-1:15-2]) ? {pid_21_sum[15-1], {13{~pid_21_sum[15-1]}}} : pid_21_sum[14-1:0];
 
 red_pitaya_pid_block #(
@@ -217,16 +226,16 @@ pid_relock #(
     .STEP_BITS(RELOCK_STEP_BITS)
 ) relock_21 (
     .clk_i(clk_i),
-    .on_i(relock_21_enabled),
-    .min_val_i(relock_21_minval),
-    .max_val_i(relock_21_maxval),
-    .stepsize_i(relock_21_stepsize),
-    .signal_i(dat_b_i),
-    .railed_i(railed_b_i),
+    .on_i(relock_enabled[2]),
+    .min_val_i(relock_minval[2]),
+    .max_val_i(relock_maxval[2]),
+    .stepsize_i(relock_stepsize[2]),
+    .signal_i(relock_signal_i[2]),
+    .railed_i(relock_railed_i[2]),
     .hold_i(set_21_ihold),
-    .hold_o(relock_21_hold_o),
-    .clear_o(relock_21_clear_o),
-    .signal_o(relock_21_signal_o)
+    .hold_o(relock_hold_o[2]),
+    .clear_o(relock_clear_o[2]),
+    .signal_o(relock_signal_o[2])
 );
 
 //---------------------------------------------------------------------------------
@@ -244,21 +253,14 @@ reg             set_12_ihold ;
 wire            pid_12_irst;
 wire            pid_12_ihold;
 
-reg             relock_12_enabled;
-reg signed [14-1:0] relock_12_minval;
-reg signed [14-1:0] relock_12_maxval;
-reg [RELOCK_STEP_BITS-1:0] relock_12_stepsize;
-wire            relock_12_clear_o;
-wire signed [14-1:0] relock_12_signal_o;
-wire            relock_12_hold_o;
 wire signed [15-1:0] pid_12_sum;
 wire signed [14-1:0] pid_12_sat;
 
 assign pid_12_irst = set_12_irst ||
                     (set_12_irst_when_railed && (railed_a_i[0] || railed_a_i[1])) ||
-                    relock_12_clear_o; 
-assign pid_12_ihold = relock_12_hold_o || set_12_ihold;
-assign pid_12_sum = pid_12_out + relock_12_signal_o;
+                    relock_clear_o[1]; 
+assign pid_12_ihold = relock_hold_o[1] || set_12_ihold;
+assign pid_12_sum = pid_12_out + relock_signal_o[1];
 assign pid_12_sat = (^pid_12_sum[15-1:15-2]) ? {pid_12_sum[15-1], {13{~pid_12_sum[15-1]}}} : pid_12_sum[14-1:0];
 
 red_pitaya_pid_block #(
@@ -290,16 +292,16 @@ pid_relock #(
     .STEP_BITS(RELOCK_STEP_BITS)
 ) relock_12 (
     .clk_i(clk_i),
-    .on_i(relock_12_enabled),
-    .min_val_i(relock_12_minval),
-    .max_val_i(relock_12_maxval),
-    .stepsize_i(relock_12_stepsize),
-    .signal_i(dat_a_i),
-    .railed_i(railed_a_i),
+    .on_i(relock_enabled[1]),
+    .min_val_i(relock_minval[1]),
+    .max_val_i(relock_maxval[1]),
+    .stepsize_i(relock_stepsize[1]),
+    .signal_i(relock_signal_i[1]),
+    .railed_i(relock_railed_i[1]),
     .hold_i(set_12_ihold),
-    .hold_o(relock_12_hold_o),
-    .clear_o(relock_12_clear_o),
-    .signal_o(relock_12_signal_o)
+    .hold_o(relock_hold_o[1]),
+    .clear_o(relock_clear_o[1]),
+    .signal_o(relock_signal_o[1])
 );
 
 //---------------------------------------------------------------------------------
@@ -317,21 +319,14 @@ reg             set_22_ihold ;
 wire            pid_22_irst;
 wire            pid_22_ihold;
 
-reg             relock_22_enabled;
-reg signed [14-1:0] relock_22_minval;
-reg signed [14-1:0] relock_22_maxval;
-reg [RELOCK_STEP_BITS-1:0] relock_22_stepsize;
-wire            relock_22_clear_o;
-wire signed [14-1:0] relock_22_signal_o;
-wire            relock_22_hold_o;
 wire signed [15-1:0] pid_22_sum;
 wire signed [14-1:0] pid_22_sat;
 
 assign pid_22_irst = set_22_irst ||
                     (set_22_irst_when_railed && (railed_b_i[0] || railed_b_i[1])) ||
-                    relock_22_clear_o; 
-assign pid_22_ihold = relock_22_hold_o || set_22_ihold;
-assign pid_22_sum = pid_22_out + relock_22_signal_o;
+                    relock_clear_o[3]; 
+assign pid_22_ihold = relock_hold_o[3] || set_22_ihold;
+assign pid_22_sum = pid_22_out + relock_signal_o[3];
 assign pid_22_sat = (^pid_22_sum[15-1:15-2]) ? {pid_22_sum[15-1], {13{~pid_22_sum[15-1]}}} : pid_22_sum[14-1:0];
 
 red_pitaya_pid_block #(
@@ -363,16 +358,16 @@ pid_relock #(
     .STEP_BITS(RELOCK_STEP_BITS)
 ) relock_22 (
     .clk_i(clk_i),
-    .on_i(relock_22_enabled),
-    .min_val_i(relock_22_minval),
-    .max_val_i(relock_22_maxval),
-    .stepsize_i(relock_22_stepsize),
-    .signal_i(dat_a_i),
-    .railed_i(railed_b_i),
+    .on_i(relock_enabled[3]),
+    .min_val_i(relock_minval[3]),
+    .max_val_i(relock_maxval[3]),
+    .stepsize_i(relock_stepsize[3]),
+    .signal_i(relock_signal_i[3]),
+    .railed_i(relock_railed_i[3]),
     .hold_i(set_22_ihold),
-    .hold_o(relock_22_hold_o),
-    .clear_o(relock_22_clear_o),
-    .signal_o(relock_22_signal_o)
+    .hold_o(relock_hold_o[3]),
+    .clear_o(relock_clear_o[3]),
+    .signal_o(relock_signal_o[3])
 );
 
 //---------------------------------------------------------------------------------
@@ -441,30 +436,30 @@ always @(posedge clk_i) begin
       set_22_kd          <= 14'd0 ;
       pid_22_inverted    <=  1'b0 ;
       set_22_irst        <=  1'b1 ;
-      relock_11_minval   <= 14'd0;
-      relock_11_maxval   <= 14'd0;
-      relock_11_stepsize <= {RELOCK_STEP_BITS{1'b0}};
-      relock_11_enabled  <=1'b0;
-      relock_12_minval   <= 14'd0;
-      relock_12_maxval   <= 14'd0;
-      relock_12_stepsize <= {RELOCK_STEP_BITS{1'b0}};
-      relock_12_enabled  <=1'b0;
-      relock_21_minval   <= 14'd0;
-      relock_21_maxval   <= 14'd0;
-      relock_21_stepsize <= {RELOCK_STEP_BITS{1'b0}};
-      relock_21_enabled  <=1'b0;
-      relock_22_minval   <= 14'd0;
-      relock_22_maxval   <= 14'd0;
-      relock_22_stepsize <= {RELOCK_STEP_BITS{1'b0}};
-      relock_22_enabled  <=1'b0;
+      relock_minval[0]   <= 12'd0;
+      relock_maxval[0]   <= 12'd0;
+      relock_stepsize[0] <= {RELOCK_STEP_BITS{1'b0}};
+      relock_enabled[0]  <=1'b0;
+      relock_minval[1]   <= 12'd0;
+      relock_maxval[1]   <= 12'd0;
+      relock_stepsize[1] <= {RELOCK_STEP_BITS{1'b0}};
+      relock_enabled[1]  <=1'b0;
+      relock_minval[2]   <= 12'd0;
+      relock_maxval[2]   <= 12'd0;
+      relock_stepsize[2] <= {RELOCK_STEP_BITS{1'b0}};
+      relock_enabled[2]  <=1'b0;
+      relock_minval[3]   <= 12'd0;
+      relock_maxval[3]   <= 12'd0;
+      relock_stepsize[3] <= {RELOCK_STEP_BITS{1'b0}};
+      relock_enabled[3]  <=1'b0;
    end
    else begin
       if (sys_wen) begin
          if (sys_addr[19:0]==16'h0) {
-             relock_22_enabled,
-             relock_21_enabled,
-             relock_12_enabled,
-             relock_11_enabled,
+             relock_enabled[3],
+             relock_enabled[2],
+             relock_enabled[1],
+             relock_enabled[0],
              set_22_ihold,
              set_21_ihold,
              set_12_ihold,
@@ -499,18 +494,18 @@ always @(posedge clk_i) begin
          if (sys_addr[19:0]==16'h44)    set_22_kp  <= sys_wdata[KP_BITS-1:0] ;
          if (sys_addr[19:0]==16'h48)    set_22_ki  <= sys_wdata[KI_BITS-1:0] ;
          if (sys_addr[19:0]==16'h4C)    set_22_kd  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h50)    relock_11_minval  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h54)    relock_11_maxval  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h58)    relock_11_stepsize  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
-         if (sys_addr[19:0]==16'h5C)    relock_12_minval  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h60)    relock_12_maxval  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h64)    relock_12_stepsize  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
-         if (sys_addr[19:0]==16'h68)    relock_21_minval  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h6C)    relock_21_maxval  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h70)    relock_21_stepsize  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
-         if (sys_addr[19:0]==16'h74)    relock_22_minval  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h78)    relock_22_maxval  <= sys_wdata[14-1:0] ;
-         if (sys_addr[19:0]==16'h7C)    relock_22_stepsize  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
+         if (sys_addr[19:0]==16'h50)    relock_minval[0]  <= sys_wdata[12-1:0] ;
+         if (sys_addr[19:0]==16'h54)    relock_maxval[0]  <= sys_wdata[12-1:0] ;
+         if (sys_addr[19:0]==16'h58)    relock_stepsize[0]  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
+         if (sys_addr[19:0]==16'h5C)    relock_minval[1]  <= sys_wdata[12-1:0] ;
+         if (sys_addr[19:0]==16'h60)    relock_maxval[1]  <= sys_wdata[12-1:0] ;
+         if (sys_addr[19:0]==16'h64)    relock_stepsize[1]  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
+         if (sys_addr[19:0]==16'h68)    relock_minval[2]  <= sys_wdata[12-1:0] ;
+         if (sys_addr[19:0]==16'h6C)    relock_maxval[2]  <= sys_wdata[12-1:0] ;
+         if (sys_addr[19:0]==16'h70)    relock_stepsize[2]  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
+         if (sys_addr[19:0]==16'h74)    relock_minval[3]  <= sys_wdata[12-1:0] ;
+         if (sys_addr[19:0]==16'h78)    relock_maxval[3]  <= sys_wdata[12-1:0] ;
+         if (sys_addr[19:0]==16'h7C)    relock_stepsize[3]  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
       end
    end
 end
@@ -528,10 +523,10 @@ end else begin
    casez (sys_addr[19:0])
       20'h00 : begin sys_ack <= sys_en;          sys_rdata <= {
           {32-20{1'b0}},
-          relock_22_enabled,
-          relock_21_enabled,
-          relock_12_enabled,
-          relock_11_enabled,
+          relock_enabled[3],
+          relock_enabled[2],
+          relock_enabled[1],
+          relock_enabled[0],
           set_22_ihold,
           set_21_ihold,
           set_12_ihold,
@@ -569,21 +564,21 @@ end else begin
       20'h48 : begin sys_ack <= sys_en;          sys_rdata <= {{32-KI_BITS{1'b0}}, set_22_ki}          ; end 
       20'h4C : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, set_22_kd}          ; end 
 
-      20'h50 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_11_minval}          ; end 
-      20'h54 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_11_maxval}          ; end 
-      20'h58 : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_11_stepsize}          ; end 
+      20'h50 : begin sys_ack <= sys_en;          sys_rdata <= {{32-12{1'b0}}, relock_minval[0]}          ; end 
+      20'h54 : begin sys_ack <= sys_en;          sys_rdata <= {{32-12{1'b0}}, relock_maxval[0]}          ; end 
+      20'h58 : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[0]}          ; end 
 
-      20'h5C : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_12_minval}          ; end 
-      20'h60 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_12_maxval}          ; end 
-      20'h64 : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_12_stepsize}          ; end 
+      20'h5C : begin sys_ack <= sys_en;          sys_rdata <= {{32-12{1'b0}}, relock_minval[1]}          ; end 
+      20'h60 : begin sys_ack <= sys_en;          sys_rdata <= {{32-12{1'b0}}, relock_maxval[1]}          ; end 
+      20'h64 : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[1]}          ; end 
 
-      20'h68 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_21_minval}          ; end 
-      20'h6C : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_21_maxval}          ; end 
-      20'h70 : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_21_stepsize}          ; end 
+      20'h68 : begin sys_ack <= sys_en;          sys_rdata <= {{32-12{1'b0}}, relock_minval[2]}          ; end 
+      20'h6C : begin sys_ack <= sys_en;          sys_rdata <= {{32-12{1'b0}}, relock_maxval[2]}          ; end 
+      20'h70 : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[2]}          ; end 
 
-      20'h74 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_22_minval}          ; end 
-      20'h78 : begin sys_ack <= sys_en;          sys_rdata <= {{32-14{1'b0}}, relock_22_maxval}          ; end 
-      20'h7C : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_22_stepsize}          ; end 
+      20'h74 : begin sys_ack <= sys_en;          sys_rdata <= {{32-12{1'b0}}, relock_minval[3]}          ; end 
+      20'h78 : begin sys_ack <= sys_en;          sys_rdata <= {{32-12{1'b0}}, relock_maxval[3]}          ; end 
+      20'h7C : begin sys_ack <= sys_en;          sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[3]}          ; end 
 
      default : begin sys_ack <= sys_en;          sys_rdata <=  32'h0                              ; end
    endcase

@@ -70,6 +70,7 @@ static const uint32_t PID_KP_MASK = 0xFFFFFF; // (24 bits)
 static const uint32_t PID_KI_MASK = 0xFFFFFF; // (24 bits)
 static const uint32_t PID_KD_MASK = 0x3FFF; // (14 bits)
 static const uint32_t PID_STEPSIZE_MASK = 0xFFFFFF; // (24 bits)
+static const uint32_t PID_RELOCK_MASK = 0xFFF; // (12 bits)
 
 static const float PID_TIMESTEP = 8E-9; // Inverse of the sampling rate
 static const float PID_DACCOUNT = 1.221E-4; // DAC count in V = 2V/2**14

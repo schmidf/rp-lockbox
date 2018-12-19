@@ -169,7 +169,7 @@ Parameter options:
 * ``<kd> = {0...8191}`` Default: ``0``
 * ``<state> = {ON,OFF}`` Default: ``OFF``
 * ``<stepsize> = {58E-3...1.0E6} V/s`` Default: ``0``
-* ``<limit> = {-1V...1V}`` Default: ``0``
+* ``<limit> = {0V...7V}`` Default: ``0``
 
 .. tabularcolumns:: |p{28mm}|p{28mm}|p{28mm}|
 

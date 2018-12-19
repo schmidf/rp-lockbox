@@ -49,6 +49,11 @@ module red_pitaya_ams (
    output reg [ 24-1: 0] dac_b_o         ,  // conversion into PWM signal
    output reg [ 24-1: 0] dac_c_o         ,  // 
    output reg [ 24-1: 0] dac_d_o         ,  // 
+   // XADC data
+   output     [ 12-1: 0] adc_a_o         ,
+   output     [ 12-1: 0] adc_b_o         ,
+   output     [ 12-1: 0] adc_c_o         ,
+   output     [ 12-1: 0] adc_d_o         ,
    // system bus
    input      [ 32-1: 0] sys_addr        ,  // bus address
    input      [ 32-1: 0] sys_wdata       ,  // bus write data
@@ -76,6 +81,12 @@ reg   [ 12-1: 0] adc_bram_r   ;
 reg   [ 12-1: 0] adc_int_r    ;
 reg   [ 12-1: 0] adc_aux_r    ;
 reg   [ 12-1: 0] adc_ddr_r    ;
+
+
+assign adc_a_o =  adc_a_r;
+assign adc_b_o =  adc_b_r;
+assign adc_c_o =  adc_c_r;
+assign adc_d_o =  adc_d_r;
 
 always @(posedge clk_i)
 if (rstn_i == 1'b0) begin
