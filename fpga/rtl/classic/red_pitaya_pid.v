@@ -93,7 +93,7 @@ wire                               relock_clear_o   [3:0];
 wire signed [14-1:0]               relock_signal_o  [3:0];
 wire                               relock_hold_o    [3:0];
 wire        [12-1:0]               relock_signal_i  [3:0];
-//wire                               relock_hold_i    [3:0];
+wire                               relock_hold_i    [3:0];
 wire                               relock_railed_i  [3:0];
 
 assign relock_signal_i[0] = relock_a_i;
@@ -105,6 +105,11 @@ assign relock_railed_i[0] = railed_a_i;
 assign relock_railed_i[1] = railed_a_i;
 assign relock_railed_i[2] = railed_b_i;
 assign relock_railed_i[3] = railed_b_i;
+
+assign relock_hold_i[0] = set_11_ihold;
+assign relock_hold_i[1] = set_12_ihold;
+assign relock_hold_i[2] = set_21_ihold;
+assign relock_hold_i[3] = set_22_ihold;
 
 //---------------------------------------------------------------------------------
 //  PID 11: In1, Out1
@@ -153,23 +158,6 @@ red_pitaya_pid_block #(
   .set_kd_i     (  set_11_kd      ),  // Kd
   .inverted_i   (  pid_11_inverted),  // feedback sign
   .int_rst_i    (  pid_11_irst    )   // integrator reset
-);
-
-pid_relock #(
-    .STEPSR(RELOCK_STEPSR),
-    .STEP_BITS(RELOCK_STEP_BITS)
-) relock_11 (
-    .clk_i(clk_i),
-    .on_i(relock_enabled[0]),
-    .min_val_i(relock_minval[0]),
-    .max_val_i(relock_maxval[0]),
-    .stepsize_i(relock_stepsize[0]),
-    .signal_i(relock_signal_i[0]),
-    .railed_i(relock_railed_i[0]),
-    .hold_i(set_11_ihold),
-    .hold_o(relock_hold_o[0]),
-    .clear_o(relock_clear_o[0]),
-    .signal_o(relock_signal_o[0])
 );
 
 //---------------------------------------------------------------------------------
@@ -221,23 +209,6 @@ red_pitaya_pid_block #(
   .int_rst_i    (  pid_21_irst    )   // integrator reset
 );
 
-pid_relock #(
-    .STEPSR(RELOCK_STEPSR),
-    .STEP_BITS(RELOCK_STEP_BITS)
-) relock_21 (
-    .clk_i(clk_i),
-    .on_i(relock_enabled[2]),
-    .min_val_i(relock_minval[2]),
-    .max_val_i(relock_maxval[2]),
-    .stepsize_i(relock_stepsize[2]),
-    .signal_i(relock_signal_i[2]),
-    .railed_i(relock_railed_i[2]),
-    .hold_i(set_21_ihold),
-    .hold_o(relock_hold_o[2]),
-    .clear_o(relock_clear_o[2]),
-    .signal_o(relock_signal_o[2])
-);
-
 //---------------------------------------------------------------------------------
 //  PID 12: In2, Out1
 
@@ -285,23 +256,6 @@ red_pitaya_pid_block #(
   .set_kd_i     (  set_12_kd      ),  // Kd
   .inverted_i   (  pid_12_inverted),  // feedback sign
   .int_rst_i    (  pid_12_irst    )   // integrator reset
-);
-
-pid_relock #(
-    .STEPSR(RELOCK_STEPSR),
-    .STEP_BITS(RELOCK_STEP_BITS)
-) relock_12 (
-    .clk_i(clk_i),
-    .on_i(relock_enabled[1]),
-    .min_val_i(relock_minval[1]),
-    .max_val_i(relock_maxval[1]),
-    .stepsize_i(relock_stepsize[1]),
-    .signal_i(relock_signal_i[1]),
-    .railed_i(relock_railed_i[1]),
-    .hold_i(set_12_ihold),
-    .hold_o(relock_hold_o[1]),
-    .clear_o(relock_clear_o[1]),
-    .signal_o(relock_signal_o[1])
 );
 
 //---------------------------------------------------------------------------------
@@ -353,22 +307,28 @@ red_pitaya_pid_block #(
   .int_rst_i    (  pid_22_irst    )   // integrator reset
 );
 
+genvar relock_index;
+generate for (relock_index = 0; relock_index < 3; relock_index = relock_index + 1) begin
+
 pid_relock #(
     .STEPSR(RELOCK_STEPSR),
     .STEP_BITS(RELOCK_STEP_BITS)
-) relock_22 (
+) relock (
     .clk_i(clk_i),
-    .on_i(relock_enabled[3]),
-    .min_val_i(relock_minval[3]),
-    .max_val_i(relock_maxval[3]),
-    .stepsize_i(relock_stepsize[3]),
-    .signal_i(relock_signal_i[3]),
-    .railed_i(relock_railed_i[3]),
-    .hold_i(set_22_ihold),
-    .hold_o(relock_hold_o[3]),
-    .clear_o(relock_clear_o[3]),
-    .signal_o(relock_signal_o[3])
+    .on_i(relock_enabled[relock_index]),
+    .min_val_i(relock_minval[relock_index]),
+    .max_val_i(relock_maxval[relock_index]),
+    .stepsize_i(relock_stepsize[relock_index]),
+    .signal_i(relock_signal_i[relock_index]),
+    .railed_i(relock_railed_i[relock_index]),
+    .hold_i(relock_hold_i[relock_index]),
+    .hold_o(relock_hold_o[relock_index]),
+    .clear_o(relock_clear_o[relock_index]),
+    .signal_o(relock_signal_o[relock_index])
 );
+end
+endgenerate
+
 
 //---------------------------------------------------------------------------------
 //  Sum and saturation
