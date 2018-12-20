@@ -107,11 +107,18 @@ reg         [3:0]                  relock_enabled;
 reg         [12-1:0]               relock_minval    [3:0];
 reg         [12-1:0]               relock_maxval    [3:0];
 reg         [RELOCK_STEP_BITS-1:0] relock_stepsize  [3:0];
+reg         [2-1:0]                relock_source    [3:0];
 wire                               relock_clear_o   [3:0];
 wire signed [14-1:0]               relock_signal_o  [3:0];
 wire                               relock_hold_o    [3:0];
 wire        [12-1:0]               relock_signal_i  [3:0];
 wire                               relock_hold_i    [3:0];
+
+wire        [12-1:0]               relock_i         [3:0];
+assign relock_i[0] = relock_a_i;
+assign relock_i[1] = relock_b_i;
+assign relock_i[2] = relock_c_i;
+assign relock_i[3] = relock_d_i;
 
 genvar pid_index;
 
@@ -121,6 +128,9 @@ generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
     assign pid_sat[pid_index] = (^pid_sum[pid_index][15-1:15-2]) ?
                                 {pid_sum[pid_index][15-1], {13{~pid_sum[pid_index][15-1]}}} :
                                 pid_sum[pid_index][14-1:0];
+
+    assign relock_signal_i[pid_index] = relock_i[relock_source[pid_index]];
+
     red_pitaya_pid_block #(
       .PSR     (  PSR   ),
       .ISR     (  ISR   ),
@@ -183,11 +193,6 @@ assign pid_railed_i[1] = railed_a_i;
 assign pid_railed_i[2] = railed_b_i;
 assign pid_railed_i[3] = railed_b_i;
 
-assign relock_signal_i[0] = relock_a_i;
-assign relock_signal_i[1] = relock_b_i;
-assign relock_signal_i[2] = relock_c_i;
-assign relock_signal_i[3] = relock_d_i;
-
 assign relock_hold_i[0] = set_ihold[0];
 assign relock_hold_i[1] = set_ihold[1];
 assign relock_hold_i[2] = set_ihold[2];
@@ -244,6 +249,7 @@ generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
           relock_minval[pid_index]   <= 12'd0;
           relock_maxval[pid_index]   <= 12'd0;
           relock_stepsize[pid_index] <= {RELOCK_STEP_BITS{1'b0}};
+          relock_source[pid_index]   <= 2'd0;
        end
        else begin
           if (sys_wen) begin
@@ -261,6 +267,8 @@ generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
                  relock_maxval[pid_index]  <= sys_wdata[12-1:0] ;
              if (sys_addr[19:0]==('h70+4*pid_index))
                  relock_stepsize[pid_index]  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
+             if (sys_addr[19:0]==('h80+4*pid_index))
+                 relock_source[pid_index]  <= sys_wdata[2-1:0] ;
           end
        end
     end
@@ -311,6 +319,7 @@ end else begin
       20'h5?: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_minval[sys_addr[3:0] >> 2]}; end 
       20'h6?: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_maxval[sys_addr[3:0] >> 2]}; end 
       20'h7?: begin sys_ack <= sys_en; sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[sys_addr[3:0] >> 2]}; end 
+      20'h8?: begin sys_ack <= sys_en; sys_rdata <= {{32-2{1'b0}}, relock_source[sys_addr[3:0] >> 2]}; end 
 
      default: begin sys_ack <= sys_en; sys_rdata <=  32'h0; end
    endcase
