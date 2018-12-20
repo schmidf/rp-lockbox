@@ -247,19 +247,19 @@ generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
        end
        else begin
           if (sys_wen) begin
-             if (sys_addr[19:0]==('h10+16*pid_index+'h0))
+             if (sys_addr[19:0]==('h10+4*pid_index))
                  set_sp[pid_index] <= sys_wdata[14-1:0];
-             if (sys_addr[19:0]==('h10+16*pid_index+'h4))
+             if (sys_addr[19:0]==('h20+4*pid_index))
                  set_kp[pid_index] <= sys_wdata[KP_BITS-1:0];
-             if (sys_addr[19:0]==('h10+16*pid_index+'h8))
+             if (sys_addr[19:0]==('h30+4*pid_index))
                  set_ki[pid_index] <= sys_wdata[KI_BITS-1:0];
-             if (sys_addr[19:0]==('h10+16*pid_index+'hC))
+             if (sys_addr[19:0]==('h40+4*pid_index))
                  set_kd[pid_index] <= sys_wdata[14-1:0];
-             if (sys_addr[19:0]==('h50+12*pid_index+'h0))
+             if (sys_addr[19:0]==('h50+4*pid_index))
                  relock_minval[pid_index]  <= sys_wdata[12-1:0] ;
-             if (sys_addr[19:0]==('h50+12*pid_index+'h4))
+             if (sys_addr[19:0]==('h60+4*pid_index))
                  relock_maxval[pid_index]  <= sys_wdata[12-1:0] ;
-             if (sys_addr[19:0]==('h50+12*pid_index+'h8))
+             if (sys_addr[19:0]==('h70+4*pid_index))
                  relock_stepsize[pid_index]  <= sys_wdata[RELOCK_STEP_BITS-1:0] ;
           end
        end
@@ -303,41 +303,14 @@ end else begin
                         pid_inverted, set_irst};
       end 
 
-      20'h10: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_sp[0]}; end 
-      20'h14: begin sys_ack <= sys_en; sys_rdata <= {{32-KP_BITS{1'b0}}, set_kp[0]}; end 
-      20'h18: begin sys_ack <= sys_en; sys_rdata <= {{32-KI_BITS{1'b0}}, set_ki[0]}; end 
-      20'h1C: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_kd[0]}; end 
+      20'h1?: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_sp[sys_addr[3:0] >> 2]}; end 
+      20'h2?: begin sys_ack <= sys_en; sys_rdata <= {{32-KP_BITS{1'b0}}, set_kp[sys_addr[3:0] >> 2]}; end 
+      20'h3?: begin sys_ack <= sys_en; sys_rdata <= {{32-KI_BITS{1'b0}}, set_ki[sys_addr[3:0] >> 2]}; end 
+      20'h4?: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_kd[sys_addr[3:0] >> 2]}; end 
 
-      20'h20: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_sp[1]}; end 
-      20'h24: begin sys_ack <= sys_en; sys_rdata <= {{32-KP_BITS{1'b0}}, set_kp[1]}; end 
-      20'h28: begin sys_ack <= sys_en; sys_rdata <= {{32-KI_BITS{1'b0}}, set_ki[1]}; end 
-      20'h2C: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_kd[1]}; end 
-
-      20'h30: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_sp[2]}; end 
-      20'h34: begin sys_ack <= sys_en; sys_rdata <= {{32-KP_BITS{1'b0}}, set_kp[2]}; end 
-      20'h38: begin sys_ack <= sys_en; sys_rdata <= {{32-KI_BITS{1'b0}}, set_ki[2]}; end 
-      20'h3C: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_kd[2]}; end 
-
-      20'h40: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_sp[3]}; end 
-      20'h44: begin sys_ack <= sys_en; sys_rdata <= {{32-KP_BITS{1'b0}}, set_kp[3]}; end 
-      20'h48: begin sys_ack <= sys_en; sys_rdata <= {{32-KI_BITS{1'b0}}, set_ki[3]}; end 
-      20'h4C: begin sys_ack <= sys_en; sys_rdata <= {{32-14{1'b0}}, set_kd[3]}; end 
-
-      20'h50: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_minval[0]}; end 
-      20'h54: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_maxval[0]}; end 
-      20'h58: begin sys_ack <= sys_en; sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[0]}; end 
-
-      20'h5C: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_minval[1]}; end 
-      20'h60: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_maxval[1]}; end 
-      20'h64: begin sys_ack <= sys_en; sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[1]}; end 
-
-      20'h68: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_minval[2]}; end 
-      20'h6C: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_maxval[2]}; end 
-      20'h70: begin sys_ack <= sys_en; sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[2]}; end 
-
-      20'h74: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_minval[3]}; end 
-      20'h78: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_maxval[3]}; end 
-      20'h7C: begin sys_ack <= sys_en; sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[3]}; end 
+      20'h5?: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_minval[sys_addr[3:0] >> 2]}; end 
+      20'h6?: begin sys_ack <= sys_en; sys_rdata <= {{32-12{1'b0}}, relock_maxval[sys_addr[3:0] >> 2]}; end 
+      20'h7?: begin sys_ack <= sys_en; sys_rdata <= {{32-RELOCK_STEP_BITS{1'b0}}, relock_stepsize[sys_addr[3:0] >> 2]}; end 
 
      default: begin sys_ack <= sys_en; sys_rdata <=  32'h0; end
    endcase

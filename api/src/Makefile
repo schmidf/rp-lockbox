@@ -49,7 +49,8 @@ OBJECTS =	common.o \
 		spec_fpga.o \
 		pid.o \
 		limit.o \
-		lockbox.o
+		lockbox.o \
+		analog_mixed_signals.o
 
 OBJS = $(patsubst %$(OBJEXT), $(OBJECTS_DIR)/%$(OBJEXT), $(OBJECTS))
 

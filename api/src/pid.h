@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <redpitaya/lockbox.h>
+#include "analog_mixed_signals.h"
 
 #define SETPOINT_MAX        1.0     // V
 #define DATA_BIT_LENGTH     14      // Used for V->counts conversion
@@ -35,32 +36,32 @@ typedef struct pid_control_s {
     uint32_t conf;
     uint32_t reserved[3];
     uint32_t pid11_setpoint;
-    uint32_t pid11_Kp;
-    uint32_t pid11_Ki;
-    uint32_t pid11_Kd;
     uint32_t pid12_setpoint;
-    uint32_t pid12_Kp;
-    uint32_t pid12_Ki;
-    uint32_t pid12_Kd;
     uint32_t pid21_setpoint;
-    uint32_t pid21_Kp;
-    uint32_t pid21_Ki;
-    uint32_t pid21_Kd;
     uint32_t pid22_setpoint;
+    uint32_t pid11_Kp;
+    uint32_t pid12_Kp;
+    uint32_t pid21_Kp;
     uint32_t pid22_Kp;
+    uint32_t pid11_Ki;
+    uint32_t pid12_Ki;
+    uint32_t pid21_Ki;
     uint32_t pid22_Ki;
+    uint32_t pid11_Kd;
+    uint32_t pid12_Kd;
+    uint32_t pid21_Kd;
     uint32_t pid22_Kd;
     uint32_t relock11_minval;
-    uint32_t relock11_maxval;
-    uint32_t relock11_stepsize;
     uint32_t relock12_minval;
-    uint32_t relock12_maxval;
-    uint32_t relock12_stepsize;
     uint32_t relock21_minval;
-    uint32_t relock21_maxval;
-    uint32_t relock21_stepsize;
     uint32_t relock22_minval;
+    uint32_t relock11_maxval;
+    uint32_t relock12_maxval;
+    uint32_t relock21_maxval;
     uint32_t relock22_maxval;
+    uint32_t relock11_stepsize;
+    uint32_t relock12_stepsize;
+    uint32_t relock21_stepsize;
     uint32_t relock22_stepsize;
 } pid_control_t;
 
