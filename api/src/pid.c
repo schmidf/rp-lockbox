@@ -481,3 +481,36 @@ int pid_GetRelockMaximum(rp_pid_t pid, float *maximum) {
     *maximum = (float)maximum_counts / ANALOG_IN_MAX_VAL_INTEGER * (ANALOG_IN_MAX_VAL - ANALOG_IN_MIN_VAL) + ANALOG_IN_MIN_VAL;
     return RP_OK;
 }
+
+int pid_SetRelockInput(rp_pid_t pid, rp_apin_t pin) {
+    if (pin > RP_AIN3)
+        return RP_EPN;
+    switch(pid) {
+        case RP_PID_11: return cmn_SetValue(&pid_reg->relock11_input, pin-RP_AIN0, PID_RELOCK_INPUT_MASK);
+        case RP_PID_12: return cmn_SetValue(&pid_reg->relock12_input, pin-RP_AIN0, PID_RELOCK_INPUT_MASK);
+        case RP_PID_21: return cmn_SetValue(&pid_reg->relock21_input, pin-RP_AIN0, PID_RELOCK_INPUT_MASK);
+        case RP_PID_22: return cmn_SetValue(&pid_reg->relock22_input, pin-RP_AIN0, PID_RELOCK_INPUT_MASK);
+        default: return RP_EPN;
+    }
+    return RP_OK;
+}
+int pid_GetRelockInput(rp_pid_t pid, rp_apin_t *pin) {
+    rp_apin_t tmp_pin;
+    switch(pid) {
+        case RP_PID_11:
+            cmn_GetValue(&pid_reg->relock11_input, &tmp_pin, PID_RELOCK_INPUT_MASK);
+            break;
+        case RP_PID_12:
+            cmn_GetValue(&pid_reg->relock12_input, &tmp_pin, PID_RELOCK_INPUT_MASK);
+            break;
+        case RP_PID_21:
+            cmn_GetValue(&pid_reg->relock21_input, &tmp_pin, PID_RELOCK_INPUT_MASK);
+            break;
+        case RP_PID_22:
+            cmn_GetValue(&pid_reg->relock22_input, &tmp_pin, PID_RELOCK_INPUT_MASK);
+            break;
+        default: return RP_EPN;
+    }
+    *pin = tmp_pin+RP_AIN0;
+    return RP_OK;
+}

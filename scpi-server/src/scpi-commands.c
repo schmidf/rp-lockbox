@@ -232,6 +232,8 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "PID:IN#:OUT#:RELock:MIN?", .callback           = RP_PIDRelockMinQ,},
     {.pattern = "PID:IN#:OUT#:RELock:MAX", .callback            = RP_PIDRelockMax,},
     {.pattern = "PID:IN#:OUT#:RELock:MAX?", .callback           = RP_PIDRelockMaxQ,},
+    {.pattern = "PID:IN#:OUT#:RELock:INPut", .callback          = RP_PIDRelockInput,},
+    {.pattern = "PID:IN#:OUT#:RELock:INPut?", .callback         = RP_PIDRelockInputQ,},
 
     /* Output limiting */
     {.pattern = "OUTput#:LIMit:MIN", .callback  = RP_OutputLimitMin,},

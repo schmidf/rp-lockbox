@@ -170,6 +170,7 @@ Parameter options:
 * ``<state> = {ON,OFF}`` Default: ``OFF``
 * ``<stepsize> = {58E-3...1.0E6} V/s`` Default: ``0``
 * ``<limit> = {0V...7V}`` Default: ``0``
+* ``<ain> = {AIN0, AIN1, AIN2, AIN3}`` Default: ``AIN0``
 
 .. tabularcolumns:: |p{28mm}|p{28mm}|p{28mm}|
 
@@ -212,7 +213,7 @@ Parameter options:
 | ``PID:IN<n>:OUT<n>:INVerted?``                    | ``rp_PIDGetInverted``        | Get the sign of the PID output.                           |
 +---------------------------------------------------+------------------------------+-----------------------------------------------------------+
 | ``PID:IN<n>:OUT<n>:RELock <state>``               | ``rp_PIDSetRelock``          | | Enable or disable the PID relock feature.               |
-|                                                   |                              | | If enabled, the input not used by the PID is monitored. |
+|                                                   |                              | | If enabled, one of the auxiliary inputs is monitored.   |
 |                                                   |                              | | If the value falls outside the configured minimum and   |
 |                                                   |                              | | maximum values, the integrator is frozen and the output |
 |                                                   |                              | | is ramped with the specified slew rate in order to      |
@@ -236,6 +237,10 @@ Parameter options:
 +---------------------------------------------------+------------------------------+-----------------------------------------------------------+
 | ``PID:IN<n>:OUT<n>:RELock:MAX?``                  | ``rp_PIDGetRelockMaximum``   | | Get the maximum input voltage for which the PID is      |
 |                                                   |                              | | considered locked.                                      |
++---------------------------------------------------+------------------------------+-----------------------------------------------------------+
+| ``PID:IN<n>:OUT<n>:RELock:INPut <ain>``           | ``rp_PIDSetRelockInput``     | Set the analog input to be used for relocking the PID.    |
++---------------------------------------------------+------------------------------+-----------------------------------------------------------+
+| ``PID:IN<n>:OUT<n>:RELock:INPut?``                | ``rp_PIDGetRelockInput``     | Get the analog input used for relocking the PID.          |
 +---------------------------------------------------+------------------------------+-----------------------------------------------------------+
 
 ===============
