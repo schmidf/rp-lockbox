@@ -268,7 +268,7 @@ typedef struct {
 /**
  * Lockbox parameters for saving to and restoring from disk.
  */
-#define LOCKBOX_CONFIG_VERSION 1
+#define LOCKBOX_CONFIG_VERSION 2
 #define CONFIG_FILE_PATH "/home/redpitaya/pid_settings.conf"
 typedef struct {
     int config_version;
@@ -284,6 +284,7 @@ typedef struct {
     float pid_relock_stepsize[4];
     float pid_relock_minimum[4];
     float pid_relock_maximum[4];
+    rp_apin_t pid_relock_input[4];
     float limit_min[2];
     float limit_max[2];
     bool gen_enabled[2];
