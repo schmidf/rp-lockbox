@@ -1,6 +1,7 @@
 [Unit]
 Description=SCPI server for the Red Pitaya Lockbox
 After=network.target
+Conflicts=redpitaya_nginx
 
 [Service]
 Type=simple
