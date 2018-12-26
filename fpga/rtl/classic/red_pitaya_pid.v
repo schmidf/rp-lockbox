@@ -97,7 +97,7 @@ reg         [3:0]         set_irst_when_railed      ;
 reg         [3:0]         set_ihold                 ;
 wire                      pid_irst             [3:0];
 wire                      pid_ihold            [3:0];
-wire                      pid_railed_i         [3:0];
+wire        [1:0]         pid_railed_i         [3:0];
 
 wire signed [15-1:0]      pid_sum              [3:0];
 wire signed [14-1:0]      pid_sat              [3:0];
