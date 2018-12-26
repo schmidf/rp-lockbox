@@ -137,7 +137,7 @@ generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
       .DSR     (  DSR   ),
       .KP_BITS ( KP_BITS),
       .KI_BITS ( KI_BITS)
-    ) i_pid11 (
+    ) i_pid (
        // data
       .clk_i        (  clk_i                  ),  // clock
       .rstn_i       (  rstn_i                 ),  // reset - active low
