@@ -7,6 +7,14 @@
 `timescale 1ns / 1ps
 module testbench;
 
+wire [1:0] railed;
+
+reg signed [13:0] limit_input = 14'd0;
+wire signed [13:0] limit_output;
+
+reg signed [13:0] min = -14'd4000;
+reg signed [13:0] max = 14'd4000;
+
 initial begin
     $dumpfile("limit_block_tb.vcd");
     $dumpvars(0, testbench);
@@ -24,14 +32,6 @@ end
 /* Make a regular pulsing clock. */
 reg clk = 0;
 always #4 clk = !clk;
-
-wire [1:0] railed;
-
-reg signed [13:0] limit_input = 14'd0;
-wire signed [13:0] limit_output;
-
-reg signed [13:0] min = -14'd4000;
-reg signed [13:0] max = 14'd4000;
 
 red_pitaya_limit_block limit(
     .clk_i(clk),
