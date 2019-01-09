@@ -335,6 +335,21 @@ class RedPitaya():
         """
         return float(self.txrx_txt('PID:IN{}:OUT{}:REL:MAX?'.format(num_in, num_out)))
 
+    def set_relock_input(self, num_in, num_out, relock_input):
+        """Set the XADC input to be used for relocking the specified PID
+
+        :relock_input: the XADC index (0-3)
+        """
+        self.tx_txt("PID:IN{}:OUT{}:REL:INP AIN{}".format(num_in, num_out, relock_input))
+
+    def get_relock_input(self, num_in, num_out):
+        """Return which XADC input is used for relocking the specified PID
+
+        :returns: the XADC index (0-3)
+        """
+        response = self.txrx_txt('PID:IN{}:OUT{}:REL:INP?'.format(num_in, num_out))
+        return int(response[-1]) # response format: AIN[0-3]
+
     def set_output_minimum(self, num_out, minimum):
         """Set the minimum output voltage for the specified channel.
 
