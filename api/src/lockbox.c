@@ -901,6 +901,12 @@ int rp_PIDSetRelockMaximum(rp_pid_t pid, float maximum) {
 int rp_PIDGetRelockMaximum(rp_pid_t pid, float *maximum) {
     return pid_GetRelockMaximum(pid, maximum);
 }
+int rp_PIDSetRelockInput(rp_pid_t pid, rp_apin_t pin) {
+    return pid_SetRelockInput(pid, pin);
+}
+int rp_PIDGetRelockInput(rp_pid_t pid, rp_apin_t *pin) {
+    return pid_GetRelockInput(pid, pin);
+}
 
 /**
  * Output limiter
@@ -934,6 +940,7 @@ int rp_SaveLockboxConfig() {
         rp_PIDGetRelockStepsize(i, &config.pid_relock_stepsize[i]);
         rp_PIDGetRelockMinimum(i, &config.pid_relock_minimum[i]);
         rp_PIDGetRelockMaximum(i, &config.pid_relock_maximum[i]);
+        rp_PIDGetRelockInput(i, &config.pid_relock_input[i]);
     }
     for (int i=0; i<2; i++) {
         rp_LimitGetMin(i, &config.limit_min[i]);
@@ -982,6 +989,7 @@ int rp_LoadLockboxConfig() {
         rp_PIDSetRelockStepsize(i, config.pid_relock_stepsize[i]);
         rp_PIDSetRelockMinimum(i, config.pid_relock_minimum[i]);
         rp_PIDSetRelockMaximum(i, config.pid_relock_maximum[i]);
+        rp_PIDSetRelockInput(i, config.pid_relock_input[i]);
     }
     for (int i=0; i<2; i++) {
         rp_LimitMin(i, config.limit_min[i]);

@@ -162,6 +162,12 @@ localparam type SBG_T = logic signed [14-1:0];  // generate
 
 SBA_T [MNA-1:0]          adc_dat;
 
+// XADC signals
+logic [12-1:0] xadc_a_dat;
+logic [12-1:0] xadc_b_dat;
+logic [12-1:0] xadc_c_dat;
+logic [12-1:0] xadc_d_dat;
+
 // DAC signals
 logic                    dac_clk_1x;
 logic                    dac_clk_2x;
@@ -262,8 +268,8 @@ red_pitaya_ps ps (
   .fclk_clk_o    (fclk        ),
   .fclk_rstn_o   (frstn       ),
   // ADC analog inputs
-  .vinp_i        (vinp_i      ),
-  .vinn_i        (vinn_i      ),
+//  .vinp_i        (vinp_i      ),
+//  .vinn_i        (vinn_i      ),
   // GPIO
   .gpio          (gpio),
   // system read/write channel
@@ -312,11 +318,19 @@ red_pitaya_ams i_ams (
   // power test
   .clk_i           (adc_clk ),  // clock
   .rstn_i          (adc_rstn),  // reset - active low
+  // ADC analog inputs
+  .vinp_i          (  vinp_i                     ),  // voltages p
+  .vinn_i          (  vinn_i                     ),  // voltages n
   // PWM configuration
   .dac_a_o         (pwm_cfg[0]),
   .dac_b_o         (pwm_cfg[1]),
   .dac_c_o         (pwm_cfg[2]),
   .dac_d_o         (pwm_cfg[3]),
+  // ADC digital outputs
+  .adc_a_o         (xadc_a_dat),
+  .adc_b_o         (xadc_b_dat),
+  .adc_c_o         (xadc_c_dat),
+  .adc_d_o         (xadc_d_dat),
   // System bus
   .sys_addr        (sys[4].addr ),
   .sys_wdata       (sys[4].wdata),
@@ -519,6 +533,10 @@ red_pitaya_pid i_pid (
   .dat_b_o         (pid_dat[1]),   // out 2
   .railed_a_i      (dac_a_railed), // out 1 railed
   .railed_b_i      (dac_b_railed), // out 2 railed
+  .relock_a_i      (xadc_a_dat),
+  .relock_b_i      (xadc_b_dat),
+  .relock_c_i      (xadc_c_dat),
+  .relock_d_i      (xadc_d_dat),
   // System bus
   .sys_addr        (sys[3].addr ),
   .sys_wdata       (sys[3].wdata),

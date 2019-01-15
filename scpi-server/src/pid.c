@@ -687,3 +687,71 @@ scpi_result_t RP_PIDRelockMaxQ(scpi_t *context) {
     RP_LOG(LOG_INFO, "*PID:IN#:OUT#:RELock:MAX? Successfully returned maximum value to client.\n");
     return SCPI_RES_OK;
 }
+
+/* AIN choice def */
+const scpi_choice_def_t scpi_RpAinput[] = {
+    {"AIN0",  4},  //!< Analog input 0
+    {"AIN1",  5},  //!< Analog input 1
+    {"AIN2",  6},  //!< Analog input 2
+    {"AIN3",  7},  //!< Analog input 3
+    SCPI_CHOICE_LIST_END
+};
+
+scpi_result_t RP_PIDRelockInput(scpi_t *context) {
+    int result;
+    int32_t choice;
+    rp_pid_t pid;
+
+    /* Parse PID index */
+    result = RP_ParsePIDArgv(context, &pid);
+    if(result != RP_OK) {
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:RELock:INPut Failed to parse input/output choice: %s\n", rp_GetError(result));
+        return SCPI_RES_ERR;
+    }
+    /* Read first parameter - AIN */
+    if (!SCPI_ParamChoice(context, scpi_RpAinput, &choice, true)) {
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:RELock:INPut is missing first parameter.\n");
+        return SCPI_RES_ERR;
+    }
+    rp_apin_t pin = choice;
+
+    result = rp_PIDSetRelockInput(pid, pin);
+    if(result != RP_OK) {
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:RELock:INPut Failed to set input pin: %s\n", rp_GetError(result));
+        return SCPI_RES_ERR;
+    }
+
+    RP_LOG(LOG_INFO, "*PID:IN#:OUT#:RELock:INPut Successfully set input pin.\n");
+    return SCPI_RES_OK;
+}
+
+
+scpi_result_t RP_PIDRelockInputQ(scpi_t *context) {
+    int result;
+    const char *pin_name;
+    rp_apin_t pin;
+    rp_pid_t pid;
+
+    /* Parse PID index */
+    result = RP_ParsePIDArgv(context, &pid);
+    if(result != RP_OK) {
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:RELock:INPut? Failed to parse input/output choice: %s\n", rp_GetError(result));
+        return SCPI_RES_ERR;
+    }
+
+    result = rp_PIDGetRelockInput(pid, &pin);
+    if(result != RP_OK) {
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:RELock:INPut? Failed to get input pin: %s\n", rp_GetError(result));
+        return SCPI_RES_ERR;
+    }
+
+    if(!SCPI_ChoiceToName(scpi_RpAinput, pin, &pin_name)) {
+        RP_LOG(LOG_ERR,"*PID:IN#:OUT#:RELock:INPut? Failed to get input pin name.\n");
+        return SCPI_RES_ERR;
+    }
+
+    SCPI_ResultMnemonic(context, pin_name);
+
+    RP_LOG(LOG_INFO, "*PID:IN#:OUT#:RELock:INPut? Successfully returned input pin value to client.\n");
+    return SCPI_RES_OK;
+}

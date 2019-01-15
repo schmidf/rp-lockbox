@@ -35,6 +35,8 @@ scpi_result_t RP_PIDRelockMin(scpi_t *context);
 scpi_result_t RP_PIDRelockMinQ(scpi_t *context);
 scpi_result_t RP_PIDRelockMax(scpi_t *context);
 scpi_result_t RP_PIDRelockMaxQ(scpi_t *context);
+scpi_result_t RP_PIDRelockInput(scpi_t *context);
+scpi_result_t RP_PIDRelockInputQ(scpi_t *context);
 scpi_result_t RP_SaveLockboxConfig(scpi_t *context);
 scpi_result_t RP_LoadLockboxConfig(scpi_t *context);
 #endif /* PID_H_ */

@@ -208,12 +208,7 @@ class RelockGroup(QtWidgets.QGroupBox):
         :parent: If parent is None, the new widget becomes a window. If parent is another widget,
                  the widget becomes a child window inside parent. Defaults to None.
         """
-        if num_in == 1:
-            relock_in = 2
-        else:
-            relock_in = 1
-
-        title = "Relock (Input {})".format(relock_in)
+        title = "Relock"
 
         super().__init__(title, parent)
 
@@ -237,7 +232,7 @@ class RelockGroup(QtWidgets.QGroupBox):
         self.spin_box_minimum = QtWidgets.QDoubleSpinBox()
         self.spin_box_minimum.setKeyboardTracking(False)
         self.spin_box_minimum.setDecimals(3)
-        self.spin_box_minimum.setRange(-1, 1)
+        self.spin_box_minimum.setRange(0, 7)
         self.spin_box_minimum.setSingleStep(0.001)
         self.spin_box_minimum.setPrefix("Min = ")
         self.spin_box_minimum.setSuffix(" V")
@@ -247,7 +242,7 @@ class RelockGroup(QtWidgets.QGroupBox):
         self.spin_box_maximum = QtWidgets.QDoubleSpinBox()
         self.spin_box_maximum.setKeyboardTracking(False)
         self.spin_box_maximum.setDecimals(3)
-        self.spin_box_maximum.setRange(-1, 1)
+        self.spin_box_maximum.setRange(0, 7)
         self.spin_box_maximum.setSingleStep(0.001)
         self.spin_box_maximum.setPrefix("Max = ")
         self.spin_box_maximum.setSuffix(" V")
@@ -261,6 +256,14 @@ class RelockGroup(QtWidgets.QGroupBox):
         self.spin_box_slew_rate.setSuffix(" V/s")
         self.spin_box_slew_rate.valueChanged.connect(self.relock_stepsize)
         central_widget_layout.addWidget(self.spin_box_slew_rate)
+
+        layout_input = QtWidgets.QHBoxLayout()
+        self.combo_box_input = QtWidgets.QComboBox()
+        self.combo_box_input.addItems(["AIN0", "AIN1", "AIN2", "AIN3"])
+        self.combo_box_input.currentIndexChanged.connect(self.set_input)
+        layout_input.addWidget(QtWidgets.QLabel("Input:"))
+        layout_input.addWidget(self.combo_box_input)
+        central_widget_layout.addLayout(layout_input)
 
         self.update_parameters()
 
@@ -283,6 +286,9 @@ class RelockGroup(QtWidgets.QGroupBox):
         _blocked = QtCore.QSignalBlocker(self.spin_box_slew_rate)
         self.spin_box_slew_rate.setValue(self.red_pitaya.get_relock_stepsize(self.num_in,
                                                                              self.num_out))
+        _blocked = QtCore.QSignalBlocker(self.combo_box_input)
+        self.combo_box_input.setCurrentIndex(self.red_pitaya.get_relock_input(self.num_in,
+                                                                              self.num_out))
 
     def relock_state(self, state):
         """Enable or disable the PID relock feature. (See rp_lockbox.py for further details)"""
@@ -315,6 +321,14 @@ class RelockGroup(QtWidgets.QGroupBox):
         except socket.error as err:
             self._warn_and_reconnect(err)
             self.relock_stepsize(stepsize)
+
+    def set_input(self, input_index):
+        """Set the input of the relock."""
+        try:
+            self.red_pitaya.set_relock_input(self.num_in, self.num_out, input_index)
+        except socket.error as err:
+            self._warn_and_reconnect(err)
+            self.set_input(input_index)
 
     def _warn_and_reconnect(self, err):
         """Log a warning message that sending a command has failed and reconnect to the device.

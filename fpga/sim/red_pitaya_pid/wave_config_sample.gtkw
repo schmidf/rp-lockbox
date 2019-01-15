@@ -1,20 +1,23 @@
 [*]
-[*] GTKWave Analyzer v3.3.92 (w)1999-2018 BSI
-[*] Sat Aug  4 11:48:58 2018
+[*] GTKWave Analyzer v3.3.97 (w)1999-2018 BSI
+[*] Wed Dec 26 15:48:08 2018
 [*]
-[dumpfile] "pid_tb.vcd"
-[dumpfile_mtime] "Sat Aug  4 10:10:13 2018"
-[dumpfile_size] 30360900
-[savefile] "wave_config.gtkw"
+[dumpfile] "sample.vcd"
+[dumpfile_mtime] "Wed Dec 26 15:46:07 2018"
+[dumpfile_size] 38045999
 [timestart] 0
-[size] 2736 1695
-[pos] -1 -1
-*-25.279945 147000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1368 1695
+[pos] 0 0
+*-26.664391 433400000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] pid_tb.
 [treeopen] pid_tb.pid.
-[sst_width] 375
-[signals_width] 571
-[sst_expanded] 1
+[treeopen] pid_tb.pid.genblk1[0].
+[treeopen] pid_tb.pid.genblk1[1].
+[treeopen] pid_tb.pid.genblk1[2].
+[treeopen] pid_tb.pid.genblk1[3].
+[sst_width] 75
+[signals_width] 423
+[sst_expanded] 0
 [sst_vpaned_height] 493
 @200
 -Inputs
@@ -27,6 +30,14 @@ pid_tb.dat_b_in[13:0]
 pid_tb.limit_a_out[13:0]
 pid_tb.limit_b_out[13:0]
 @200
+-Relock Inputs
+@24
+pid_tb.relock_a_in[11:0]
+pid_tb.relock_b_in[11:0]
+pid_tb.relock_c_in[11:0]
+@25
+pid_tb.relock_d_in[11:0]
+@200
 -Limiter state
 @28
 pid_tb.dat_a_railed[1:0]
@@ -34,38 +45,38 @@ pid_tb.dat_b_railed[1:0]
 @200
 -PID11 state
 @420
-pid_tb.pid.set_11_sp[13:0]
-pid_tb.pid.set_11_kp[23:0]
-pid_tb.pid.set_11_ki[23:0]
-pid_tb.pid.set_11_kd[13:0]
+pid_tb.pid.genblk1[0].i_pid.set_sp_i[13:0]
+pid_tb.pid.genblk1[0].i_pid.set_kp_i[23:0]
+pid_tb.pid.genblk1[0].i_pid.set_ki_i[23:0]
+pid_tb.pid.genblk1[0].i_pid.set_kd_i[13:0]
 @28
-pid_tb.pid.relock_11.locked_f
+pid_tb.pid.genblk1[0].i_relock.locked_f
 @200
 -PID12 state
 @420
-pid_tb.pid.set_12_sp[13:0]
-pid_tb.pid.set_12_kp[23:0]
-pid_tb.pid.set_12_ki[23:0]
-pid_tb.pid.set_12_kd[13:0]
+pid_tb.pid.genblk1[1].i_pid.set_sp_i[13:0]
+pid_tb.pid.genblk1[1].i_pid.set_kp_i[23:0]
+pid_tb.pid.genblk1[1].i_pid.set_ki_i[23:0]
+pid_tb.pid.genblk1[1].i_pid.set_kd_i[13:0]
 @28
-pid_tb.pid.relock_12.locked_f
+pid_tb.pid.genblk1[1].i_relock.locked_f
 @200
 -PID21 state
 @420
-pid_tb.pid.set_21_sp[13:0]
-pid_tb.pid.set_21_kp[23:0]
-pid_tb.pid.set_21_ki[23:0]
-pid_tb.pid.set_21_kd[13:0]
+pid_tb.pid.genblk1[2].i_pid.set_sp_i[13:0]
+pid_tb.pid.genblk1[2].i_pid.set_kp_i[23:0]
+pid_tb.pid.genblk1[2].i_pid.set_ki_i[23:0]
+pid_tb.pid.genblk1[2].i_pid.set_kd_i[13:0]
 @28
-pid_tb.pid.relock_21.locked_f
+pid_tb.pid.genblk1[2].i_relock.locked_f
 @200
 -PID22 state
-@421
-pid_tb.pid.set_22_sp[13:0]
-pid_tb.pid.set_22_kp[23:0]
-pid_tb.pid.set_22_ki[23:0]
-pid_tb.pid.set_22_kd[13:0]
+@420
+pid_tb.pid.genblk1[3].i_pid.set_sp_i[13:0]
+pid_tb.pid.genblk1[3].i_pid.set_kp_i[23:0]
+pid_tb.pid.genblk1[3].i_pid.set_ki_i[23:0]
+pid_tb.pid.genblk1[3].i_pid.set_kd_i[13:0]
 @28
-pid_tb.pid.relock_22.locked_f
+pid_tb.pid.genblk1[3].i_relock.locked_f
 [pattern_trace] 1
 [pattern_trace] 0

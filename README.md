@@ -71,11 +71,11 @@ automatic integrator reset of the PID is enabled, the integrator register is res
 
 ### Relock
 Each of the PID controllers contains an automatic relock feature. When the feature is enabled, it
-monitors the voltage on the Red Pitaya input that is not used as the input to the PID controller.
+monitors the voltage on one of the Red Pitaya auxiliary analog inputs.
 If the voltage leaves a user-defined window, the PID is considered unlocked. In this case the
-integrator register is frozen and the PID controller outputs a triangular voltage sweep with
-user-defined slew rate and increasing amplitude. Once the monitored signal re-enters the specified
-window, the integrator is engaged again.
+internal state of the PID controller is frozen and a triangular voltage sweep with user-defined slew
+rate and increasing amplitude is generated on the output. Once the monitored signal re-enters the
+specified window, the PID is engaged again.
 
 ## How to build
 ### Architecture

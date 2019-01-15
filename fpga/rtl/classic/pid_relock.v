@@ -19,10 +19,10 @@ module pid_relock #(
 (
     input  wire                        clk_i,
     input  wire                        on_i,
-    input  wire signed [14-1:0]        min_val_i,
-    input  wire signed [14-1:0]        max_val_i,
+    input  wire        [12-1:0]        min_val_i,
+    input  wire        [12-1:0]        max_val_i,
     input  wire        [STEP_BITS-1:0] stepsize_i,
-    input  wire signed [14-1:0]        signal_i,
+    input  wire        [12-1:0]        signal_i,
     input  wire        [1:0]           railed_i, // 0th bit: lower rail, 1st 
                                                  // bit: upper rail
     input  wire                        hold_i,

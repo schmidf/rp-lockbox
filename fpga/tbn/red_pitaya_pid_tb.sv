@@ -63,6 +63,11 @@ logic signed [ 14-1: 0] dat_b_in        ;
 logic signed [ 14-1: 0] dat_a_out       ;
 logic signed [ 14-1: 0] dat_b_out       ;
 
+logic        [ 12-1: 0] relock_a_in     ;
+logic        [ 12-1: 0] relock_b_in     ;
+logic        [ 12-1: 0] relock_c_in     ;
+logic        [ 12-1: 0] relock_d_in     ;
+
 logic signed [14-1: 0] limit_a_out;
 logic signed [14-1: 0] limit_b_out;
 logic [1:0] dat_a_railed;
@@ -124,17 +129,16 @@ always @(posedge clk) begin
    
    if (PID_TO_TEST == PID11 || PID_TO_TEST == PID21) begin
        dat_a_in <= uut_en ? uut_out : 14'h0 ;
+       dat_b_in <= 14'h0;
    end else begin
        dat_b_in <= uut_en ? uut_out : 14'h0 ;
+       dat_a_in <= 14'h0;
    end
 end
 
 initial begin
-   if (PID_TO_TEST == PID11 || PID_TO_TEST == PID21) begin
-       dat_b_in <= 14'd2000;
-   end else begin
-       dat_a_in <= 14'd2000;
-   end
+   relock_a_in <= 12'd1000;
+
    uut_en   <=  1'b0 ;
 
    wait (rstn)
@@ -142,10 +146,10 @@ initial begin
    //PID settings
    pid_config = 32'b11111111;
    pid_bus.write(32'h00, pid_config);  // negative gain sign, all integrators reset
-   pid_bus.write(32'h10+PID_TO_TEST*16, 14'd7000  );  // set point
-   pid_bus.write(32'h14+PID_TO_TEST*16, 24'd2000);  // Kp
-   pid_bus.write(32'h18+PID_TO_TEST*16, 24'd1000000 );  // Ki
-   pid_bus.write(32'h1C+PID_TO_TEST*16, 24'd0  );  // Kd
+   pid_bus.write(32'h10+4*PID_TO_TEST, 14'd7000  );  // set point
+   pid_bus.write(32'h20+4*PID_TO_TEST, 24'd2000);  // Kp
+   pid_bus.write(32'h30+4*PID_TO_TEST, 24'd1000000 );  // Ki
+   pid_bus.write(32'h40+4*PID_TO_TEST, 24'd0  );  // Kd
    repeat(100) @(posedge clk);
 
    uut_en <= 1'b1 ;
@@ -155,36 +159,24 @@ initial begin
    pid_bus.write(32'h00, pid_config);
    repeat(2000) @(posedge clk);
 
-   pid_bus.write(32'h50+PID_TO_TEST*12, 14'd1000); // relock upper limit
-   pid_bus.write(32'h54+PID_TO_TEST*12, 14'd6000); // relock lower limit
-   pid_bus.write(32'h58+PID_TO_TEST*12, 24'd1000000); // relock step size
+   pid_bus.write(32'h50+4*PID_TO_TEST, 12'd500); // relock lower limit
+   pid_bus.write(32'h60+4*PID_TO_TEST, 12'd4000); // relock upper limit
+   pid_bus.write(32'h70+4*PID_TO_TEST, 24'd1000000); // relock step size
    pid_config |= (32'b1 << PID_TO_TEST+16);  // enable relock
    pid_bus.write(32'h00, pid_config);
    repeat(2000) @(posedge clk);
 
-   if (PID_TO_TEST == PID11 || PID_TO_TEST == PID21) begin
-       dat_b_in <= 14'd0; // leave locked window
-   end else begin
-       dat_a_in <= 14'd0; // leave locked window
-   end
+   relock_a_in <= 12'd0; // leave locked window
+   repeat(15000) @(posedge clk);
+
+   relock_a_in <= 14'd3000; // re-enter locked window
    repeat(10000) @(posedge clk);
 
-   if (PID_TO_TEST == PID11 || PID_TO_TEST == PID21) begin
-       dat_b_in <= 14'd3000; // re-enter locked window
-   end else begin
-       dat_a_in <= 14'd3000; // re-enter locked window
-   end
+   pid_bus.write(32'h10+4*PID_TO_TEST, 14'd8191);  // set point at limit
    repeat(10000) @(posedge clk);
 
-   pid_bus.write(32'h10+PID_TO_TEST*16, 14'd8191);  // set point at limit
-   repeat(10000) @(posedge clk);
-
-   if (PID_TO_TEST == PID11 || PID_TO_TEST == PID21) begin
-       dat_b_in <= 14'd0; // leave locked window, this should trigger a integrator reset
-   end else begin
-       dat_a_in <= 14'd0; // leave locked window, this should trigger a integrator reset
-   end
-   repeat(10000) @(posedge clk);
+   relock_a_in <= 14'd0; // leave locked window, this should trigger a integrator reset
+   repeat(15000) @(posedge clk);
    $finish;
 end
 
@@ -216,6 +208,10 @@ red_pitaya_pid pid (
   .railed_b_i   (dat_b_railed),
   .dat_a_o      (dat_a_out),  // out 1
   .dat_b_o      (dat_b_out),  // out 2
+  .relock_a_i   (relock_a_in),
+  .relock_b_i   (relock_b_in),
+  .relock_c_i   (relock_c_in),
+  .relock_d_i   (relock_d_in),
    // System bus
   .sys_addr     (pid_sys_addr ),
   .sys_wdata    (pid_sys_wdata),
