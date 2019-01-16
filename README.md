@@ -10,29 +10,27 @@ into a feedback controller (lockbox) optimized for optics experiments.
 
 ## Installation
 Build the software and FPGA configuration from source (see below) or download a binary archive
-[here](https://github.com/schmidf/rp-lockbox/releases).
+(rp-lockbox.tar.gz) [here](https://github.com/schmidf/rp-lockbox/releases).
 
 Set up the Red Pitaya following the [official manual](https://redpitaya.readthedocs.io/en/latest/index.html).
 
-Connect to the Linux system running on the Red Pitaya using [SSH](https://redpitaya.readthedocs.io/en/latest/developerGuide/os/ssh/ssh.html).
-
-Remount the SD card file system as read/write:
-```
-rw
-```
-
-Copy the required files to the Red Pitaya using a [SCP](https://en.wikipedia.org/wiki/Secure_copy)
+Copy the firmware tarball to the Red Pitaya using a [SCP](https://en.wikipedia.org/wiki/Secure_copy)
 client:
 ```
-scp build/fpga/lockbox.bit root@$RPHOSTNAME:/opt/redpitaya/fpga/
-scp build/lib/liblockbox.so root@$RPHOSTNAME:/opt/redpitaya/lib/
-scp build/bin/lockbox-server root@$RPHOSTNAME:/opt/redpitaya/bin/
-scp systemd/lockbox.service root@$RPHOSTNAME:/etc/systemd/system/
+scp rp-lockbox.tar.gz root@$RPHOSTNAME:/root/
 ```
 
-(On the Red Pitaya) shut down the nginx webserver and start the lockbox SCPI command server:
+Connect to the Linux system running on the Red Pitaya using [SSH](https://redpitaya.readthedocs.io/en/latest/developerGuide/os/ssh/ssh.html).
+
+(On the Red Pitaya) unpack the tarball and run the install script:
 ```
-systemctl stop redpitaya_nginx
+tar xf rp-lockbox.tar.gz
+cd rp-lockbox
+./install.sh
+```
+
+Then start the lockbox SCPI command server (this stops the web server):
+```
 systemctl start lockbox
 ```
 
@@ -52,7 +50,7 @@ systemctl enable redpitaya_nginx
 ## Usage
 The lockbox can be controlled by sending SCPI commands via a TCP/IP connection on Port 5000. See the
 [official documentation](https://redpitaya.readthedocs.io/en/latest/appsFeatures/remoteControl/remoteControl.html)
-for examples how to to this in various programming languages.
+for examples how to do this in various programming languages.
 
 A python module and GUI application for controlling the lockbox can be found in the
 [examples/python](examples/python) folder. A standalone executable version of the GUI for windows
@@ -126,5 +124,6 @@ make all
 Finally run
 ```
 make install
+make tarball
 ```
-to copy the generated files to the `build` subdirectory.
+to copy the generated files to the `build` subdirectory and generate a compressed archive.
