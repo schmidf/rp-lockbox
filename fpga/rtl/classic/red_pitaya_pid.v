@@ -94,9 +94,9 @@ reg         [14-1:0]      set_kd               [3:0];
 reg         [3:0]         pid_inverted              ;
 reg         [3:0]         set_irst                  ;
 reg         [3:0]         set_irst_when_railed      ;
-reg         [3:0]         set_ihold                 ;
+reg         [3:0]         set_hold                 ;
 wire                      pid_irst             [3:0];
-wire                      pid_ihold            [3:0];
+wire                      pid_hold             [3:0];
 wire        [1:0]         pid_railed_i         [3:0];
 
 wire signed [15-1:0]      pid_sum              [3:0];
@@ -123,7 +123,7 @@ assign relock_i[3] = relock_d_i;
 genvar pid_index;
 
 generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
-    assign pid_ihold[pid_index] = relock_hold_o[pid_index] || set_ihold[pid_index];
+    assign pid_hold[pid_index] = relock_hold_o[pid_index] || set_hold[pid_index];
     assign pid_sum[pid_index] = pid_out[pid_index] + relock_signal_o[pid_index];
     assign pid_sat[pid_index] = (^pid_sum[pid_index][15-1:15-2]) ?
                                 {pid_sum[pid_index][15-1], {13{~pid_sum[pid_index][15-1]}}} :
@@ -142,7 +142,7 @@ generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
       .clk_i        (  clk_i                  ),  // clock
       .rstn_i       (  rstn_i                 ),  // reset - active low
       .railed_i     (  pid_railed_i[pid_index]),  // output railed 
-      .hold_i       (  pid_ihold[pid_index]   ),  // integrator hold
+      .hold_i       (  pid_hold[pid_index]    ),  // PID internal state hold
       .dat_i        (  pid_in[pid_index]      ),  // input data
       .dat_o        (  pid_out[pid_index]     ),  // output data
 
@@ -193,10 +193,10 @@ assign pid_railed_i[1] = railed_a_i;
 assign pid_railed_i[2] = railed_b_i;
 assign pid_railed_i[3] = railed_b_i;
 
-assign relock_hold_i[0] = set_ihold[0];
-assign relock_hold_i[1] = set_ihold[1];
-assign relock_hold_i[2] = set_ihold[2];
-assign relock_hold_i[3] = set_ihold[3];
+assign relock_hold_i[0] = set_hold[0];
+assign relock_hold_i[1] = set_hold[1];
+assign relock_hold_i[2] = set_hold[2];
+assign relock_hold_i[3] = set_hold[3];
 
 //---------------------------------------------------------------------------------
 //  Sum and saturation
@@ -279,14 +279,14 @@ endgenerate
 always @(posedge clk_i) begin
     if (rstn_i == 1'b0) begin
           relock_enabled <=  4'b0   ;
-          set_ihold      <=  4'b0   ;
+          set_hold       <=  4'b0   ;
           pid_inverted   <=  4'b0   ;
           set_irst       <=  4'b1111;
     end
     else begin
         if (rstn_i & sys_wen & sys_addr[19:0]==16'h0)
             {relock_enabled,
-             set_ihold,
+             set_hold,
              set_irst_when_railed,
              pid_inverted,
              set_irst}
@@ -307,7 +307,7 @@ end else begin
    casez (sys_addr[19:0])
        20'h00: begin
           sys_ack <= sys_en;
-          sys_rdata <= {{32-20{1'b0}}, relock_enabled, set_ihold, set_irst_when_railed,
+          sys_rdata <= {{32-20{1'b0}}, relock_enabled, set_hold, set_irst_when_railed,
                         pid_inverted, set_irst};
       end 
 
