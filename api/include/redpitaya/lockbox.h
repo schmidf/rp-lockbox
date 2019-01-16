@@ -279,7 +279,7 @@ typedef struct {
     bool pid_int_reset[4];
     bool pid_inverted[4];
     bool pid_reset_when_railed[4];
-    bool pid_int_hold[4];
+    bool pid_hold[4];
     bool pid_relock_enabled[4];
     float pid_relock_stepsize[4];
     float pid_relock_minimum[4];
@@ -1454,17 +1454,17 @@ int rp_PIDSetResetWhenRailed(rp_pid_t pid, bool enable);
 int rp_PIDGetResetWhenRailed(rp_pid_t pid, bool *enable);
 
 /*
- * Set the state of the integrator hold of the specified PID.
+ * Enable or disable holding the internal state of the specified PID.
  * @param pid The PID to use (see rp_pid_t documentation for details).
  * @param enable true to enable integrator hold, false to disable it
  * @return If the function is successful, the return value is RP_OK.
  * If the function is unsuccessful, the return value is any of RP_E* values that
  * indicate an error.
  */
-int rp_PIDSetIntHold(rp_pid_t pid, bool enable);
+int rp_PIDSetHold(rp_pid_t pid, bool enable);
 
 /*
- * Get the state of the integrator hold of the specified PID.
+ * Get whether the internal state of the specified PID is held.
  * @param pid The PID to use (see rp_pid_t documentation for details).
  * @param enable Pointer to a boolean that will be set true if integrator hold
  * is enabled and false otherwise
@@ -1472,7 +1472,7 @@ int rp_PIDSetIntHold(rp_pid_t pid, bool enable);
  * If the function is unsuccessful, the return value is any of RP_E* values that
  * indicate an error.
  */
-int rp_PIDGetIntHold(rp_pid_t pid, bool *enable);
+int rp_PIDGetHold(rp_pid_t pid, bool *enable);
 
 /*
  * Turn the relock feature of the specified PID on or off.

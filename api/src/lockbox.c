@@ -862,12 +862,12 @@ int rp_PIDGetResetWhenRailed(rp_pid_t pid, bool *enable) {
     return pid_GetResetWhenRailed(pid, enable);
 }
 
-int rp_PIDSetIntHold(rp_pid_t pid, bool enable) {
-    return pid_SetIntegratorHold(pid, enable);
+int rp_PIDSetHold(rp_pid_t pid, bool enable) {
+    return pid_SetHold(pid, enable);
 }
 
-int rp_PIDGetIntHold(rp_pid_t pid, bool *enable) {
-    return pid_GetIntegratorHold(pid, enable);
+int rp_PIDGetHold(rp_pid_t pid, bool *enable) {
+    return pid_GetHold(pid, enable);
 }
 
 int rp_PIDSetRelock(rp_pid_t pid, bool enable) {
@@ -935,7 +935,7 @@ int rp_SaveLockboxConfig() {
         rp_PIDGetIntReset(i, &config.pid_int_reset[i]);
         rp_PIDGetInverted(i, &config.pid_inverted[i]);
         rp_PIDGetResetWhenRailed(i, &config.pid_reset_when_railed[i]);
-        rp_PIDGetIntHold(i, &config.pid_int_hold[i]);
+        rp_PIDGetHold(i, &config.pid_hold[i]);
         rp_PIDGetRelock(i, &config.pid_relock_enabled[i]);
         rp_PIDGetRelockStepsize(i, &config.pid_relock_stepsize[i]);
         rp_PIDGetRelockMinimum(i, &config.pid_relock_minimum[i]);
@@ -984,7 +984,7 @@ int rp_LoadLockboxConfig() {
         rp_PIDSetIntReset(i, config.pid_int_reset[i]);
         rp_PIDSetInverted(i, config.pid_inverted[i]);
         rp_PIDSetResetWhenRailed(i, config.pid_reset_when_railed[i]);
-        rp_PIDSetIntHold(i, config.pid_int_hold[i]);
+        rp_PIDSetHold(i, config.pid_hold[i]);
         rp_PIDSetRelock(i, config.pid_relock_enabled[i]);
         rp_PIDSetRelockStepsize(i, config.pid_relock_stepsize[i]);
         rp_PIDSetRelockMinimum(i, config.pid_relock_minimum[i]);

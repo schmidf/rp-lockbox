@@ -374,7 +374,7 @@ scpi_result_t RP_PIDInvertedQ(scpi_t *context) {
     return SCPI_RES_OK;
 }
 
-scpi_result_t RP_PIDIntHold(scpi_t *context) {
+scpi_result_t RP_PIDHold(scpi_t *context) {
     int result;
     scpi_bool_t enabled;
     rp_pid_t pid;
@@ -382,27 +382,27 @@ scpi_result_t RP_PIDIntHold(scpi_t *context) {
     /* Parse PID index */
     result = RP_ParsePIDArgv(context, &pid);
     if(result != RP_OK) {
-        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:INTegrator:HOLD Failed to parse input/output choice: %s\n", rp_GetError(result));
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:HOLD Failed to parse input/output choice: %s\n", rp_GetError(result));
         return SCPI_RES_ERR;
     }
 
-    /* Parse first parameter integrator hold enabled (ON,OFF) */
+    /* Parse first parameter PID hold enabled (ON,OFF) */
     if(!SCPI_ParamBool(context, &enabled, true)) {
-        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:INTegrator:HOLD Failed to parse first parameter.\n");
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:HOLD Failed to parse first parameter.\n");
         return SCPI_RES_ERR;
     }
 
-    result = rp_PIDSetIntHold(pid, enabled);
+    result = rp_PIDSetHold(pid, enabled);
     if(result != RP_OK) {
-        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:INTegrator:HOLD Failed to integrator hold: %s", rp_GetError(result));
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:HOLD Failed to set PID hold: %s", rp_GetError(result));
         return SCPI_RES_ERR;
     }
 
-    RP_LOG(LOG_INFO, "*PID:IN#:OUT#:INTegrator:HOLD Successfully integrator hold.\n");
+    RP_LOG(LOG_INFO, "*PID:IN#:OUT#:HOLD Successfully set PID hold.\n");
     return SCPI_RES_OK;
 }
 
-scpi_result_t RP_PIDIntHoldQ(scpi_t *context) {
+scpi_result_t RP_PIDHoldQ(scpi_t *context) {
     int result;
     bool enabled;
     rp_pid_t pid;
@@ -410,20 +410,20 @@ scpi_result_t RP_PIDIntHoldQ(scpi_t *context) {
     /* Parse PID index */
     result = RP_ParsePIDArgv(context, &pid);
     if(result != RP_OK) {
-        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:INTegrator:HOLD? Failed to parse input/output choice: %s\n", rp_GetError(result));
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:HOLD? Failed to parse input/output choice: %s\n", rp_GetError(result));
         return SCPI_RES_ERR;
     }
 
-    result = rp_PIDGetIntHold(pid, &enabled);
+    result = rp_PIDGetHold(pid, &enabled);
     if(result != RP_OK) {
-        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:INTegrator:HOLD? Failed to get integrator hold state: %s", rp_GetError(result));
+        RP_LOG(LOG_ERR, "*PID:IN#:OUT#:HOLD? Failed to get PID hold state: %s", rp_GetError(result));
         return SCPI_RES_ERR;
     }
 
     // Return result as string
     SCPI_ResultMnemonic(context, enabled ? "ON": "OFF");
 
-    RP_LOG(LOG_INFO, "*PID:IN#:OUT#:INTegrator:HOLD? Successfully returned integrator hold state.\n");
+    RP_LOG(LOG_INFO, "*PID:IN#:OUT#:HOLD? Successfully returned PID hold state.\n");
     return SCPI_RES_OK;
 }
 

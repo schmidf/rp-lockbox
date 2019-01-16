@@ -304,7 +304,7 @@ int pid_GetResetWhenRailed(rp_pid_t pid, bool *enabled) {
     }
 }
 
-int pid_SetIntegratorHold(rp_pid_t pid, bool enable) {
+int pid_SetHold(rp_pid_t pid, bool enable) {
     if(enable) {
         switch(pid) {
             case RP_PID_11: return cmn_SetBits(&pid_reg->conf, 0x1 << 12, PID_CONF_MASK);
@@ -325,7 +325,7 @@ int pid_SetIntegratorHold(rp_pid_t pid, bool enable) {
     }
 }
 
-int pid_GetIntegratorHold(rp_pid_t pid, bool *enabled) {
+int pid_GetHold(rp_pid_t pid, bool *enabled) {
     switch(pid) {
         case RP_PID_11: return cmn_AreBitsSet(pid_reg->conf, 0x1 << 12, PID_CONF_MASK, enabled);
         case RP_PID_12: return cmn_AreBitsSet(pid_reg->conf, 0x1 << 13, PID_CONF_MASK, enabled);

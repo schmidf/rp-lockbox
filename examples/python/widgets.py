@@ -81,13 +81,13 @@ class PIDGroup(QtWidgets.QGroupBox):
         self.check_box_inverted.stateChanged.connect(self.inv_state)
         central_widget_layout.addWidget(self.check_box_inverted)
 
+        self.check_box_hold = QtWidgets.QCheckBox('Hold internal state')
+        self.check_box_hold.stateChanged.connect(self.hold_state)
+        central_widget_layout.addWidget(self.check_box_hold)
+
         self.spin_box_int_reset = QtWidgets.QCheckBox('Integrator reset')
         self.spin_box_int_reset.stateChanged.connect(self.reset_state)
         central_widget_layout.addWidget(self.spin_box_int_reset)
-
-        self.check_box_int_hold = QtWidgets.QCheckBox('Integrator hold')
-        self.check_box_int_hold.stateChanged.connect(self.hold_state)
-        central_widget_layout.addWidget(self.check_box_int_hold)
 
         self.check_box_int_auto_reset = QtWidgets.QCheckBox('Automatic integrator reset')
         self.check_box_int_auto_reset.stateChanged.connect(self.auto_state)
@@ -113,9 +113,9 @@ class PIDGroup(QtWidgets.QGroupBox):
         _blocked = QtCore.QSignalBlocker(self.spin_box_int_reset)
         self.spin_box_int_reset.setChecked(self.red_pitaya.get_int_reset_state(self.num_in,
                                                                                self.num_out))
-        _blocked = QtCore.QSignalBlocker(self.check_box_int_hold)
-        self.check_box_int_hold.setChecked(self.red_pitaya.get_int_hold_state(self.num_in,
-                                                                              self.num_out))
+        _blocked = QtCore.QSignalBlocker(self.check_box_hold)
+        self.check_box_hold.setChecked(self.red_pitaya.get_hold_state(self.num_in,
+                                                                      self.num_out))
         _blocked = QtCore.QSignalBlocker(self.check_box_int_auto_reset)
         self.check_box_int_auto_reset.setChecked(self.red_pitaya.get_int_auto_state(self.num_in,
                                                                                     self.num_out))
@@ -163,9 +163,9 @@ class PIDGroup(QtWidgets.QGroupBox):
             self.reset_state(state)
 
     def hold_state(self, state):
-        """Hold the status of the integrator register."""
+        """Hold the internal state of the PID."""
         try:
-            self.red_pitaya.set_int_hold_state(self.num_in, self.num_out, state)
+            self.red_pitaya.set_hold_state(self.num_in, self.num_out, state)
         except socket.error as err:
             self._warn_and_reconnect(err)
             self.hold_state(state)

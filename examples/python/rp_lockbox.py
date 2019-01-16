@@ -226,19 +226,19 @@ class RedPitaya():
         response = self.txrx_txt('PID:IN{}:OUT{}:INT:RES?'.format(num_in, num_out))
         return response == "ON"
 
-    def set_int_hold_state(self, num_in, num_out, state):
-        """Hold the status of the integrator register.
+    def set_hold_state(self, num_in, num_out, state):
+        """Hold the internal state of the PID.
 
-        :state: True to enable the integrator hold, False to disable the integrator hold
+        :state: True to enable the PID hold, False to disable the PID hold
         """
-        self.tx_txt('PID:IN{}:OUT{}:INT:HOLD {}'.format(num_in, num_out, int(state)))
+        self.tx_txt('PID:IN{}:OUT{}:HOLD {}'.format(num_in, num_out, int(state)))
 
-    def get_int_hold_state(self, num_in, num_out):
-        """Return whether the integrator hold is enabled or disabled
+    def get_hold_state(self, num_in, num_out):
+        """Return whether the PID internal state hold is enabled or disabled
 
-        :returns: True if the integrator hold is enabled, False if the integrator hold is disabled
+        :returns: True if the PID hold is enabled, False if the PID hold is disabled
         """
-        response = self.txrx_txt('PID:IN{}:OUT{}:INT:HOLD?'.format(num_in, num_out))
+        response = self.txrx_txt('PID:IN{}:OUT{}:HOLD?'.format(num_in, num_out))
         return response == "ON"
 
     def set_int_auto_state(self, num_in, num_out, state):

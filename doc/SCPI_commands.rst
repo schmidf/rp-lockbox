@@ -195,13 +195,13 @@ Parameter options:
 +---------------------------------------------------+------------------------------+-----------------------------------------------------------+
 | ``PID:IN<n>:OUT<n>:KD?``                          | ``rp_PIDGetKd``              | Get the D gain (arbitrary units).                         |
 +---------------------------------------------------+------------------------------+-----------------------------------------------------------+
+| ``PID:IN<n>:OUT<n>:HOLD <state>``                 | ``rp_PIDSetHold``            | Hold the internal state of the PID.                       |
++---------------------------------------------------+------------------------------+-----------------------------------------------------------+
+| ``PID:IN<n>:OUT<n>:HOLD?``                        | ``rp_PIDGetHold``            | Get if the internal state of the PID is held.             |
++---------------------------------------------------+------------------------------+-----------------------------------------------------------+
 | ``PID:IN<n>:OUT<n>:INTegrator:RESet <state>``     | ``rp_PIDSetIntReset``        | Reset the integrator register.                            |
 +---------------------------------------------------+------------------------------+-----------------------------------------------------------+
 | ``PID:IN<n>:OUT<n>:INTegrator:RESet?``            | ``rp_PIDGetIntReset``        | Get the status of the integrator reset.                   |
-+---------------------------------------------------+------------------------------+-----------------------------------------------------------+
-| ``PID:IN<n>:OUT<n>:INTegrator:HOLD <state>``      | ``rp_PIDSetIntHold``         | Hold the status of the integrator register.               |
-+---------------------------------------------------+------------------------------+-----------------------------------------------------------+
-| ``PID:IN<n>:OUT<n>:INTegrator:HOLD?``             | ``rp_PIDGetIntHold``         | Get the status of the integrator hold.                    |
 +---------------------------------------------------+------------------------------+-----------------------------------------------------------+
 | ``PID:IN<n>:OUT<n>:INTegrator:AUTOreset <state>`` | ``rp_PIDSetResetWhenRailed`` | | If enabled, the integrator register is reset            |
 |                                                   |                              | | when the PID output hits the configured limit.          |
