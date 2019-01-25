@@ -203,8 +203,8 @@ class PIDGroup(QtWidgets.QGroupBox):
         """Toggle between locking and scanning."""
         scan_state = self.red_pitaya.get_output_state(self.num_out)
         self.output_group.output_state(not scan_state)
-        self.hold_state(scan_state)
-        self.reset_state(scan_state)
+        self.hold_state(not scan_state)
+        self.reset_state(not scan_state)
 
     def _warn_and_reconnect(self, err):
         """Log a warning message that sending a command has failed and reconnect to the device.
