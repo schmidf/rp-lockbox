@@ -63,13 +63,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.relock_groups = {}
         self.output_groups = {}
 
-        central_layout.addWidget(self._create_lockbox_group(1), 0, 0)
-        central_layout.addWidget(self._create_lockbox_group(2), 0, 1)
-
         self.output_groups[1] = widgets.OutputGroup(1, self.red_pitaya, self.reconnect)
         self.output_groups[2] = widgets.OutputGroup(2, self.red_pitaya, self.reconnect)
         self.output_groups[1].setFont(FONT_TOP_GROUPS)
         self.output_groups[2].setFont(FONT_TOP_GROUPS)
+
+        central_layout.addWidget(self._create_lockbox_group(1), 0, 0)
+        central_layout.addWidget(self._create_lockbox_group(2), 0, 1)
+
         central_layout.addWidget(self.output_groups[1])
         central_layout.addWidget(self.output_groups[2])
 
@@ -101,8 +102,8 @@ class MainWindow(QtWidgets.QMainWindow):
         group_box.setFont(FONT_INTERMEDIATE_GROUPS)
         layout = QtWidgets.QVBoxLayout()
         group_string = "{}{}".format(num_out, num_in)
-        self.pid_groups[group_string] = widgets.PIDGroup(num_in, num_out, self.red_pitaya,
-                                                         self.reconnect)
+        self.pid_groups[group_string] = widgets.PIDGroup(
+            num_in, num_out, self.red_pitaya, self.reconnect, self.output_groups[num_out])
         self.relock_groups[group_string] = widgets.RelockGroup(num_in, num_out, self.red_pitaya,
                                                                self.reconnect)
         layout.addWidget(self.pid_groups[group_string])

@@ -15,13 +15,14 @@ FONT_GROUP_CONTENT = QtGui.QFont('Arial', 8, QtGui.QFont.Normal)
 class PIDGroup(QtWidgets.QGroupBox):
     """Widget for PID controls."""
 
-    def __init__(self, num_in, num_out, red_pitaya, reconnect_func, parent=None):
+    def __init__(self, num_in, num_out, red_pitaya, reconnect_func, output_group, parent=None):
         """Initialize the widget.
 
         :num_in: the input channel (1 or 2)
         :num_out: the output channel (1 or 2)
         :red_pitaya: a rp_lockbox.RedPitaya object
         :reconnect_func: function to call when the connection to the red pitaya has failed
+        :output_group: the OutputGroup object of the associated output channel
         :parent: If parent is None, the new widget becomes a window. If parent is another widget,
                  the widget becomes a child window inside parent. Defaults to None.
         """
@@ -33,6 +34,7 @@ class PIDGroup(QtWidgets.QGroupBox):
         self.num_out = num_out
         self.red_pitaya = red_pitaya
         self.reconnect = reconnect_func
+        self.output_group = output_group
 
         self.setFont(FONT_GROUP_HEADER)
 
@@ -92,6 +94,10 @@ class PIDGroup(QtWidgets.QGroupBox):
         self.check_box_int_auto_reset = QtWidgets.QCheckBox('Automatic integrator reset')
         self.check_box_int_auto_reset.stateChanged.connect(self.auto_state)
         central_widget_layout.addWidget(self.check_box_int_auto_reset)
+
+        self.push_button_toggle_mode = QtWidgets.QPushButton("Toggle Lock/Scan")
+        self.push_button_toggle_mode.clicked.connect(self.toggle_mode)
+        central_widget_layout.addWidget(self.push_button_toggle_mode)
 
         self.update_parameters()
 
@@ -161,6 +167,9 @@ class PIDGroup(QtWidgets.QGroupBox):
         except socket.error as err:
             self._warn_and_reconnect(err)
             self.reset_state(state)
+        else:
+            _blocked = QtCore.QSignalBlocker(self.spin_box_int_reset)
+            self.spin_box_int_reset.setChecked(state)
 
     def hold_state(self, state):
         """Hold the internal state of the PID."""
@@ -169,6 +178,9 @@ class PIDGroup(QtWidgets.QGroupBox):
         except socket.error as err:
             self._warn_and_reconnect(err)
             self.hold_state(state)
+        else:
+            _blocked = QtCore.QSignalBlocker(self.check_box_hold)
+            self.check_box_hold.setChecked(state)
 
     def auto_state(self, state):
         """If enabled, the integrator register is reset when the PID output hits the configured
@@ -186,6 +198,13 @@ class PIDGroup(QtWidgets.QGroupBox):
         except socket.error as err:
             self._warn_and_reconnect(err)
             self.inv_state(state)
+
+    def toggle_mode(self):
+        """Toggle between locking and scanning."""
+        scan_state = self.red_pitaya.get_output_state(self.num_out)
+        self.output_group.output_state(not scan_state)
+        self.hold_state(scan_state)
+        self.reset_state(scan_state)
 
     def _warn_and_reconnect(self, err):
         """Log a warning message that sending a command has failed and reconnect to the device.
@@ -500,6 +519,9 @@ class OutputGroup(QtWidgets.QGroupBox):
         except socket.error as err:
             self._warn_and_reconnect(err)
             self.output_state(state)
+        else:
+            _blocked = QtCore.QSignalBlocker(self.check_box_output_state)
+            self.check_box_output_state.setChecked(state)
 
     def generator_frequency(self, frequency):
         """Set the frequency of fast analog outputs."""
