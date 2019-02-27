@@ -331,6 +331,12 @@ red_pitaya_ams i_ams (
   .adc_b_o         (xadc_b_dat),
   .adc_c_o         (xadc_c_dat),
   .adc_d_o         (xadc_d_dat),
+  // fast ADC
+  .fadc_a_i        (adc_dat[0]),
+  .fadc_b_i        (adc_dat[1]),
+  // fast DAC
+  .fdac_a_i        (dac_a),
+  .fdac_b_i        (dac_b),
   // System bus
   .sys_addr        (sys[4].addr ),
   .sys_wdata       (sys[4].wdata),

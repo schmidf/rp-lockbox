@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019, Fabian Schmid
+ *
+ * All rights reserved.
+ */
 /**
  * $Id: red_pitaya_ams.v 961 2014-01-21 11:40:39Z matej.oblak $
  *
@@ -15,7 +20,8 @@
 /**
  * GENERAL DESCRIPTION:
  *
- * Module using XADC and software interface for PWM DAC.
+ * Module for using XADC and software interface for PWM DAC. Also allows
+ * reading out the current values of the fast ADC and DAC channels.
  *
  *
  *                    /------\
@@ -28,7 +34,14 @@
  *                               /------\
  *   PWD DAC <------------------ | REGS | <------> SW
  *                               \------/
- *
+ *                                   ^ 
+ *                                   |
+ *                     /-----\       |
+ *     CH A, CH B ---> | ADC |       |
+ *                     |     | ------+
+ *    CH A, CH B ---> | DAC |    
+ *                     \-----/    
+ *                            
  *
  * Reading system and external voltages is done with XADC, running in sequencer
  * mode. It measures supply voltages, temperature and voltages on external
@@ -54,6 +67,12 @@ module red_pitaya_ams (
    output     [ 12-1: 0] adc_b_o         ,
    output     [ 12-1: 0] adc_c_o         ,
    output     [ 12-1: 0] adc_d_o         ,
+   // fast ADC
+   input      [ 14-1: 0] fadc_a_i        ,  // ADC data CHA
+   input      [ 14-1: 0] fadc_b_i        ,  // ADC data CHB
+   // fast DAC
+   input      [ 14-1: 0] fdac_a_i        ,  // DAC data CHA
+   input      [ 14-1: 0] fdac_b_i        ,  // DAC data CHB
    // system bus
    input      [ 32-1: 0] sys_addr        ,  // bus address
    input      [ 32-1: 0] sys_wdata       ,  // bus write data
@@ -131,6 +150,10 @@ end else begin
      20'h00040 : begin sys_ack <= sys_en;         sys_rdata <= {{32-12{1'b0}}, adc_int_r}        ; end
      20'h00044 : begin sys_ack <= sys_en;         sys_rdata <= {{32-12{1'b0}}, adc_aux_r}        ; end
      20'h00048 : begin sys_ack <= sys_en;         sys_rdata <= {{32-12{1'b0}}, adc_ddr_r}        ; end
+     20'h00050 : begin sys_ack <= sys_en;         sys_rdata <= {{32-12{1'b0}}, fadc_a_i}         ; end
+     20'h00054 : begin sys_ack <= sys_en;         sys_rdata <= {{32-12{1'b0}}, fadc_b_i}         ; end
+     20'h00058 : begin sys_ack <= sys_en;         sys_rdata <= {{32-12{1'b0}}, fdac_a_i}         ; end
+     20'h0005C : begin sys_ack <= sys_en;         sys_rdata <= {{32-12{1'b0}}, fdac_b_i}         ; end
 
        default : begin sys_ack <= sys_en;         sys_rdata <=   32'h0                           ; end
    endcase
