@@ -25,12 +25,12 @@
         align-content: flex-start;
     }
 	.relock-select {
-		width: 200px;
+		width: 145px;
         height: 40px;
         font-size: 16px;
 	}
     .waveform-select {
-		width: 200px;
+		width: 145px;
         height: 40px;
         font-size: 16px;
 	}
@@ -758,47 +758,52 @@
 			min: -1.0,
 			max: 1.0
 			});
-			
+        $( ".sp_spinner" ).width(105);	
         $( ".kp_spinner" ).spinner({
             step: 0.01,
             min: 0.,
             max: 4095.
             });
+        $( ".kp_spinner" ).width(105);
         $( ".ki_spinner" ).spinner({
             step: 1.,
             min: 0.,
             max: 7812499.
             });
+        $( ".ki_spinner" ).width(105);
         $( ".kd_spinner" ).spinner({
             step: 1,
             min: 0,
             max: 8191
             });
+        $( ".kd_spinner" ).width(105);
 		$( ".relock_limit_spinner" ).spinner({
             step: 0.001,
             min: 0.,
             max: 7.
             });
+        $( ".relock_limit_spinner" ).width(105);
 		$( ".slew_rate_spinner" ).spinner({
             step: 1.,
             min: 0.058,
             max: 1000000.
             });
+        $( ".slew_rate_spinner" ).width(105);
 		$( ".output_spinner" ).spinner({
             step: 0.001,
             min: -1.,
             max: 1.
             });
+        $( ".output_spinner" ).width(105);
 		$( ".freq_spinner" ).spinner({
 			value: 1000.,
             step: 1.,
             min: 0.,
             max: 62500000.
             });
-		$( ".other_spinner" ).spinner();
-        //$("#sg_1_waveform").selectmenu();
-        //$("#sg_2_waveform").selectmenu();
-		//$(".relock-select").selectmenu();
+        $( ".freq_spinner" ).width(105);
+        $( ".other_spinner" ).spinner();
+        $( ".other_spinner" ).width(105);
 		
 		$( ".checkbox" ).checkboxradio();
         $( ".controlgroup-vertical" ).controlgroup({"direction": "vertical"});
@@ -806,6 +811,11 @@
 
         $("#select_op_mode").selectmenu();
         $("#select_op_mode").prop("value", localStorage.getItem("op_mode_nr")).selectmenu("refresh");
+
+        $(".accordion").accordion({
+            collapsible: true,
+            active:false
+        });
         
         
         // Bind control element events
@@ -1141,7 +1151,6 @@
                 </fieldset>
             </fieldset>
 			
-
             <fieldset class="output-group" id="output_group_22">
                 <legend><h2>Output 2</h2></legend>
 				
@@ -1217,32 +1226,29 @@
                 </fieldset>
             </fieldset>			
         </fieldset>
-    </div>
-	
-	
-    <div class="flex-container">
 
-        <fieldset id="output_1" class="output-group">
-            <legend><h1>Output 1</h1></legend>
+        <fieldset class="output-group">
+            <legend><h1>Output Channels</h1></legend>
+
+            <fieldset id="output_1">
+            <legend><h2>Output 1</h2></legend>
+			
+            <div id="accordion_limit_1" class="accordion">
+                <h3>Limit</h3>
+                <table>
+                    <tr>
+                        <td><label for="spinner_limit_1_min">Min (V)</label></td>
+                        <td><input id="spinner_limit_1_min" class="output_spinner"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="spinner_limit_1_max">Max (V)</label></td>
+                        <td><input id="spinner_limit_1_max" class="output_spinner"></td>
+                    </tr>                   
+                </table>
+            </div>
 			
             <fieldset>
-                <legend><h2>Limit</h2></legend>
-				
-                    <table>
-                        <tr>
-                            <td><label for="spinner_limit_1_min">Min (V)</label></td>
-                            <td><input id="spinner_limit_1_min" class="output_spinner"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="spinner_limit_1_max">Max (V)</label></td>
-                            <td><input id="spinner_limit_1_max" class="output_spinner"></td>
-                        </tr>
-                    </table>
-            </fieldset>
-			
-            <fieldset>
-                <legend><h2>Signal Generator</h2></legend>
-				
+                <legend><h3>Signal Generator</h3></legend>
                     <table>
                         <tr>
                             <input type="checkbox" id="checkbox_sg_1_enabled" class="checkbox">
@@ -1272,34 +1278,31 @@
                                 </select>
                             </td>
                         </tr>
-                    </table>
-                    
+                    </table>   
             </fieldset>
 			
-        </fieldset>
-		
-		
-        <fieldset id="output_2" class="output-group">
-            <legend><h1>Output 2</h1></legend>
-			
-			<fieldset>
-                <legend><h2>Limit</h2></legend>
-				
-                    <table>
-                        <tr>
-                            <td><label for="spinner_limit_2_min">Min (V)</label></td>
-                            <td><input id="spinner_limit_2_min" class="output_spinner"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="spinner_limit_2_max">Max (V)</label></td>
-                            <td><input id="spinner_limit_2_max" class="output_spinner"></td>
-                        </tr>
-                    </table>
             </fieldset>
+		
+		
+            <fieldset id="output_2">
+            <legend><h2>Output 2</h2></legend>
+			
+			<div id="accordion_limit_2" class="accordion">
+                <h3>Limit</h3>
+                <table>
+                    <tr>
+                        <td><label for="spinner_limit_2_min">Min (V)</label></td>
+                        <td><input id="spinner_limit_2_min" class="output_spinner"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="spinner_limit_2_max">Max (V)</label></td>
+                        <td><input id="spinner_limit_2_max" class="output_spinner"></td>
+                    </tr>                   
+                </table>
+            </div>
 			
             <fieldset>
-                <legend><h2>Signal Generator</h2></legend>
-				
+                <legend><h3>Signal Generator</h3></legend>
                     <table>
                         <tr>
                             <input type="checkbox" id="checkbox_sg_2_enabled" class="checkbox">
@@ -1330,10 +1333,14 @@
                             </td>
                         </tr>
                     </table>
-                    
             </fieldset>
+            </fieldset>
+
         </fieldset>
+
+
     </div>
+	
 
 </body>
 </html>
