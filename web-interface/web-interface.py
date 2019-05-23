@@ -285,7 +285,7 @@ def set_relock_input():
     """
     ain = request.params.get("ain", 0, type=int)
     pid = request.params.get("pid", 1, type=int)
-    retval = RP_LIB.rp_PIDSetRelockInput(pid, ain)
+    retval = RP_LIB.rp_PIDSetRelockInput(pid, ctypes.c_int(ain))
     if retval != 0:
         LOG.error("Failed to select analog input to be used for relocking the PID. Error code: %s",
                   ERROR_CODES[retval])
@@ -328,7 +328,7 @@ def set_waveform():
     """
     waveform = request.params.get("waveform", 0, type=int)
     output = request.params.get("output", 1, type=int)
-    retval = RP_LIB.rp_GenWaveform(output, waveform)
+    retval = RP_LIB.rp_GenWaveform(output, ctypes.c_int(waveform))
     if retval != 0:
         LOG.error("Failed to set waveform of the signal generator. Error code: %s",
                   ERROR_CODES[retval])
@@ -662,19 +662,19 @@ class MockRPLib():
         return 0
 
     def rp_PIDSetInverted(self, pid, inverted):
-        LOG.debug("pid: %d\t inverted: %s", pid, inverted.value)
+        LOG.debug("pid: %d\t inverted: %s", pid, inverted)
         return 0
 
     def rp_PIDSetHold(self, pid, hold):
-        LOG.debug("pid: %d\t hold: %s", pid, hold.value)
+        LOG.debug("pid: %d\t hold: %s", pid, hold)
         return 0
 
     def rp_PIDSetIntReset(self, pid, int_reset):
-        LOG.debug("pid: %d\t int_reset: %s", pid, int_reset.value)
+        LOG.debug("pid: %d\t int_reset: %s", pid, int_reset)
         return 0
 
     def rp_PIDSetResetWhenRailed(self, pid, int_auto):
-        LOG.debug("pid: %d\t int_auto: %s", pid, int_auto.value)
+        LOG.debug("pid: %d\t int_auto: %s", pid, int_auto)
         return 0
 
     def rp_PIDSetRelockMinimum(self, pid, relock_min):
@@ -690,7 +690,7 @@ class MockRPLib():
         return 0
 
     def rp_PIDSetRelock(self, pid, relock_enabled):
-        LOG.debug("pid: %d\t relock_enabled: %s", pid, relock_enabled.value)
+        LOG.debug("pid: %d\t relock_enabled: %s", pid, relock_enabled)
         return 0
 
     def rp_PIDSetRelockInput(self, pid, ain):

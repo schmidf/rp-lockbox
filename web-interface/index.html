@@ -201,21 +201,33 @@
                     pid = 0;
                     output = 0;
                     enabled = $("#checkbox_sg_1_enabled").prop("checked");
+                    $("#checkbox_sg_1_enabled").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_pid_11_hold").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_pid_11_int_res").prop("checked", !enabled).checkboxradio("refresh");
                     break;
                 case "button_toggle_12":
                     pid = 1;
                     output = 0;
                     enabled = $("#checkbox_sg_1_enabled").prop("checked");
+                    $("#checkbox_sg_1_enabled").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_pid_12_hold").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_pid_12_int_res").prop("checked", !enabled).checkboxradio("refresh");
                     break;
                 case "button_toggle_21":
                     pid = 2;
                     output = 1;
                     enabled = $("#checkbox_sg_2_enabled").prop("checked");
+                    $("#checkbox_sg_2_enabled").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_pid_21_hold").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_pid_21_int_res").prop("checked", !enabled).checkboxradio("refresh");
                     break;
                 case "button_toggle_22":
                     pid = 3;
                     output = 1;
                     enabled = $("#checkbox_sg_2_enabled").prop("checked");
+                    $("#checkbox_sg_2_enabled").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_pid_22_hold").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_pid_22_int_res").prop("checked", !enabled).checkboxradio("refresh");
                     break;
                 default:
                     pid = 0;
@@ -612,19 +624,30 @@
                     $("#input_2").show();
                     $("#output_group_12").hide();
                     $("#output_group_22").show();
+                    localStorage.setItem("op_mode_nr", "0");
                     break;
                 case "1":
                     $("#input_1").show();
                     $("#output_group_11").show();
                     $("#output_group_21").show();
                     $("#input_2").hide();
+                    localStorage.setItem("op_mode_nr", "1");
                     break;
                 case "2":
                     $("#input_1").hide();
                     $("#input_2").show();
                     $("#output_group_12").show();
                     $("#output_group_22").show();
+                    localStorage.setItem("op_mode_nr", "2");
                     break;
+                case "3":
+                    $("#input_1").show();
+                    $("#output_group_11").show();
+                    $("#output_group_12").show();
+                    $("#input_2").show();
+                    $("#output_group_21").show();
+                    $("#output_group_22").show();
+                    localStorage.setItem("op_mode_nr", "3");
                 default:
                     $("#input_1").show();
                     $("#output_group_11").show();
@@ -780,11 +803,14 @@
 		$( ".checkbox" ).checkboxradio();
         $( ".controlgroup-vertical" ).controlgroup({"direction": "vertical"});
         $( ".button").button();
-        $("#select_op_mode").value = "0";
+
         $("#select_op_mode").selectmenu();
-		
+        $("#select_op_mode").prop("value", localStorage.getItem("op_mode_nr")).selectmenu("refresh");
+        
+        
         // Bind control element events
         $("#select_op_mode").on("selectmenuselect", op_mode_changed);
+        $("#select_op_mode").trigger("selectmenuselect");
 
 		$( ".sp_spinner" ).on("spinstop", setpoint_changed);
 		$( ".kp_spinner" ).on("spinstop", kp_changed);
@@ -836,11 +862,11 @@
 		$( "#spinner_limit_2_max").on("spinstop", limit_max_changed);
 		
 		$( ".waveform-select" ).on("change", waveform_changed);
-		$( "#spinner_sg_1_amp" ).on("change", sg_amp_changed);
-		$( "#spinner_sg_2_amp" ).on("change", sg_amp_changed);
-		$( ".freq_spinner" ).on("change", sg_freq_changed);
-		$( "#spinner_sg_1_offset" ).on("change", sg_offset_changed);
-		$( "#spinner_sg_2_offset" ).on("change", sg_offset_changed);
+		$( "#spinner_sg_1_amp" ).on("spinstop", sg_amp_changed);
+		$( "#spinner_sg_2_amp" ).on("spinstop", sg_amp_changed);
+		$( ".freq_spinner" ).on("spinstop", sg_freq_changed);
+		$( "#spinner_sg_1_offset" ).on("spinstop", sg_offset_changed);
+		$( "#spinner_sg_2_offset" ).on("spinstop", sg_offset_changed);
 		$( "#checkbox_sg_1_enabled").on("change", sg_enabled_changed);
         $( "#checkbox_sg_2_enabled").on("change", sg_enabled_changed);
         
@@ -862,7 +888,7 @@
         <fieldset>
             <legend><h2>Select Operating Mode</h2></legend>
                 <select id="select_op_mode">
-                    <option>Show all</option>
+                    <option value="3">Show all</option>
                     <option value="0">In1 -> Out1 and In2 -> Out2</option>
                     <option value="1">In1 -> Out1 and In1 -> Out2</option>
                     <option value="2">In2 -> Out1 and In2 -> Out2</option>
