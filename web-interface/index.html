@@ -1,0 +1,1313 @@
+<!--
+    Copyright (c) 2019, Malte Bieringer, Fabian Schmid
+
+    All rights reserved.
+-->
+<!doctype html>
+<html lang="us">
+<head>
+	<meta charset="utf-8">
+	<title>Lockbox</title>
+	<link href="jquery-ui.css" rel="stylesheet">
+	<style>
+	body{
+		font-family: "Trebuchet MS", sans-serif;
+		margin: 50px;
+	}
+    .output-group {
+        display: inline-block;
+        padding: 5px;
+    }
+    .flex-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        align-content: flex-start;
+    }
+	.relock-select {
+		width: 200px;
+        height: 40px;
+        font-size: 16px;
+	}
+    .waveform-select {
+		width: 200px;
+        height: 40px;
+        font-size: 16px;
+	}
+    .button {
+        text-align: center;
+    }
+	</style>
+<script src="external/jquery/jquery.js"></script>
+<script src="jquery-ui.js"></script>
+<script>
+        // Global settings
+        var update_interval = 500;
+
+        function set_setpoint(pid, setpoint) {
+            $.post("_set_setpoint", {
+                pid: pid,
+                setpoint: setpoint,
+            });
+        };
+		
+		function set_kp(pid, kp) {
+            $.post("_set_kp", {
+                pid: pid,
+                kp: kp,
+            });
+        };
+
+		function set_ki(pid, ki) {
+            $.post("_set_ki", {
+                pid: pid,
+                ki: ki,
+            });
+        };
+		
+		function set_kd(pid, kd) {
+            $.post("_set_kd", {
+                pid: pid,
+                kd: kd,
+            });
+        };
+		
+        function set_inverted(pid, inverted) {
+            $.post("_set_inverted", {
+                pid: pid,
+                inverted: inverted,
+            });
+        };
+		
+		function set_hold(pid, hold) {
+			$.post("_set_hold", {
+				pid: pid,
+				hold: hold,
+			});
+		};
+		
+		function set_int_reset(pid, int_reset) {
+			$.post("_set_int_reset", {
+				pid: pid,
+				int_reset: int_reset,
+			});
+		};
+		
+		function set_int_auto(pid, int_auto) {
+			$.post("_set_int_auto", {
+				pid: pid,
+				int_auto: int_auto,
+			});
+		};
+		
+		function set_relock_min(pid, relock_min) {
+			$.post("_set_relock_min", {
+				pid: pid,
+				relock_min: relock_min,
+			});
+		};
+		
+		function set_relock_max(pid, relock_max) {
+			$.post("_set_relock_max", {
+				pid: pid,
+				relock_max: relock_max,
+			});
+		};
+		
+		function set_relock_slew_rate(pid, relock_slew_rate) {
+			$.post("_set_relock_slew_rate", {
+				pid: pid,
+				relock_slew_rate: relock_slew_rate,
+			});
+		};
+		
+		function set_relock_enabled(pid, relock_enabled) {
+			$.post("_set_relock_enabled", {
+				pid: pid,
+				relock_enabled: relock_enabled,
+			});
+		};
+		
+		function set_relock_input(pid, ain) {
+			$.post("_set_relock_input", {
+			pid: pid,
+			ain: ain,
+			});
+		};
+		
+		function set_limit_min(output, limit_min) {
+			$.post("_set_limit_min", {
+			output: output,
+			limit_min: limit_min,
+			});
+		};
+		
+		function set_limit_max(output, limit_max) {
+			$.post("_set_limit_max", {
+			output: output,
+			limit_max: limit_max,
+			});
+		};
+		
+		function set_waveform(output, waveform) {
+			$.post("_set_waveform", {
+			output: output,
+			waveform: waveform,
+			});
+		};
+		
+		function set_sg_amp(output, amp) {
+			$.post("_set_sg_amp", {
+			output: output,
+			amp: amp,
+			});
+		};
+		
+		function set_sg_freq(output, freq) {
+			$.post("_set_sg_freq", {
+			output: output,
+			freq: freq,
+			});
+		};
+		
+		function set_sg_offset(output, offset) {
+			$.post("_set_sg_offset", {
+			output: output,
+			offset: offset,
+			});
+		};
+		
+		function set_sg_enabled(output, sg_enabled) {
+			$.post("_set_sg_enabled", {
+			output: output,
+			sg_enabled: sg_enabled,
+			});
+        };
+    
+        function save_parameters() {
+            $.post("_save_parameters", {});
+        };
+
+        function load_parameters() {
+            $.post("_load_parameters", {});
+        };
+
+        function toggle_lock_scan(event, ui) {
+            var pid;
+            var output;
+            var enabled;
+            switch(event.target.id) {
+                case "button_toggle_11":
+                    pid = 0;
+                    output = 0;
+                    enabled = $("#checkbox_sg_1_enabled").prop("checked");
+                    break;
+                case "button_toggle_12":
+                    pid = 1;
+                    output = 0;
+                    enabled = $("#checkbox_sg_1_enabled").prop("checked");
+                    break;
+                case "button_toggle_21":
+                    pid = 2;
+                    output = 1;
+                    enabled = $("#checkbox_sg_2_enabled").prop("checked");
+                    break;
+                case "button_toggle_22":
+                    pid = 3;
+                    output = 1;
+                    enabled = $("#checkbox_sg_2_enabled").prop("checked");
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_sg_enabled(output, !enabled);
+            set_int_reset(pid, !enabled);
+            set_hold(pid, !enabled);
+        };
+        
+        function setpoint_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "spinner_pid_11_sp":
+                    pid = 0;
+                    break;
+                case "spinner_pid_12_sp":
+                    pid = 1;
+                    break;
+                case "spinner_pid_21_sp":
+                    pid = 2;
+                    break;
+                case "spinner_pid_22_sp":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_setpoint(pid, $(event.target).val());
+        }
+		
+        function kp_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "spinner_pid_11_kp":
+                    pid = 0;
+                    break;
+                case "spinner_pid_12_kp":
+                    pid = 1;
+                    break;
+                case "spinner_pid_21_kp":
+                    pid = 2;
+                    break;
+                case "spinner_pid_22_kp":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_kp(pid, $(event.target).val());
+        }
+		
+        function ki_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "spinner_pid_11_ki":
+                    pid = 0;
+                    break;
+                case "spinner_pid_12_ki":
+                    pid = 1;
+                    break;
+                case "spinner_pid_21_ki":
+                    pid = 2;
+                    break;
+                case "spinner_pid_22_ki":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_ki(pid, $(event.target).val());
+        }
+		
+        function kd_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "spinner_pid_11_kd":
+                    pid = 0;
+                    break;
+                case "spinner_pid_12_kd":
+                    pid = 1;
+                    break;
+                case "spinner_pid_21_kd":
+                    pid = 2;
+                    break;
+                case "spinner_pid_22_kd":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_kd(pid, $(event.target).val());
+        }
+
+        function inverted_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "checkbox_pid_11_inv":
+                    pid = 0;
+                    break;
+                case "checkbox_pid_12_inv":
+                    pid = 1;
+                    break;
+                case "checkbox_pid_21_inv":
+                    pid = 2;
+                    break;
+                case "checkbox_pid_22_inv":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_inverted(pid, $(event.target).prop("checked"));
+        }
+		
+		function hold_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "checkbox_pid_11_hold":
+                    pid = 0;
+                    break;
+                case "checkbox_pid_12_hold":
+                    pid = 1;
+                    break;
+                case "checkbox_pid_21_hold":
+                    pid = 2;
+                    break;
+                case "checkbox_pid_22_hold":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_hold(pid, $(event.target).prop("checked"));
+        }
+
+        function int_reset_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "checkbox_pid_11_int_res":
+                    pid = 0;
+                    break;
+                case "checkbox_pid_12_int_res":
+                    pid = 1;
+                    break;
+                case "checkbox_pid_21_int_res":
+                    pid = 2;
+                    break;
+                case "checkbox_pid_22_int_res":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_int_reset(pid, $(event.target).prop("checked"));
+        }
+
+        function int_auto_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "checkbox_pid_11_int_auto_reset":
+                    pid = 0;
+                    break;
+                case "checkbox_pid_12_int_auto_reset":
+                    pid = 1;
+                    break;
+                case "checkbox_pid_21_int_auto_reset":
+                    pid = 2;
+                    break;
+                case "checkbox_pid_22_int_auto_reset":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_int_auto(pid, $(event.target).prop("checked"));
+        }
+
+		function relock_min_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "spinner_relock_11_min":
+                    pid = 0;
+                    break;
+                case "spinner_relock_12_min":
+                    pid = 1;
+                    break;
+                case "spinner_relock_21_min":
+                    pid = 2;
+                    break;
+                case "spinner_relock_22_min":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_relock_min(pid, $(event.target).val());
+        }	
+		
+		function relock_max_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "spinner_relock_11_max":
+                    pid = 0;
+                    break;
+                case "spinner_relock_12_max":
+                    pid = 1;
+                    break;
+                case "spinner_relock_21_max":
+                    pid = 2;
+                    break;
+                case "spinner_relock_22_max":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_relock_max(pid, $(event.target).val());
+        }	
+		
+		function relock_slew_rate_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "spinner_relock_11_slew_rate":
+                    pid = 0;
+                    break;
+                case "spinner_relock_12_slew_rate":
+                    pid = 1;
+                    break;
+                case "spinner_relock_21_slew_rate":
+                    pid = 2;
+                    break;
+                case "spinner_relock_22_slew_rate":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_relock_slew_rate(pid, $(event.target).val());
+        }	
+		
+        function relock_enabled_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "checkbox_relock_11_enabled":
+                    pid = 0;
+                    break;
+                case "checkbox_relock_12_enabled":
+                    pid = 1;
+                    break;
+                case "checkbox_relock_21_enabled":
+                    pid = 2;
+                    break;
+                case "checkbox_relock_22_enabled":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_relock_enabled(pid, $(event.target).prop("checked"));
+        }
+		
+        function relock_input_changed(event, ui) {
+            var pid;
+            switch(event.target.id) {
+                case "relock_11_input":
+                    pid = 0;
+                    break;
+                case "relock_12_input":
+                    pid = 1;
+                    break;
+                case "relock_21_input":
+                    pid = 2;
+                    break;
+                case "relock_22_input":
+                    pid = 3;
+                    break;
+                default:
+                    pid = 0;
+            }
+            set_relock_input(pid, $(event.target).val());
+        }
+
+		function limit_min_changed(event, ui) {
+            var output;
+            switch(event.target.id) {
+                case "spinner_limit_1_min":
+                    output = 0;
+                    break;
+                case "spinner_limit_2_min":
+                    output = 1;
+                    break;
+                default:
+                    output = 0;
+            }
+            set_limit_min(output, $(event.target).val());
+        }	
+		
+		function limit_max_changed(event, ui) {
+            var output;
+            switch(event.target.id) {
+                case "spinner_limit_1_max":
+                    output = 0;
+                    break;
+                case "spinner_limit_2_max":
+                    output = 1;
+                    break;
+                default:
+                    output = 0;
+            }
+            set_limit_max(output, $(event.target).val());
+        }
+
+		function waveform_changed(event, ui) {
+            var output;
+            switch(event.target.id) {
+                case "sg_1_waveform":
+                    output = 0;
+                    break;
+                case "sg_2_waveform":
+                    output = 1;
+                    break;
+                default:
+                    output = 0;
+            }
+            set_waveform(output, $(event.target).val());
+        }			
+		
+		function sg_amp_changed(event, ui) {
+            var output;
+            switch(event.target.id) {
+                case "spinner_sg_1_amp":
+                    output = 0;
+                    break;
+                case "spinner_sg_2_amp":
+                    output = 1;
+                    break;
+                default:
+                    output = 0;
+            }
+            set_sg_amp(output, $(event.target).val());
+        }
+		
+		function sg_freq_changed(event, ui) {
+            var output;
+            switch(event.target.id) {
+                case "spinner_sg_1_freq":
+                    output = 0;
+                    break;
+                case "spinner_sg_2_freq":
+                    output = 1;
+                    break;
+                default:
+                    output = 0;
+            }
+            set_sg_freq(output, $(event.target).val());
+        }	
+		
+		function sg_offset_changed(event, ui) {
+            var output;
+            switch(event.target.id) {
+                case "spinner_sg_1_offset":
+                    output = 0;
+                    break;
+                case "spinner_sg_2_offset":
+                    output = 1;
+                    break;
+                default:
+                    output = 0;
+            }
+            set_sg_offset(output, $(event.target).val());
+        }
+		
+		function sg_enabled_changed(event, ui) {
+            var output;
+            switch(event.target.id) {
+                case "checkbox_sg_1_enabled":
+                    output = 0;
+                    break;
+                case "checkbox_sg_2_enabled":
+                    output = 1;
+                    break;
+                default:
+                    output = 0;
+            }
+            set_sg_enabled(output, $(event.target).prop("checked"));
+        }
+
+        function op_mode_changed(event, ui){
+            switch(event.target.value){
+                case "0":
+                    $("#input_1").show();
+                    $("#output_group_11").show();
+                    $("#output_group_21").hide();
+                    $("#input_2").show();
+                    $("#output_group_12").hide();
+                    $("#output_group_22").show();
+                    break;
+                case "1":
+                    $("#input_1").show();
+                    $("#output_group_11").show();
+                    $("#output_group_21").show();
+                    $("#input_2").hide();
+                    break;
+                case "2":
+                    $("#input_1").hide();
+                    $("#input_2").show();
+                    $("#output_group_12").show();
+                    $("#output_group_22").show();
+                    break;
+                default:
+                    $("#input_1").show();
+                    $("#output_group_11").show();
+                    $("#output_group_12").show();
+                    $("#input_2").show();
+                    $("#output_group_21").show();
+                    $("#output_group_22").show();
+            }
+        }
+		
+        function update_parameters() {
+
+            $.getJSON("_get_parameters").done(function(data){
+			
+                $("#spinner_pid_11_sp").not(":focus").val(data.pid_11_setpoint.toFixed(3));
+				$("#spinner_pid_12_sp").not(":focus").val(data.pid_12_setpoint.toFixed(3));
+				$("#spinner_pid_21_sp").not(":focus").val(data.pid_21_setpoint.toFixed(3));
+				$("#spinner_pid_22_sp").not(":focus").val(data.pid_22_setpoint.toFixed(3));
+				
+                $("#spinner_pid_11_kp").not(":focus").val(data.pid_11_kp.toFixed(3));
+				$("#spinner_pid_12_kp").not(":focus").val(data.pid_12_kp.toFixed(3));
+				$("#spinner_pid_21_kp").not(":focus").val(data.pid_21_kp.toFixed(3));
+				$("#spinner_pid_22_kp").not(":focus").val(data.pid_22_kp.toFixed(3));
+				
+                $("#spinner_pid_11_ki").not(":focus").val(data.pid_11_ki.toFixed(2));
+				$("#spinner_pid_12_ki").not(":focus").val(data.pid_12_ki.toFixed(2));
+				$("#spinner_pid_21_ki").not(":focus").val(data.pid_21_ki.toFixed(2));
+				$("#spinner_pid_22_ki").not(":focus").val(data.pid_22_ki.toFixed(2));
+				
+                $("#spinner_pid_11_kd").not(":focus").val(data.pid_11_kd);
+				$("#spinner_pid_12_kd").not(":focus").val(data.pid_12_kd);
+				$("#spinner_pid_21_kd").not(":focus").val(data.pid_21_kd);
+				$("#spinner_pid_22_kd").not(":focus").val(data.pid_22_kd);
+				
+                $("#checkbox_pid_11_inv").not(":focus").prop("checked", data.pid_11_inverted).checkboxradio("refresh");
+				$("#checkbox_pid_11_hold").not(":focus").prop("checked", data.pid_11_hold).checkboxradio("refresh");
+				$("#checkbox_pid_11_int_res").not(":focus").prop("checked", data.pid_11_int_res).checkboxradio("refresh");
+				$("#checkbox_pid_11_int_auto_reset").not(":focus").prop("checked", data.pid_11_int_auto_reset).checkboxradio("refresh");
+				
+				$("#checkbox_pid_12_inv").not(":focus").prop("checked", data.pid_12_inverted).checkboxradio("refresh");
+				$("#checkbox_pid_12_hold").not(":focus").prop("checked", data.pid_12_hold).checkboxradio("refresh");
+				$("#checkbox_pid_12_int_res").not(":focus").prop("checked", data.pid_12_int_res).checkboxradio("refresh");
+				$("#checkbox_pid_12_int_auto_reset").not(":focus").prop("checked", data.pid_12_int_auto_reset).checkboxradio("refresh");
+				
+				$("#checkbox_pid_21_inv").not(":focus").prop("checked", data.pid_21_inverted).checkboxradio("refresh");
+				$("#checkbox_pid_21_hold").not(":focus").prop("checked", data.pid_21_hold).checkboxradio("refresh");
+				$("#checkbox_pid_21_int_res").not(":focus").prop("checked", data.pid_21_int_res).checkboxradio("refresh");
+				$("#checkbox_pid_21_int_auto_reset").not(":focus").prop("checked", data.pid_21_int_auto_reset).checkboxradio("refresh");
+				
+				$("#checkbox_pid_22_inv").not(":focus").prop("checked", data.pid_22_inverted).checkboxradio("refresh");
+				$("#checkbox_pid_22_hold").not(":focus").prop("checked", data.pid_22_hold).checkboxradio("refresh");
+				$("#checkbox_pid_22_int_res").not(":focus").prop("checked", data.pid_22_int_res).checkboxradio("refresh");
+				$("#checkbox_pid_22_int_auto_reset").not(":focus").prop("checked", data.pid_22_int_auto_reset).checkboxradio("refresh");
+				
+				$("#spinner_relock_11_min").not(":focus").val(data.pid_11_relock_min.toFixed(3));
+				$("#spinner_relock_11_max").not(":focus").val(data.pid_11_relock_max.toFixed(3));
+				$("#spinner_relock_11_slew_rate").not(":focus").val(data.pid_11_relock_slew_rate.toFixed(2));
+				$("#checkbox_relock_11_enabled").not(":focus").prop("checked", data.pid_11_relock_enabled).checkboxradio("refresh");
+				$("#relock_11_input").not(":focus").val(data.pid_11_relock_input);
+				
+				$("#spinner_relock_12_min").not(":focus").val(data.pid_12_relock_min.toFixed(3));
+				$("#spinner_relock_12_max").not(":focus").val(data.pid_12_relock_max.toFixed(3));
+				$("#spinner_relock_12_slew_rate").not(":focus").val(data.pid_12_relock_slew_rate.toFixed(2));
+				$("#checkbox_relock_12_enabled").not(":focus").prop("checked", data.pid_12_relock_enabled).checkboxradio("refresh");
+				$("#relock_12_input").not(":focus").val(data.pid_12_relock_input);
+				
+				$("#spinner_relock_21_min").not(":focus").val(data.pid_21_relock_min.toFixed(3));
+				$("#spinner_relock_21_max").not(":focus").val(data.pid_21_relock_max.toFixed(3));
+				$("#spinner_relock_21_slew_rate").not(":focus").val(data.pid_21_relock_slew_rate.toFixed(2));
+				$("#checkbox_relock_21_enabled").not(":focus").prop("checked", data.pid_21_relock_enabled).checkboxradio("refresh");
+				$("#relock_21_input").not(":focus").val(data.pid_21_relock_input);
+				
+				$("#spinner_relock_22_min").not(":focus").val(data.pid_22_relock_min.toFixed(3));
+				$("#spinner_relock_22_max").not(":focus").val(data.pid_22_relock_max.toFixed(3));
+				$("#spinner_relock_22_slew_rate").not(":focus").val(data.pid_22_relock_slew_rate.toFixed(2));
+				$("#checkbox_relock_22_enabled").not(":focus").prop("checked", data.pid_22_relock_enabled).checkboxradio("refresh");
+				$("#relock_22_input").not(":focus").val(data.pid_22_relock_input);
+				
+				$("#spinner_limit_1_min").not(":focus").val(data.limit_min_1.toFixed(3));
+				$("#spinner_limit_2_min").not(":focus").val(data.limit_min_2.toFixed(3));
+				$("#spinner_limit_1_max").not(":focus").val(data.limit_max_1.toFixed(3));
+				$("#spinner_limit_2_max").not(":focus").val(data.limit_max_2.toFixed(3));
+				
+				$("#spinner_sg_1_amp").not(":focus").val(data.sg_1_amp.toFixed(3));
+				$("#spinner_sg_2_amp").not(":focus").val(data.sg_2_amp.toFixed(3));
+				$("#spinner_sg_1_freq").not(":focus").val(data.sg_1_freq.toFixed(2));
+				$("#spinner_sg_2_freq").not(":focus").val(data.sg_2_freq.toFixed(2));
+				$("#spinner_sg_1_offset").not(":focus").val(data.sg_1_offset.toFixed(3));
+				$("#spinner_sg_2_offset").not(":focus").val(data.sg_2_offset.toFixed(3));
+				$("#sg_1_waveform").not(":focus").val(data.sg_1_waveform);
+				$("#sg_2_waveform").not(":focus").val(data.sg_2_waveform);
+				$("#checkbox_sg_1_enabled").not(":focus").prop("checked", data.sg_1_enabled).checkboxradio("refresh");
+				$("#checkbox_sg_2_enabled").not(":focus").prop("checked", data.sg_2_enabled).checkboxradio("refresh");
+
+            });
+            setTimeout(update_parameters, update_interval);
+        };
+
+
+    // Runs after page has loaded
+    $(function() {
+
+        // Initialize control elements
+	
+		$( ".sp_spinner" ).spinner({
+			start: 0.0,
+			step: 0.001,
+			min: -1.0,
+			max: 1.0
+			});
+			
+        $( ".kp_spinner" ).spinner({
+            step: 0.01,
+            min: 0.,
+            max: 4095.
+            });
+        $( ".ki_spinner" ).spinner({
+            step: 1.,
+            min: 0.,
+            max: 7812499.
+            });
+        $( ".kd_spinner" ).spinner({
+            step: 1,
+            min: 0,
+            max: 8191
+            });
+		$( ".relock_limit_spinner" ).spinner({
+            step: 0.001,
+            min: 0.,
+            max: 7.
+            });
+		$( ".slew_rate_spinner" ).spinner({
+            step: 1.,
+            min: 0.058,
+            max: 1000000.
+            });
+		$( ".output_spinner" ).spinner({
+            step: 0.001,
+            min: -1.,
+            max: 1.
+            });
+		$( ".freq_spinner" ).spinner({
+			value: 1000.,
+            step: 1.,
+            min: 0.,
+            max: 62500000.
+            });
+		$( ".other_spinner" ).spinner();
+        //$("#sg_1_waveform").selectmenu();
+        //$("#sg_2_waveform").selectmenu();
+		//$(".relock-select").selectmenu();
+		
+		$( ".checkbox" ).checkboxradio();
+        $( ".controlgroup-vertical" ).controlgroup({"direction": "vertical"});
+        $( ".button").button();
+        $("#select_op_mode").value = "0";
+        $("#select_op_mode").selectmenu();
+		
+        // Bind control element events
+        $("#select_op_mode").on("selectmenuselect", op_mode_changed);
+
+		$( ".sp_spinner" ).on("spinstop", setpoint_changed);
+		$( ".kp_spinner" ).on("spinstop", kp_changed);
+		$( ".ki_spinner" ).on("spinstop", ki_changed);
+		$( ".kd_spinner" ).on("spinstop", kd_changed);
+		
+        $( "#checkbox_pid_11_inv" ).on("change", inverted_changed);
+		$( "#checkbox_pid_11_hold" ).on("change", hold_changed);
+		$( "#checkbox_pid_11_int_res" ).on("change", int_reset_changed);
+		$( "#checkbox_pid_11_int_auto_reset" ).on("change", int_auto_changed);
+		
+		$( "#checkbox_pid_21_inv" ).on("change", inverted_changed);
+		$( "#checkbox_pid_21_hold" ).on("change", hold_changed);
+		$( "#checkbox_pid_21_int_res" ).on("change", int_reset_changed);
+		$( "#checkbox_pid_21_int_auto_reset" ).on("change", int_auto_changed);
+		
+		$( "#checkbox_pid_12_inv" ).on("change", inverted_changed);
+		$( "#checkbox_pid_12_hold" ).on("change", hold_changed);
+		$( "#checkbox_pid_12_int_res" ).on("change", int_reset_changed);
+		$( "#checkbox_pid_12_int_auto_reset" ).on("change", int_auto_changed);
+		
+		$( "#checkbox_pid_22_inv" ).on("change", inverted_changed);
+		$( "#checkbox_pid_22_hold" ).on("change", hold_changed);
+		$( "#checkbox_pid_22_int_res" ).on("change", int_reset_changed);
+		$( "#checkbox_pid_22_int_auto_reset" ).on("change", int_auto_changed);
+		
+		$(".relock-select").on("change", relock_input_changed);
+		
+		$( "#spinner_relock_11_min").on("spinstop", relock_min_changed);
+		$( "#spinner_relock_11_max").on("spinstop", relock_max_changed);
+		$( ".slew_rate_spinner").on("spinstop", relock_slew_rate_changed);
+		$( "#checkbox_relock_11_enabled").on("change", relock_enabled_changed);
+		
+		$( "#spinner_relock_12_min").on("spinstop", relock_min_changed);
+		$( "#spinner_relock_12_max").on("spinstop", relock_max_changed);
+		$( "#checkbox_relock_12_enabled").on("change", relock_enabled_changed);
+		
+		$( "#spinner_relock_21_min").on("spinstop", relock_min_changed);
+		$( "#spinner_relock_21_max").on("spinstop", relock_max_changed);
+		$( "#checkbox_relock_21_enabled").on("change", relock_enabled_changed);
+		
+		$( "#spinner_relock_22_min").on("spinstop", relock_min_changed);
+		$( "#spinner_relock_22_max").on("spinstop", relock_max_changed);
+		$( "#checkbox_relock_22_enabled").on("change", relock_enabled_changed);
+		
+		$( "#spinner_limit_1_min").on("spinstop", limit_min_changed);
+		$( "#spinner_limit_2_min").on("spinstop", limit_min_changed);
+		$( "#spinner_limit_1_max").on("spinstop", limit_max_changed);
+		$( "#spinner_limit_2_max").on("spinstop", limit_max_changed);
+		
+		$( ".waveform-select" ).on("change", waveform_changed);
+		$( "#spinner_sg_1_amp" ).on("change", sg_amp_changed);
+		$( "#spinner_sg_2_amp" ).on("change", sg_amp_changed);
+		$( ".freq_spinner" ).on("change", sg_freq_changed);
+		$( "#spinner_sg_1_offset" ).on("change", sg_offset_changed);
+		$( "#spinner_sg_2_offset" ).on("change", sg_offset_changed);
+		$( "#checkbox_sg_1_enabled").on("change", sg_enabled_changed);
+        $( "#checkbox_sg_2_enabled").on("change", sg_enabled_changed);
+        
+        $("#save_pams").on("click", save_parameters);
+        $("#load_pams").on("click", load_parameters);
+        $("#button_toggle_11").on("click", toggle_lock_scan);
+        $("#button_toggle_21").on("click", toggle_lock_scan);
+        $("#button_toggle_12").on("click", toggle_lock_scan);
+        $("#button_toggle_22").on("click", toggle_lock_scan);
+		
+        // Start the update loop
+        update_parameters();
+    });
+</script>
+</head>
+<body>
+    <div class="flex-container">
+
+        <fieldset>
+            <legend><h2>Select Operating Mode</h2></legend>
+                <select id="select_op_mode">
+                    <option>Show all</option>
+                    <option value="0">In1 -> Out1 and In2 -> Out2</option>
+                    <option value="1">In1 -> Out1 and In1 -> Out2</option>
+                    <option value="2">In2 -> Out1 and In2 -> Out2</option>
+                </select>
+        </fieldset>
+
+        <fieldset>
+            <legend><h2>Save</h2></legend>
+            <button id="save_pams" class="button">Save parameters to SD card</button>
+        </fieldset>
+
+        <fieldset>
+                <legend><h2>Load</h2></legend>
+                <button id= "load_pams" class="button">Load parameters from SD card</button>
+        </fieldset>
+    </div>
+
+    <div class="flex-container">
+        
+
+        <fieldset id="input_1">
+            <legend><h1>Lockbox (Input 1)</h1></legend>
+			
+            <fieldset class="output-group" id="output_group_11">
+                <legend><h2>Output 1</h2></legend>
+				
+                <fieldset>
+                    <legend><h3>PID</h3></legend>
+                    <table>
+                        <tr>
+                            <td><label for="spinner_pid_11_sp">Setpoint (V)</label></td>
+                            <td><input id="spinner_pid_11_sp" class="sp_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_11_kp">KP</label></td>
+                            <td><input id="spinner_pid_11_kp" class="kp_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_11_ki">KI (1/s)</label></td>
+                            <td><input id="spinner_pid_11_ki" class="ki_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_11_kd">KD</label></td>
+                            <td><input id="spinner_pid_11_kd" class="kd_spinner"></td>
+                        </tr>
+                    </table>
+					
+                    <div class="controlgroup-vertical">
+                        <input type="checkbox" id="checkbox_pid_11_inv" class="checkbox">
+                        <label for="checkbox_pid_11_inv">Inverted</label>
+                        <input type="checkbox" id="checkbox_pid_11_hold" class="checkbox">
+                        <label for="checkbox_pid_11_hold">Hold internal state</label>
+                        <input type="checkbox" id="checkbox_pid_11_int_res" class="checkbox">
+                        <label for="checkbox_pid_11_int_res">Integrator reset</label>
+                        <input type="checkbox" id="checkbox_pid_11_int_auto_reset" class="checkbox">
+                        <label for="checkbox_pid_11_int_auto_reset">Automatic integrator reset</label>
+                        <button id="button_toggle_11" class="button">Toggle Lock/Scan</button>
+                    </div>
+
+                </fieldset>
+				
+                <fieldset class="relock-group">
+                    <legend><h3>Relock</h3></legend>
+					
+                    <table>
+                        <tr>
+                            <input type="checkbox" id="checkbox_relock_11_enabled" class="checkbox">
+                            <label for="checkbox_relock_11_enabled">Enabled</label>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_11_min">Min (V)</label></td>
+                            <td><input id="spinner_relock_11_min" class="relock_limit_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_11_max">Max (V)</label></td>
+                            <td><input id="spinner_relock_11_max" class="relock_limit_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_11_slew_rate">Slew Rate (V/s)</label></td>
+                            <td><input id="spinner_relock_11_slew_rate" class="slew_rate_spinner"></td>
+                        </tr>
+						<tr>
+                            <td><label for="relock_11_input">Input</label></td>
+                            <td>
+                                <select id="relock_11_input" class="relock-select">
+                                    <option value="4">AIN0</option>
+                                    <option value="5">AIN1</option>
+                                    <option value="6">AIN2</option>
+                                    <option value="7">AIN3</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+					    
+                </fieldset>
+            </fieldset>
+			
+
+            <fieldset class="output-group" id="output_group_21">
+                <legend><h2>Output 2</h2></legend>
+				
+                <fieldset>
+                    <legend><h3>PID</h3></legend>
+					
+                    <table>
+                        <tr>
+                            <td><label for="spinner_pid_21_sp">Setpoint (V)</label></td>
+                            <td><input id="spinner_pid_21_sp" class="sp_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_21_kp">KP</label></td>
+                            <td><input id="spinner_pid_21_kp" class="kp_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_21_ki">KI (1/s)</label></td>
+                            <td><input id="spinner_pid_21_ki" class="ki_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_21_kd">KD</label></td>
+                            <td><input id="spinner_pid_21_kd" class="kd_spinner"></td>
+                        </tr>
+                    </table>
+					
+                    <div class="controlgroup-vertical">
+                        <input type="checkbox" id="checkbox_pid_21_inv" class="checkbox">
+                        <label for="checkbox_pid_21_inv">Inverted</label>
+                        <input type="checkbox" id="checkbox_pid_21_hold" class="checkbox">
+                        <label for="checkbox_pid_21_hold">Hold internal state</label>
+                        <input type="checkbox" id="checkbox_pid_21_int_res" class="checkbox">
+                        <label for="checkbox_pid_21_int_res">Integrator reset</label>
+                        <input type="checkbox" id="checkbox_pid_21_int_auto_reset" class="checkbox">
+                        <label for="checkbox_pid_21_int_auto_reset">Automatic integrator reset</label>
+                        <button id="button_toggle_21" class="button">Toggle Lock/Scan</button>
+                    </div>
+
+                </fieldset>
+				
+				 <fieldset class="relock-group">
+                    <legend><h3>Relock</h3></legend>
+					
+                    <table>
+                        <tr>
+                            <input type="checkbox" id="checkbox_relock_21_enabled" class="checkbox">
+                            <label for="checkbox_relock_21_enabled">Enabled</label>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_21_min">Min (V)</label></td>
+                            <td><input id="spinner_relock_21_min" class="relock_limit_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_21_max">Max (V)</label></td>
+                            <td><input id="spinner_relock_21_max" class="relock_limit_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_21_slew_rate">Slew Rate (V/s)</label></td>
+                            <td><input id="spinner_relock_21_slew_rate" class="slew_rate_spinner"></td>
+                        </tr>
+						<tr>
+                            <td><label for="relock_21_input">Input</label></td>
+                            <td>
+                                <select id="relock_21_input" class="relock-select">
+                                    <option value="4">AIN0</option>
+                                    <option value="5">AIN1</option>
+                                    <option value="6">AIN2</option>
+                                    <option value="7">AIN3</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+					  
+                </fieldset>
+            </fieldset>
+        </fieldset>
+		
+		
+        <fieldset id="input_2">
+            <legend><h1>Lockbox (Input 2)</h1></legend>
+			
+            <fieldset class="output-group" id="output_group_12">
+                <legend><h2>Output 1</h2></legend>
+				
+                <fieldset>
+                    <legend><h3>PID</h3></legend>
+                    <table>
+                        <tr>
+                            <td><label for="spinner_pid_12_sp">Setpoint (V)</label></td>
+                            <td><input id="spinner_pid_12_sp" class="sp_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_12_kp">KP</label></td>
+                            <td><input id="spinner_pid_12_kp" class="kp_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_12_ki">KI (1/s)</label></td>
+                            <td><input id="spinner_pid_12_ki" class="ki_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_12_kd">KD</label></td>
+                            <td><input id="spinner_pid_12_kd" class="kd_spinner"></td>
+                        </tr>
+                    </table>
+					
+                    <div class="controlgroup-vertical">
+                        <input type="checkbox" id="checkbox_pid_12_inv" class="checkbox">
+                        <label for="checkbox_pid_12_inv">Inverted</label>
+                        <input type="checkbox" id="checkbox_pid_12_hold" class="checkbox">
+                        <label for="checkbox_pid_12_hold">Hold internal state</label>
+                        <input type="checkbox" id="checkbox_pid_12_int_res" class="checkbox">
+                        <label for="checkbox_pid_12_int_res">Integrator reset</label>
+                        <input type="checkbox" id="checkbox_pid_12_int_auto_reset" class="checkbox">
+                        <label for="checkbox_pid_12_int_auto_reset">Automatic integrator reset</label>
+                        <button id="button_toggle_12" class="button">Toggle Lock/Scan</button>
+                    </div>
+
+                </fieldset>
+				
+                <fieldset class="relock-group">
+                    <legend><h3>Relock</h3></legend>
+					
+                    <table>
+                        <tr>
+                            <input type="checkbox" id="checkbox_relock_12_enabled" class="checkbox">
+                            <label for="checkbox_relock_12_enabled">Enabled</label>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_12_min">Min (V)</label></td>
+                            <td><input id="spinner_relock_12_min" class="relock_limit_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_12_max">Max (V)</label></td>
+                            <td><input id="spinner_relock_12_max" class="relock_limit_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_12_slew_rate">Slew Rate (V/s)</label></td>
+                            <td><input id="spinner_relock_12_slew_rate" class="slew_rate_spinner"></td>
+                        </tr>
+						<tr>
+                            <td><label for="relock_12_input">Input</label></td>
+                            <td>
+                                <select id="relock_12_input" class="relock-select">
+                                    <option value="4">AIN0</option>
+                                    <option value="5">AIN1</option>
+                                    <option value="6">AIN2</option>
+                                    <option value="7">AIN3</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>	
+                    
+                </fieldset>
+            </fieldset>
+			
+
+            <fieldset class="output-group" id="output_group_22">
+                <legend><h2>Output 2</h2></legend>
+				
+                <fieldset>
+                    <legend><h3>PID</h3></legend>
+					
+                    <table>
+                        <tr>
+                            <td><label for="spinner_pid_22_sp">Setpoint (V)</label></td>
+                            <td><input id="spinner_pid_22_sp" class="sp_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_22_kp">KP</label></td>
+                            <td><input id="spinner_pid_22_kp" class="kp_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_22_ki">KI (1/s)</label></td>
+                            <td><input id="spinner_pid_22_ki" class="ki_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_pid_22_kd">KD</label></td>
+                            <td><input id="spinner_pid_22_kd" class="kd_spinner"></td>
+                        </tr>
+                    </table>
+					
+                    <div class="controlgroup-vertical">
+                        <input type="checkbox" id="checkbox_pid_22_inv" class="checkbox">
+                        <label for="checkbox_pid_22_inv">Inverted</label>
+                        <input type="checkbox" id="checkbox_pid_22_hold" class="checkbox">
+                        <label for="checkbox_pid_22_hold">Hold internal state</label>
+                        <input type="checkbox" id="checkbox_pid_22_int_res" class="checkbox">
+                        <label for="checkbox_pid_22_int_res">Integrator reset</label>
+                        <input type="checkbox" id="checkbox_pid_22_int_auto_reset" class="checkbox">
+                        <label for="checkbox_pid_22_int_auto_reset">Automatic integrator reset</label>
+                        <button id="button_toggle_22" class="button">Toggle Lock/Scan</button>
+                    </div>
+
+                </fieldset>
+				
+				 <fieldset class="relock-group">
+                    <legend><h3>Relock</h3></legend>
+					
+                    <table>
+                        <tr>
+                            <input type="checkbox" id="checkbox_relock_22_enabled" class="checkbox">
+                            <label for="checkbox_relock_22_enabled">Enabled</label>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_22_min">Min (V)</label></td>
+                            <td><input id="spinner_relock_22_min" class="relock_limit_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_22_max">Max (V)</label></td>
+                            <td><input id="spinner_relock_22_max" class="relock_limit_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_relock_22_slew_rate">Slew Rate (V/s)</label></td>
+                            <td><input id="spinner_relock_22_slew_rate" class="slew_rate_spinner"></td>
+                        </tr>
+						<tr>
+                            <td><label for="relock_22_input">Input</label></td>
+                            <td>
+                                <select id="relock_22_input" class="relock-select">
+                                    <option value="4">AIN0</option>
+                                    <option value="5">AIN1</option>
+                                    <option value="6">AIN2</option>
+                                    <option value="7">AIN3</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>	
+                    
+                </fieldset>
+            </fieldset>			
+        </fieldset>
+    </div>
+	
+	
+    <div class="flex-container">
+
+        <fieldset id="output_1" class="output-group">
+            <legend><h1>Output 1</h1></legend>
+			
+            <fieldset>
+                <legend><h2>Limit</h2></legend>
+				
+                    <table>
+                        <tr>
+                            <td><label for="spinner_limit_1_min">Min (V)</label></td>
+                            <td><input id="spinner_limit_1_min" class="output_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_limit_1_max">Max (V)</label></td>
+                            <td><input id="spinner_limit_1_max" class="output_spinner"></td>
+                        </tr>
+                    </table>
+            </fieldset>
+			
+            <fieldset>
+                <legend><h2>Signal Generator</h2></legend>
+				
+                    <table>
+                        <tr>
+                            <input type="checkbox" id="checkbox_sg_1_enabled" class="checkbox">
+                            <label for="checkbox_sg_1_enabled">Enabled</label>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_sg_1_freq">Frequency (Hz)</label></td>
+                            <td><input id="spinner_sg_1_freq" class="freq_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_sg_1_amp">Amplitude (V)</label></td>
+                            <td><input id="spinner_sg_1_amp" class="output_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_sg_1_offset">Offset (V)</label></td>
+                            <td><input id="spinner_sg_1_offset" class="output_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="sg_1_waveform">Waveform</label></td>
+                            <td>
+                                <select id="sg_1_waveform" class="waveform-select">
+                                    <option value="0">SINE</option>
+                                    <option value="1">SQUARE</option>
+                                    <option value="2">TRIANGLE</option>
+                                    <option value="3">SAWU</option>
+                                    <option value="4">SAWD</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    
+            </fieldset>
+			
+        </fieldset>
+		
+		
+        <fieldset id="output_2" class="output-group">
+            <legend><h1>Output 2</h1></legend>
+			
+			<fieldset>
+                <legend><h2>Limit</h2></legend>
+				
+                    <table>
+                        <tr>
+                            <td><label for="spinner_limit_2_min">Min (V)</label></td>
+                            <td><input id="spinner_limit_2_min" class="output_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_limit_2_max">Max (V)</label></td>
+                            <td><input id="spinner_limit_2_max" class="output_spinner"></td>
+                        </tr>
+                    </table>
+            </fieldset>
+			
+            <fieldset>
+                <legend><h2>Signal Generator</h2></legend>
+				
+                    <table>
+                        <tr>
+                            <input type="checkbox" id="checkbox_sg_2_enabled" class="checkbox">
+                            <label for="checkbox_sg_2_enabled">Enabled</label>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_sg_2_freq">Frequency (Hz)</label></td>
+                            <td><input id="spinner_sg_2_freq" class="freq_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_sg_2_amp">Amplitude (V)</label></td>
+                            <td><input id="spinner_sg_2_amp" class="output_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_sg_2_offset">Offset (V)</label></td>
+                            <td><input id="spinner_sg_2_offset" class="output_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="sg_2_waveform">Waveform</label></td>
+                            <td>
+                                <select id="sg_2_waveform" class="waveform-select">
+                                    <option value="0">SINE</option>
+                                    <option value="1">SQUARE</option>
+                                    <option value="2">TRIANGLE</option>
+                                    <option value="3">SAWU</option>
+                                    <option value="4">SAWD</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    
+            </fieldset>
+        </fieldset>
+    </div>
+
+</body>
+</html>

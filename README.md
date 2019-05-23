@@ -4,6 +4,7 @@ into a feedback controller (lockbox) optimized for optics experiments.
 
 ## Features
 * Multiple-Input, Multiple-Output PID controller
+* Web interface for configuration
 * Automatic relock (e.g. using the transmission signal of a cavity)
 * Remote control via Ethernet using SCPI commands
 * Autonomous operation (connection to a PC is only required for configuration)
@@ -29,9 +30,10 @@ cd rp-lockbox
 ./install.sh
 ```
 
-Then start the lockbox SCPI command server (this stops the web server):
+Then start the lockbox SCPI command server and the web interface (this stops the default web server):
 ```
 systemctl start lockbox
+systemctl start lockbox-web-interface
 ```
 
 If you want to automatically start the SCPI server instead of the web server on system boot, execute
@@ -39,24 +41,30 @@ the following commands:
 ```
 systemctl disable redpitaya_nginx
 systemctl enable lockbox
+systemctl enable lockbox-web-interface
 ```
 
 The following commands revert to the default configuration:
 ```
 systemctl disable lockbox
+systemctl disable lockbox-web-interface
 systemctl enable redpitaya_nginx
 ```
 
 ## Usage
-The lockbox can be controlled by sending SCPI commands via a TCP/IP connection on Port 5000. See the
-[official documentation](https://redpitaya.readthedocs.io/en/latest/appsFeatures/remoteControl/remoteControl.html)
+The lockbox can be configured using the included web interface which runs on the default HTTP port
+(80).
+
+It is also possible to remote control the lockbox by sending SCPI commands via a TCP/IP connection
+on port 5000.
+See the [official documentation](https://redpitaya.readthedocs.io/en/latest/appsFeatures/remoteControl/remoteControl.html)
 for examples how to do this in various programming languages.
 
-A python module and GUI application for controlling the lockbox can be found in the
+The available SCPI commands are documented [here](doc/SCPI_commands.rst).
+
+A python module and example GUI application for controlling the lockbox can be found in the
 [examples/python](examples/python) folder. A standalone executable version of the GUI for windows
 can be downloaded [here](https://github.com/schmidf/rp-lockbox/releases).
-
-The available SCPI commands are documented [here](doc/SCPI_commands.rst).
 
 ### PIDs
 The FPGA implements four PID controllers that connect the two inputs of the Red Pitaya with the two

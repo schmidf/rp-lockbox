@@ -53,6 +53,7 @@ $(TARBALL): install
 	$(eval TMP := $(shell mktemp -d))
 	mkdir -p $(TMP)/rp-lockbox
 	cp -r $(INSTALL_DIR)/. $(TMP)/rp-lockbox
+	cp -r web-interface $(TMP)/rp-lockbox/
 	cp -r systemd $(TMP)/rp-lockbox
 	cp scripts/install.sh $(TMP)/rp-lockbox
 	tar -cf rp-lockbox.tar.gz -C $(TMP) rp-lockbox

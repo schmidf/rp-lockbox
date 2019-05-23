@@ -1,0 +1,12 @@
+[Unit]
+Description=Web interface for the Red Pitaya Lockbox
+After=network.target
+Conflicts=redpitaya_nginx
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/opt/redpitaya/web-interface/web-interface.py
+
+[Install]
+WantedBy=multi-user.target
