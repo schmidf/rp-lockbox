@@ -201,33 +201,33 @@
                     pid = 0;
                     output = 0;
                     enabled = $("#checkbox_sg_1_enabled").prop("checked");
-                    $("#checkbox_sg_1_enabled").prop("checked", !enabled).checkboxradio("refresh");
-                    $("#checkbox_pid_11_hold").prop("checked", !enabled).checkboxradio("refresh");
-                    $("#checkbox_pid_11_int_res").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_sg_1_enabled").prop("checked", !enabled);
+                    $("#checkbox_pid_11_hold").prop("checked", !enabled);
+                    $("#checkbox_pid_11_int_res").prop("checked", !enabled);
                     break;
                 case "button_toggle_12":
                     pid = 1;
                     output = 0;
                     enabled = $("#checkbox_sg_1_enabled").prop("checked");
-                    $("#checkbox_sg_1_enabled").prop("checked", !enabled).checkboxradio("refresh");
-                    $("#checkbox_pid_12_hold").prop("checked", !enabled).checkboxradio("refresh");
-                    $("#checkbox_pid_12_int_res").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_sg_1_enabled").prop("checked", !enabled);
+                    $("#checkbox_pid_12_hold").prop("checked", !enabled);
+                    $("#checkbox_pid_12_int_res").prop("checked", !enabled);
                     break;
                 case "button_toggle_21":
                     pid = 2;
                     output = 1;
                     enabled = $("#checkbox_sg_2_enabled").prop("checked");
-                    $("#checkbox_sg_2_enabled").prop("checked", !enabled).checkboxradio("refresh");
-                    $("#checkbox_pid_21_hold").prop("checked", !enabled).checkboxradio("refresh");
-                    $("#checkbox_pid_21_int_res").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_sg_2_enabled").prop("checked", !enabled);
+                    $("#checkbox_pid_21_hold").prop("checked", !enabled);
+                    $("#checkbox_pid_21_int_res").prop("checked", !enabled);
                     break;
                 case "button_toggle_22":
                     pid = 3;
                     output = 1;
                     enabled = $("#checkbox_sg_2_enabled").prop("checked");
-                    $("#checkbox_sg_2_enabled").prop("checked", !enabled).checkboxradio("refresh");
-                    $("#checkbox_pid_22_hold").prop("checked", !enabled).checkboxradio("refresh");
-                    $("#checkbox_pid_22_int_res").prop("checked", !enabled).checkboxradio("refresh");
+                    $("#checkbox_sg_2_enabled").prop("checked", !enabled);
+                    $("#checkbox_pid_22_hold").prop("checked", !enabled);
+                    $("#checkbox_pid_22_int_res").prop("checked", !enabled);
                     break;
                 default:
                     pid = 0;
@@ -682,48 +682,48 @@
 				$("#spinner_pid_21_kd").not(":focus").val(data.pid_21_kd);
 				$("#spinner_pid_22_kd").not(":focus").val(data.pid_22_kd);
 				
-                $("#checkbox_pid_11_inv").not(":focus").prop("checked", data.pid_11_inverted).checkboxradio("refresh");
-				$("#checkbox_pid_11_hold").not(":focus").prop("checked", data.pid_11_hold).checkboxradio("refresh");
-				$("#checkbox_pid_11_int_res").not(":focus").prop("checked", data.pid_11_int_res).checkboxradio("refresh");
-				$("#checkbox_pid_11_int_auto_reset").not(":focus").prop("checked", data.pid_11_int_auto_reset).checkboxradio("refresh");
+                $("#checkbox_pid_11_inv").not(":focus").prop("checked", data.pid_11_inverted);
+				$("#checkbox_pid_11_hold").not(":focus").prop("checked", data.pid_11_hold);
+				$("#checkbox_pid_11_int_res").not(":focus").prop("checked", data.pid_11_int_res);
+				$("#checkbox_pid_11_int_auto_reset").not(":focus").prop("checked", data.pid_11_int_auto_reset);
 				
-				$("#checkbox_pid_12_inv").not(":focus").prop("checked", data.pid_12_inverted).checkboxradio("refresh");
-				$("#checkbox_pid_12_hold").not(":focus").prop("checked", data.pid_12_hold).checkboxradio("refresh");
-				$("#checkbox_pid_12_int_res").not(":focus").prop("checked", data.pid_12_int_res).checkboxradio("refresh");
-				$("#checkbox_pid_12_int_auto_reset").not(":focus").prop("checked", data.pid_12_int_auto_reset).checkboxradio("refresh");
+				$("#checkbox_pid_12_inv").not(":focus").prop("checked", data.pid_12_inverted);
+				$("#checkbox_pid_12_hold").not(":focus").prop("checked", data.pid_12_hold);
+				$("#checkbox_pid_12_int_res").not(":focus").prop("checked", data.pid_12_int_res);
+				$("#checkbox_pid_12_int_auto_reset").not(":focus").prop("checked", data.pid_12_int_auto_reset);
 				
-				$("#checkbox_pid_21_inv").not(":focus").prop("checked", data.pid_21_inverted).checkboxradio("refresh");
-				$("#checkbox_pid_21_hold").not(":focus").prop("checked", data.pid_21_hold).checkboxradio("refresh");
-				$("#checkbox_pid_21_int_res").not(":focus").prop("checked", data.pid_21_int_res).checkboxradio("refresh");
-				$("#checkbox_pid_21_int_auto_reset").not(":focus").prop("checked", data.pid_21_int_auto_reset).checkboxradio("refresh");
+				$("#checkbox_pid_21_inv").not(":focus").prop("checked", data.pid_21_inverted);
+				$("#checkbox_pid_21_hold").not(":focus").prop("checked", data.pid_21_hold);
+				$("#checkbox_pid_21_int_res").not(":focus").prop("checked", data.pid_21_int_res);
+				$("#checkbox_pid_21_int_auto_reset").not(":focus").prop("checked", data.pid_21_int_auto_reset);
 				
-				$("#checkbox_pid_22_inv").not(":focus").prop("checked", data.pid_22_inverted).checkboxradio("refresh");
-				$("#checkbox_pid_22_hold").not(":focus").prop("checked", data.pid_22_hold).checkboxradio("refresh");
-				$("#checkbox_pid_22_int_res").not(":focus").prop("checked", data.pid_22_int_res).checkboxradio("refresh");
-				$("#checkbox_pid_22_int_auto_reset").not(":focus").prop("checked", data.pid_22_int_auto_reset).checkboxradio("refresh");
+				$("#checkbox_pid_22_inv").not(":focus").prop("checked", data.pid_22_inverted);
+				$("#checkbox_pid_22_hold").not(":focus").prop("checked", data.pid_22_hold);
+				$("#checkbox_pid_22_int_res").not(":focus").prop("checked", data.pid_22_int_res);
+				$("#checkbox_pid_22_int_auto_reset").not(":focus").prop("checked", data.pid_22_int_auto_reset);
 				
 				$("#spinner_relock_11_min").not(":focus").val(data.pid_11_relock_min.toFixed(3));
 				$("#spinner_relock_11_max").not(":focus").val(data.pid_11_relock_max.toFixed(3));
 				$("#spinner_relock_11_slew_rate").not(":focus").val(data.pid_11_relock_slew_rate.toFixed(2));
-				$("#checkbox_relock_11_enabled").not(":focus").prop("checked", data.pid_11_relock_enabled).checkboxradio("refresh");
+				$("#checkbox_relock_11_enabled").not(":focus").prop("checked", data.pid_11_relock_enabled);
 				$("#relock_11_input").not(":focus").val(data.pid_11_relock_input);
 				
 				$("#spinner_relock_12_min").not(":focus").val(data.pid_12_relock_min.toFixed(3));
 				$("#spinner_relock_12_max").not(":focus").val(data.pid_12_relock_max.toFixed(3));
 				$("#spinner_relock_12_slew_rate").not(":focus").val(data.pid_12_relock_slew_rate.toFixed(2));
-				$("#checkbox_relock_12_enabled").not(":focus").prop("checked", data.pid_12_relock_enabled).checkboxradio("refresh");
+				$("#checkbox_relock_12_enabled").not(":focus").prop("checked", data.pid_12_relock_enabled);
 				$("#relock_12_input").not(":focus").val(data.pid_12_relock_input);
 				
 				$("#spinner_relock_21_min").not(":focus").val(data.pid_21_relock_min.toFixed(3));
 				$("#spinner_relock_21_max").not(":focus").val(data.pid_21_relock_max.toFixed(3));
 				$("#spinner_relock_21_slew_rate").not(":focus").val(data.pid_21_relock_slew_rate.toFixed(2));
-				$("#checkbox_relock_21_enabled").not(":focus").prop("checked", data.pid_21_relock_enabled).checkboxradio("refresh");
+				$("#checkbox_relock_21_enabled").not(":focus").prop("checked", data.pid_21_relock_enabled);
 				$("#relock_21_input").not(":focus").val(data.pid_21_relock_input);
 				
 				$("#spinner_relock_22_min").not(":focus").val(data.pid_22_relock_min.toFixed(3));
 				$("#spinner_relock_22_max").not(":focus").val(data.pid_22_relock_max.toFixed(3));
 				$("#spinner_relock_22_slew_rate").not(":focus").val(data.pid_22_relock_slew_rate.toFixed(2));
-				$("#checkbox_relock_22_enabled").not(":focus").prop("checked", data.pid_22_relock_enabled).checkboxradio("refresh");
+				$("#checkbox_relock_22_enabled").not(":focus").prop("checked", data.pid_22_relock_enabled);
 				$("#relock_22_input").not(":focus").val(data.pid_22_relock_input);
 				
 				$("#spinner_limit_1_min").not(":focus").val(data.limit_min_1.toFixed(3));
@@ -739,8 +739,8 @@
 				$("#spinner_sg_2_offset").not(":focus").val(data.sg_2_offset.toFixed(3));
 				$("#sg_1_waveform").not(":focus").val(data.sg_1_waveform);
 				$("#sg_2_waveform").not(":focus").val(data.sg_2_waveform);
-				$("#checkbox_sg_1_enabled").not(":focus").prop("checked", data.sg_1_enabled).checkboxradio("refresh");
-				$("#checkbox_sg_2_enabled").not(":focus").prop("checked", data.sg_2_enabled).checkboxradio("refresh");
+				$("#checkbox_sg_1_enabled").not(":focus").prop("checked", data.sg_1_enabled);
+				$("#checkbox_sg_2_enabled").not(":focus").prop("checked", data.sg_2_enabled);
 
             });
             setTimeout(update_parameters, update_interval);
@@ -805,8 +805,6 @@
         $( ".other_spinner" ).spinner();
         $( ".other_spinner" ).width(105);
 		
-		$( ".checkbox" ).checkboxradio();
-        $( ".controlgroup-vertical" ).controlgroup({"direction": "vertical"});
         $( ".button").button();
 
         $("#select_op_mode").selectmenu();
@@ -948,13 +946,13 @@
 					
                     <div class="controlgroup-vertical">
                         <input type="checkbox" id="checkbox_pid_11_inv" class="checkbox">
-                        <label for="checkbox_pid_11_inv">Inverted</label>
+                        <label for="checkbox_pid_11_inv">Inverted</label></br>
                         <input type="checkbox" id="checkbox_pid_11_hold" class="checkbox">
-                        <label for="checkbox_pid_11_hold">Hold internal state</label>
+                        <label for="checkbox_pid_11_hold">Hold internal state</label></br>
                         <input type="checkbox" id="checkbox_pid_11_int_res" class="checkbox">
-                        <label for="checkbox_pid_11_int_res">Integrator reset</label>
+                        <label for="checkbox_pid_11_int_res">Integrator reset</label></br>
                         <input type="checkbox" id="checkbox_pid_11_int_auto_reset" class="checkbox">
-                        <label for="checkbox_pid_11_int_auto_reset">Automatic integrator reset</label>
+                        <label for="checkbox_pid_11_int_auto_reset">Automatic integrator reset</label></br>
                         <button id="button_toggle_11" class="button">Toggle Lock/Scan</button>
                     </div>
 
@@ -1024,13 +1022,13 @@
 					
                     <div class="controlgroup-vertical">
                         <input type="checkbox" id="checkbox_pid_21_inv" class="checkbox">
-                        <label for="checkbox_pid_21_inv">Inverted</label>
+                        <label for="checkbox_pid_21_inv">Inverted</label></br>
                         <input type="checkbox" id="checkbox_pid_21_hold" class="checkbox">
-                        <label for="checkbox_pid_21_hold">Hold internal state</label>
+                        <label for="checkbox_pid_21_hold">Hold internal state</label></br>
                         <input type="checkbox" id="checkbox_pid_21_int_res" class="checkbox">
-                        <label for="checkbox_pid_21_int_res">Integrator reset</label>
+                        <label for="checkbox_pid_21_int_res">Integrator reset</label></br>
                         <input type="checkbox" id="checkbox_pid_21_int_auto_reset" class="checkbox">
-                        <label for="checkbox_pid_21_int_auto_reset">Automatic integrator reset</label>
+                        <label for="checkbox_pid_21_int_auto_reset">Automatic integrator reset</label></br>
                         <button id="button_toggle_21" class="button">Toggle Lock/Scan</button>
                     </div>
 
@@ -1103,13 +1101,13 @@
 					
                     <div class="controlgroup-vertical">
                         <input type="checkbox" id="checkbox_pid_12_inv" class="checkbox">
-                        <label for="checkbox_pid_12_inv">Inverted</label>
+                        <label for="checkbox_pid_12_inv">Inverted</label></br>
                         <input type="checkbox" id="checkbox_pid_12_hold" class="checkbox">
-                        <label for="checkbox_pid_12_hold">Hold internal state</label>
+                        <label for="checkbox_pid_12_hold">Hold internal state</label></br>
                         <input type="checkbox" id="checkbox_pid_12_int_res" class="checkbox">
-                        <label for="checkbox_pid_12_int_res">Integrator reset</label>
+                        <label for="checkbox_pid_12_int_res">Integrator reset</label></br>
                         <input type="checkbox" id="checkbox_pid_12_int_auto_reset" class="checkbox">
-                        <label for="checkbox_pid_12_int_auto_reset">Automatic integrator reset</label>
+                        <label for="checkbox_pid_12_int_auto_reset">Automatic integrator reset</label></br>
                         <button id="button_toggle_12" class="button">Toggle Lock/Scan</button>
                     </div>
 
@@ -1178,13 +1176,13 @@
 					
                     <div class="controlgroup-vertical">
                         <input type="checkbox" id="checkbox_pid_22_inv" class="checkbox">
-                        <label for="checkbox_pid_22_inv">Inverted</label>
+                        <label for="checkbox_pid_22_inv">Inverted</label></br>
                         <input type="checkbox" id="checkbox_pid_22_hold" class="checkbox">
-                        <label for="checkbox_pid_22_hold">Hold internal state</label>
+                        <label for="checkbox_pid_22_hold">Hold internal state</label></br>
                         <input type="checkbox" id="checkbox_pid_22_int_res" class="checkbox">
-                        <label for="checkbox_pid_22_int_res">Integrator reset</label>
+                        <label for="checkbox_pid_22_int_res">Integrator reset</label></br>
                         <input type="checkbox" id="checkbox_pid_22_int_auto_reset" class="checkbox">
-                        <label for="checkbox_pid_22_int_auto_reset">Automatic integrator reset</label>
+                        <label for="checkbox_pid_22_int_auto_reset">Automatic integrator reset</label></br>
                         <button id="button_toggle_22" class="button">Toggle Lock/Scan</button>
                     </div>
 
