@@ -38,6 +38,73 @@
     .button {
         text-align: center;
     }
+
+     /* Customize the label (the container) */
+    .checkbox-container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .checkbox-container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+         height: 25px;
+        width: 25px;
+         background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .checkbox-container:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .checkbox-container input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .checkbox-container input:checked ~ .checkmark:after {
+         display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .checkbox-container .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         transform: rotate(45deg);
+    } 
 	</style>
 <script src="external/jquery/jquery.js"></script>
 <script src="jquery-ui.js"></script>
@@ -892,28 +959,6 @@
 </script>
 </head>
 <body>
-    <div class="flex-container">
-
-        <fieldset>
-            <legend><h2>Select Operating Mode</h2></legend>
-                <select id="select_op_mode">
-                    <option value="3">Show all</option>
-                    <option value="0">In1 -> Out1 and In2 -> Out2</option>
-                    <option value="1">In1 -> Out1 and In1 -> Out2</option>
-                    <option value="2">In2 -> Out1 and In2 -> Out2</option>
-                </select>
-        </fieldset>
-
-        <fieldset>
-            <legend><h2>Save</h2></legend>
-            <button id="save_pams" class="button">Save parameters to SD card</button>
-        </fieldset>
-
-        <fieldset>
-                <legend><h2>Load</h2></legend>
-                <button id= "load_pams" class="button">Load parameters from SD card</button>
-        </fieldset>
-    </div>
 
     <div class="flex-container">
         
@@ -946,14 +991,22 @@
                     </table>
 					
                     <div class="controlgroup-vertical">
-                        <input type="checkbox" id="checkbox_pid_11_inv" class="checkbox">
-                        <label for="checkbox_pid_11_inv">Inverted</label></br>
-                        <input type="checkbox" id="checkbox_pid_11_hold" class="checkbox">
-                        <label for="checkbox_pid_11_hold">Hold internal state</label></br>
-                        <input type="checkbox" id="checkbox_pid_11_int_res" class="checkbox">
-                        <label for="checkbox_pid_11_int_res">Integrator reset</label></br>
-                        <input type="checkbox" id="checkbox_pid_11_int_auto_reset" class="checkbox">
-                        <label for="checkbox_pid_11_int_auto_reset">Automatic integrator reset</label></br>
+                        <label class="checkbox-container">Inverted
+                            <input type="checkbox" id="checkbox_pid_11_inv" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Hold internal state
+                                <input type="checkbox" id="checkbox_pid_11_hold" class="checkbox">
+                                <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Integrator reset
+                                <input type="checkbox" id="checkbox_pid_11_int_res" class="checkbox">
+                                <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Automatic integrator reset
+                                <input type="checkbox" id="checkbox_pid_11_int_auto_reset" class="checkbox">
+                                <span class="checkmark"></span>
+                        </label>
                         <button id="button_toggle_11" class="button">Toggle Lock/Scan</button>
                     </div>
 
@@ -964,8 +1017,10 @@
 					
                     <table>
                         <tr>
-                            <input type="checkbox" id="checkbox_relock_11_enabled" class="checkbox">
-                            <label for="checkbox_relock_11_enabled">Enabled</label>
+                            <label class="checkbox-container">Enabled
+                                <input type="checkbox" id="checkbox_relock_11_enabled" class="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_11_min">Min (V)</label></td>
@@ -1022,14 +1077,22 @@
                     </table>
 					
                     <div class="controlgroup-vertical">
-                        <input type="checkbox" id="checkbox_pid_21_inv" class="checkbox">
-                        <label for="checkbox_pid_21_inv">Inverted</label></br>
-                        <input type="checkbox" id="checkbox_pid_21_hold" class="checkbox">
-                        <label for="checkbox_pid_21_hold">Hold internal state</label></br>
-                        <input type="checkbox" id="checkbox_pid_21_int_res" class="checkbox">
-                        <label for="checkbox_pid_21_int_res">Integrator reset</label></br>
-                        <input type="checkbox" id="checkbox_pid_21_int_auto_reset" class="checkbox">
-                        <label for="checkbox_pid_21_int_auto_reset">Automatic integrator reset</label></br>
+                        <label class="checkbox-container">Inverted
+                            <input type="checkbox" id="checkbox_pid_21_inv" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Hold internal state
+                            <input type="checkbox" id="checkbox_pid_21_hold" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Integrator reset
+                            <input type="checkbox" id="checkbox_pid_21_int_res" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Automatic integrator reset
+                            <input type="checkbox" id="checkbox_pid_21_int_auto_reset" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
                         <button id="button_toggle_21" class="button">Toggle Lock/Scan</button>
                     </div>
 
@@ -1040,8 +1103,10 @@
 					
                     <table>
                         <tr>
-                            <input type="checkbox" id="checkbox_relock_21_enabled" class="checkbox">
-                            <label for="checkbox_relock_21_enabled">Enabled</label>
+                            <label class="checkbox-container">Enabled
+                                <input type="checkbox" id="checkbox_relock_21_enabled" class="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_21_min">Min (V)</label></td>
@@ -1101,14 +1166,22 @@
                     </table>
 					
                     <div class="controlgroup-vertical">
-                        <input type="checkbox" id="checkbox_pid_12_inv" class="checkbox">
-                        <label for="checkbox_pid_12_inv">Inverted</label></br>
-                        <input type="checkbox" id="checkbox_pid_12_hold" class="checkbox">
-                        <label for="checkbox_pid_12_hold">Hold internal state</label></br>
-                        <input type="checkbox" id="checkbox_pid_12_int_res" class="checkbox">
-                        <label for="checkbox_pid_12_int_res">Integrator reset</label></br>
-                        <input type="checkbox" id="checkbox_pid_12_int_auto_reset" class="checkbox">
-                        <label for="checkbox_pid_12_int_auto_reset">Automatic integrator reset</label></br>
+                        <label class="checkbox-container">Inverted
+                            <input type="checkbox" id="checkbox_pid_12_inv" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Hold internal state
+                            <input type="checkbox" id="checkbox_pid_12_hold" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Integrator reset
+                            <input type="checkbox" id="checkbox_pid_12_int_res" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Automatic integrator reset
+                            <input type="checkbox" id="checkbox_pid_12_int_auto_reset" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
                         <button id="button_toggle_12" class="button">Toggle Lock/Scan</button>
                     </div>
 
@@ -1119,8 +1192,10 @@
 					
                     <table>
                         <tr>
-                            <input type="checkbox" id="checkbox_relock_12_enabled" class="checkbox">
-                            <label for="checkbox_relock_12_enabled">Enabled</label>
+                            <label class="checkbox-container">Enabled
+                                <input type="checkbox" id="checkbox_relock_12_enabled" class="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_12_min">Min (V)</label></td>
@@ -1176,14 +1251,22 @@
                     </table>
 					
                     <div class="controlgroup-vertical">
-                        <input type="checkbox" id="checkbox_pid_22_inv" class="checkbox">
-                        <label for="checkbox_pid_22_inv">Inverted</label></br>
-                        <input type="checkbox" id="checkbox_pid_22_hold" class="checkbox">
-                        <label for="checkbox_pid_22_hold">Hold internal state</label></br>
-                        <input type="checkbox" id="checkbox_pid_22_int_res" class="checkbox">
-                        <label for="checkbox_pid_22_int_res">Integrator reset</label></br>
-                        <input type="checkbox" id="checkbox_pid_22_int_auto_reset" class="checkbox">
-                        <label for="checkbox_pid_22_int_auto_reset">Automatic integrator reset</label></br>
+                        <label class="checkbox-container">Inverted
+                            <input type="checkbox" id="checkbox_pid_22_inv" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Hold internal state
+                            <input type="checkbox" id="checkbox_pid_22_hold" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Integrator reset
+                            <input type="checkbox" id="checkbox_pid_22_int_res" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Automatic integrator reset
+                            <input type="checkbox" id="checkbox_pid_22_int_auto_reset" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
                         <button id="button_toggle_22" class="button">Toggle Lock/Scan</button>
                     </div>
 
@@ -1194,8 +1277,10 @@
 					
                     <table>
                         <tr>
-                            <input type="checkbox" id="checkbox_relock_22_enabled" class="checkbox">
-                            <label for="checkbox_relock_22_enabled">Enabled</label>
+                            <label class="checkbox-container">Enabled
+                                <input type="checkbox" id="checkbox_relock_22_enabled" class="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_22_min">Min (V)</label></td>
@@ -1227,115 +1312,135 @@
         </fieldset>
 
         <fieldset class="output-group">
-            <legend><h1>Output Channels</h1></legend>
+            <legend><h1>Signal Generators</h1></legend>
 
-            <fieldset id="output_1">
-            <legend><h2>Output 1</h2></legend>
-			
-            <div id="accordion_limit_1" class="accordion">
-                <h3>Limit</h3>
+            <fieldset>
+                <legend><h2>Signal Generator 1</h2></legend>
                 <table>
                     <tr>
-                        <td><label for="spinner_limit_1_min">Min (V)</label></td>
-                        <td><input id="spinner_limit_1_min" class="output_spinner"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="spinner_limit_1_max">Max (V)</label></td>
-                        <td><input id="spinner_limit_1_max" class="output_spinner"></td>
-                    </tr>                   
-                </table>
-            </div>
-			
-            <fieldset>
-                <legend><h3>Signal Generator</h3></legend>
-                    <table>
-                        <tr>
+                        <label class="checkbox-container">Enabled
                             <input type="checkbox" id="checkbox_sg_1_enabled" class="checkbox">
-                            <label for="checkbox_sg_1_enabled">Enabled</label>
-                        </tr>
-                        <tr>
-                            <td><label for="spinner_sg_1_freq">Frequency (Hz)</label></td>
-                            <td><input id="spinner_sg_1_freq" class="freq_spinner"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="spinner_sg_1_amp">Amplitude (V)</label></td>
-                            <td><input id="spinner_sg_1_amp" class="output_spinner"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="spinner_sg_1_offset">Offset (V)</label></td>
-                            <td><input id="spinner_sg_1_offset" class="output_spinner"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="sg_1_waveform">Waveform</label></td>
-                            <td>
-                                <select id="sg_1_waveform" class="waveform-select">
-                                    <option value="0">SINE</option>
-                                    <option value="1">SQUARE</option>
-                                    <option value="2">TRIANGLE</option>
-                                    <option value="3">SAWU</option>
-                                    <option value="4">SAWD</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>   
-            </fieldset>
-			
-            </fieldset>
-		
-		
-            <fieldset id="output_2">
-            <legend><h2>Output 2</h2></legend>
-			
-			<div id="accordion_limit_2" class="accordion">
-                <h3>Limit</h3>
-                <table>
-                    <tr>
-                        <td><label for="spinner_limit_2_min">Min (V)</label></td>
-                        <td><input id="spinner_limit_2_min" class="output_spinner"></td>
+                            <span class="checkmark"></span>
+                        </label>
                     </tr>
                     <tr>
-                        <td><label for="spinner_limit_2_max">Max (V)</label></td>
-                        <td><input id="spinner_limit_2_max" class="output_spinner"></td>
-                    </tr>                   
-                </table>
-            </div>
-			
-            <fieldset>
-                <legend><h3>Signal Generator</h3></legend>
-                    <table>
-                        <tr>
-                            <input type="checkbox" id="checkbox_sg_2_enabled" class="checkbox">
-                            <label for="checkbox_sg_2_enabled">Enabled</label>
-                        </tr>
-                        <tr>
-                            <td><label for="spinner_sg_2_freq">Frequency (Hz)</label></td>
-                            <td><input id="spinner_sg_2_freq" class="freq_spinner"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="spinner_sg_2_amp">Amplitude (V)</label></td>
-                            <td><input id="spinner_sg_2_amp" class="output_spinner"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="spinner_sg_2_offset">Offset (V)</label></td>
-                            <td><input id="spinner_sg_2_offset" class="output_spinner"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="sg_2_waveform">Waveform</label></td>
-                            <td>
-                                <select id="sg_2_waveform" class="waveform-select">
-                                    <option value="0">SINE</option>
-                                    <option value="1">SQUARE</option>
-                                    <option value="2">TRIANGLE</option>
-                                    <option value="3">SAWU</option>
-                                    <option value="4">SAWD</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
+                        <td><label for="spinner_sg_1_freq">Frequency (Hz)</label></td>
+                        <td><input id="spinner_sg_1_freq" class="freq_spinner"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="spinner_sg_1_amp">Amplitude (V)</label></td>
+                        <td><input id="spinner_sg_1_amp" class="output_spinner"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="spinner_sg_1_offset">Offset (V)</label></td>
+                        <td><input id="spinner_sg_1_offset" class="output_spinner"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="sg_1_waveform">Waveform</label></td>
+                        <td>
+                            <select id="sg_1_waveform" class="waveform-select">
+                                <option value="0">SINE</option>
+                                <option value="1">SQUARE</option>
+                                <option value="2">TRIANGLE</option>
+                                <option value="3">SAWU</option>
+                                <option value="4">SAWD</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>   
             </fieldset>
+
+            <fieldset>
+                <legend><h2>Signal Generator 2</h2></legend>
+                <table>
+                    <tr>
+                        <label class="checkbox-container">Enabled
+                            <input type="checkbox" id="checkbox_sg_2_enabled" class="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                    </tr>
+                    <tr>
+                        <td><label for="spinner_sg_2_freq">Frequency (Hz)</label></td>
+                        <td><input id="spinner_sg_2_freq" class="freq_spinner"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="spinner_sg_2_amp">Amplitude (V)</label></td>
+                        <td><input id="spinner_sg_2_amp" class="output_spinner"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="spinner_sg_2_offset">Offset (V)</label></td>
+                        <td><input id="spinner_sg_2_offset" class="output_spinner"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="sg_2_waveform">Waveform</label></td>
+                        <td>
+                            <select id="sg_2_waveform" class="waveform-select">
+                                <option value="0">SINE</option>
+                                <option value="1">SQUARE</option>
+                                <option value="2">TRIANGLE</option>
+                                <option value="3">SAWU</option>
+                                <option value="4">SAWD</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
             </fieldset>
 
         </fieldset>
+
+        <fieldset class="output-group">
+            <legend><h1>Options</h1></legend>
+
+            <fieldset>
+                <legend><h2>Select Operating Mode</h2></legend>
+                    <select id="select_op_mode">
+                        <option value="3">Show all</option>
+                        <option value="0">In1 -> Out1 and In2 -> Out2</option>
+                        <option value="1">In1 -> Out1 and In1 -> Out2</option>
+                        <option value="2">In2 -> Out1 and In2 -> Out2</option>
+                    </select>
+            </fieldset>
+
+            <fieldset id="output_1">
+                <legend><h2>Output Limits</h2></legend>
+			
+                <div id="accordion_limit" class="accordion">
+                    <h3>Limit 1</h3>
+                    <table>
+                        <tr>
+                            <td><label for="spinner_limit_1_min">Min (V)</label></td>
+                            <td><input id="spinner_limit_1_min" class="output_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_limit_1_max">Max (V)</label></td>
+                            <td><input id="spinner_limit_1_max" class="output_spinner"></td>
+                        </tr>                   
+                    </table>
+                    <h3>Limit 2</h3>
+                    <table>
+                        <tr>
+                            <td><label for="spinner_limit_2_min">Min (V)</label></td>
+                            <td><input id="spinner_limit_2_min" class="output_spinner"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="spinner_limit_2_max">Max (V)</label></td>
+                            <td><input id="spinner_limit_2_max" class="output_spinner"></td>
+                        </tr>                   
+                    </table>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend><h2>Save</h2></legend>
+                <button id="save_pams" class="button">Save parameters to SD card</button>
+            </fieldset>
+
+            <fieldset>
+                    <legend><h2>Load</h2></legend>
+                    <button id= "load_pams" class="button">Load parameters from SD card</button>
+            </fieldset>
+
+        </fieldset> 
 
 
     </div>
