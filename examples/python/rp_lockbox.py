@@ -42,7 +42,10 @@ class RedPitaya():
         if self.timeout is not None:
             self._socket.settimeout(self.timeout)
 
-        self._socket.connect((self.host, self.port))
+        try:
+            self._socket.connect((self.host, self.port))
+        except socket.timeout as err:
+            LOG.error("Failed to connect to socket. Error: %s", err)
 
     def __del__(self):
         if self._socket is not None:
@@ -74,7 +77,10 @@ class RedPitaya():
         :msg: text string to send
         """
         LOG.debug("TX: %s", msg)
-        self._socket.send((msg + self.delimiter).encode('utf-8'))
+        try:
+            self._socket.send((msg + self.delimiter).encode('utf-8'))
+        except (OSError, socket.timeout) as err:
+            LOG.error("Failed to send message to socket. Error: %s", err)
 
     def txrx_txt(self, msg):
         """Send text string and return the response after removing the delimiter.
