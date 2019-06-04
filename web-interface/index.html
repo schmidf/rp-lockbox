@@ -725,6 +725,15 @@
                     $("#output_group_22").show();
             }
         }
+
+        function opt_hide_changed(event, ui){
+            if (event.target.checked==true){
+                $(".options-item").hide();
+            }
+            else {
+                $(".options-item").show();
+            }
+        }
 		
         function update_parameters() {
 
@@ -952,6 +961,8 @@
         $("#button_toggle_21").on("click", toggle_lock_scan);
         $("#button_toggle_12").on("click", toggle_lock_scan);
         $("#button_toggle_22").on("click", toggle_lock_scan);
+
+        $( "#checkbox_opt_hide").on("change", opt_hide_changed);
 		
         // Start the update loop
         update_parameters();
@@ -1391,7 +1402,12 @@
         <fieldset class="output-group">
             <legend><h1>Options</h1></legend>
 
-            <fieldset>
+            <label class="checkbox-container">Hide
+                <input type="checkbox" id="checkbox_opt_hide" class="checkbox">
+                <span class="checkmark"></span>
+            </label>
+
+            <fieldset class="options-item">
                 <legend><h2>Select Operating Mode</h2></legend>
                     <select id="select_op_mode">
                         <option value="3">Show all</option>
@@ -1401,7 +1417,7 @@
                     </select>
             </fieldset>
 
-            <fieldset id="output_1">
+            <fieldset class="options-item">
                 <legend><h2>Output Limits</h2></legend>
 			
                 <div id="accordion_limit" class="accordion">
@@ -1430,12 +1446,12 @@
                 </div>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="options-item">
                 <legend><h2>Save</h2></legend>
                 <button id="save_pams" class="button">Save parameters to SD card</button>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="options-item">
                     <legend><h2>Load</h2></legend>
                     <button id= "load_pams" class="button">Load parameters from SD card</button>
             </fieldset>
