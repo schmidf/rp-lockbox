@@ -410,6 +410,22 @@ def load_parameters():
     if retval != 0:
         LOG.error("Failed to load parameters. Error code: %s", ERROR_CODES[retval])
 
+@route("/_get_input_voltage")
+def get_input_voltage():
+    ain_voltage = [0., 0., 0., 0.]
+    for i in range(4, 8):
+        ain_voltage[i-4] = ctypes.c_float()
+        retval = RP_LIB.rp_ApinGetValue(i, ctypes.byref(ain_voltage[i-4]))
+        if retval != 0:
+            LOG.error("Failed to get analog input voltage. Error code: %s", ERROR_CODES[retval])
+    ain_voltage_values = {
+        "ain0_voltage": ain_voltage[0].value,
+        "ain1_voltage": ain_voltage[1].value,
+        "ain2_voltage": ain_voltage[2].value,
+        "ain3_voltage": ain_voltage[3].value
+    }
+    return json.dumps(ain_voltage_values)
+
 @route("/_get_parameters")
 def get_parameters():
     """Return a json string containing the current lockbox parameters."""
@@ -835,6 +851,11 @@ class MockRPLib():
     def rp_GenOutIsEnabled(self, pid, sg_enabled):
         LOG.debug("rp_GenOutIsEnabled called")
         sg_enabled._obj.value = True
+        return 0
+    
+    def rp_ApinGetValue(self, ain, ain_voltage):
+        LOG.debug("rp_ApinGetValue called")
+        ain_voltage._obj.value = 1.3
         return 0
 
 try:

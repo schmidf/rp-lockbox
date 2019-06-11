@@ -109,8 +109,25 @@
 <script src="external/jquery/jquery.js"></script>
 <script src="jquery-ui.js"></script>
 <script>
-        // Global settings
+        // Global variables
         var update_interval = 500;
+        var update_interval_values = 100;
+        var spinner_pid_sp_name = ["#spinner_pid_11_sp", "#spinner_pid_21_sp", "#spinner_pid_12_sp", "#spinner_pid_22_sp"];
+        var spinner_pid_kp_name = ["#spinner_pid_11_kp", "#spinner_pid_21_kp", "#spinner_pid_12_kp", "#spinner_pid_22_kp"];
+        var spinner_pid_ki_name = ["#spinner_pid_11_ki", "#spinner_pid_21_ki", "#spinner_pid_12_ki", "#spinner_pid_22_ki"];
+        var spinner_pid_kd_name = ["#spinner_pid_11_kd", "#spinner_pid_21_kd", "#spinner_pid_12_kd", "#spinner_pid_22_kd"];
+        var checkbox_pid_inv_name = ["#checkbox_pid_11_inv", "#checkbox_pid_21_inv", "#checkbox_pid_12_inv", "#checkbox_pid_22_inv"];
+        var checkbox_pid_hold_name = ["#checkbox_pid_11_hold", "#checkbox_pid_21_hold", "#checkbox_pid_12_hold", "#checkbox_pid_22_hold"];
+        var checkbox_pid_int_res_name = ["#checkbox_pid_11_int_res", "#checkbox_pid_21_int_res", "#checkbox_pid_12_int_res", "#checkbox_pid_22_int_res"];
+        var checkbox_pid_int_auto_reset_name = ["#checkbox_pid_11_int_auto_reset", "#checkbox_pid_21_int_auto_reset", "#checkbox_pid_12_int_auto_reset", "#checkbox_pid_22_int_auto_reset"];
+        var spinner_relock_min_name = ["#spinner_relock_11_min", "#spinner_relock_21_min", "#spinner_relock_12_min", "#spinner_relock_22_min"];
+        var spinner_relock_max_name = ["#spinner_relock_11_max", "#spinner_relock_21_max", "#spinner_relock_12_max", "#spinner_relock_22_max"];
+        var spinner_relock_slew_rate_name = ["#spinner_relock_11_slew_rate", "#spinner_relock_21_slew_rate", "#spinner_relock_12_slew_rate", "#spinner_relock_22_slew_rate"];
+        var checkbox_relock_enabled_name = ["#checkbox_relock_11_enabled", "#checkbox_relock_21_enabled", "#checkbox_relock_12_enabled", "#checkbox_relock_22_enabled"];
+        var relock_input_name = ["#relock_11_input", "#relock_21_input", "#relock_12_input", "#relock_22_input"];
+        var spinner_limit_name = ["#spinner_limit_1_min", "#spinner_limit_2_min", "#spinner_limit_1_max", "#spinner_limit_2_max"];
+        var spinner_sg_amp_offset_name = ["#spinner_sg_1_amp", "#spinner_sg_2_amp", "#spinner_sg_1_offset", "#spinner_sg_2_offset"];
+        var ain_voltage_name = ["#ain_voltage_11", "#ain_voltage_21", "#ain_voltage_12", "#ain_voltage_22"];
 
         function set_setpoint(pid, setpoint) {
             $.post("_set_setpoint", {
@@ -738,83 +755,44 @@
         function update_parameters() {
 
             $.getJSON("_get_parameters").done(function(data){
-			
-                $("#spinner_pid_11_sp").not(":focus").val(data.pid_11_setpoint.toFixed(3));
-				$("#spinner_pid_12_sp").not(":focus").val(data.pid_12_setpoint.toFixed(3));
-				$("#spinner_pid_21_sp").not(":focus").val(data.pid_21_setpoint.toFixed(3));
-				$("#spinner_pid_22_sp").not(":focus").val(data.pid_22_setpoint.toFixed(3));
-				
-                $("#spinner_pid_11_kp").not(":focus").val(data.pid_11_kp.toFixed(3));
-				$("#spinner_pid_12_kp").not(":focus").val(data.pid_12_kp.toFixed(3));
-				$("#spinner_pid_21_kp").not(":focus").val(data.pid_21_kp.toFixed(3));
-				$("#spinner_pid_22_kp").not(":focus").val(data.pid_22_kp.toFixed(3));
-				
-                $("#spinner_pid_11_ki").not(":focus").val(data.pid_11_ki.toFixed(2));
-				$("#spinner_pid_12_ki").not(":focus").val(data.pid_12_ki.toFixed(2));
-				$("#spinner_pid_21_ki").not(":focus").val(data.pid_21_ki.toFixed(2));
-				$("#spinner_pid_22_ki").not(":focus").val(data.pid_22_ki.toFixed(2));
-				
-                $("#spinner_pid_11_kd").not(":focus").val(data.pid_11_kd);
-				$("#spinner_pid_12_kd").not(":focus").val(data.pid_12_kd);
-				$("#spinner_pid_21_kd").not(":focus").val(data.pid_21_kd);
-				$("#spinner_pid_22_kd").not(":focus").val(data.pid_22_kd);
-				
-                $("#checkbox_pid_11_inv").not(":focus").prop("checked", data.pid_11_inverted);
-				$("#checkbox_pid_11_hold").not(":focus").prop("checked", data.pid_11_hold);
-				$("#checkbox_pid_11_int_res").not(":focus").prop("checked", data.pid_11_int_res);
-				$("#checkbox_pid_11_int_auto_reset").not(":focus").prop("checked", data.pid_11_int_auto_reset);
-				
-				$("#checkbox_pid_12_inv").not(":focus").prop("checked", data.pid_12_inverted);
-				$("#checkbox_pid_12_hold").not(":focus").prop("checked", data.pid_12_hold);
-				$("#checkbox_pid_12_int_res").not(":focus").prop("checked", data.pid_12_int_res);
-				$("#checkbox_pid_12_int_auto_reset").not(":focus").prop("checked", data.pid_12_int_auto_reset);
-				
-				$("#checkbox_pid_21_inv").not(":focus").prop("checked", data.pid_21_inverted);
-				$("#checkbox_pid_21_hold").not(":focus").prop("checked", data.pid_21_hold);
-				$("#checkbox_pid_21_int_res").not(":focus").prop("checked", data.pid_21_int_res);
-				$("#checkbox_pid_21_int_auto_reset").not(":focus").prop("checked", data.pid_21_int_auto_reset);
-				
-				$("#checkbox_pid_22_inv").not(":focus").prop("checked", data.pid_22_inverted);
-				$("#checkbox_pid_22_hold").not(":focus").prop("checked", data.pid_22_hold);
-				$("#checkbox_pid_22_int_res").not(":focus").prop("checked", data.pid_22_int_res);
-				$("#checkbox_pid_22_int_auto_reset").not(":focus").prop("checked", data.pid_22_int_auto_reset);
-				
-				$("#spinner_relock_11_min").not(":focus").val(data.pid_11_relock_min.toFixed(3));
-				$("#spinner_relock_11_max").not(":focus").val(data.pid_11_relock_max.toFixed(3));
-				$("#spinner_relock_11_slew_rate").not(":focus").val(data.pid_11_relock_slew_rate.toFixed(2));
-				$("#checkbox_relock_11_enabled").not(":focus").prop("checked", data.pid_11_relock_enabled);
-				$("#relock_11_input").not(":focus").val(data.pid_11_relock_input);
-				
-				$("#spinner_relock_12_min").not(":focus").val(data.pid_12_relock_min.toFixed(3));
-				$("#spinner_relock_12_max").not(":focus").val(data.pid_12_relock_max.toFixed(3));
-				$("#spinner_relock_12_slew_rate").not(":focus").val(data.pid_12_relock_slew_rate.toFixed(2));
-				$("#checkbox_relock_12_enabled").not(":focus").prop("checked", data.pid_12_relock_enabled);
-				$("#relock_12_input").not(":focus").val(data.pid_12_relock_input);
-				
-				$("#spinner_relock_21_min").not(":focus").val(data.pid_21_relock_min.toFixed(3));
-				$("#spinner_relock_21_max").not(":focus").val(data.pid_21_relock_max.toFixed(3));
-				$("#spinner_relock_21_slew_rate").not(":focus").val(data.pid_21_relock_slew_rate.toFixed(2));
-				$("#checkbox_relock_21_enabled").not(":focus").prop("checked", data.pid_21_relock_enabled);
-				$("#relock_21_input").not(":focus").val(data.pid_21_relock_input);
-				
-				$("#spinner_relock_22_min").not(":focus").val(data.pid_22_relock_min.toFixed(3));
-				$("#spinner_relock_22_max").not(":focus").val(data.pid_22_relock_max.toFixed(3));
-				$("#spinner_relock_22_slew_rate").not(":focus").val(data.pid_22_relock_slew_rate.toFixed(2));
-				$("#checkbox_relock_22_enabled").not(":focus").prop("checked", data.pid_22_relock_enabled);
-				$("#relock_22_input").not(":focus").val(data.pid_22_relock_input);
-				
-				$("#spinner_limit_1_min").not(":focus").val(data.limit_min_1.toFixed(3));
-				$("#spinner_limit_2_min").not(":focus").val(data.limit_min_2.toFixed(3));
-				$("#spinner_limit_1_max").not(":focus").val(data.limit_max_1.toFixed(3));
-				$("#spinner_limit_2_max").not(":focus").val(data.limit_max_2.toFixed(3));
-				
-				$("#spinner_sg_1_amp").not(":focus").val(data.sg_1_amp.toFixed(3));
-				$("#spinner_sg_2_amp").not(":focus").val(data.sg_2_amp.toFixed(3));
-				$("#spinner_sg_1_freq").not(":focus").val(data.sg_1_freq.toFixed(2));
+                
+                var sp_values = [data.pid_11_setpoint, data.pid_21_setpoint, data.pid_12_setpoint, data.pid_22_setpoint];            
+                var kp_values = [data.pid_11_kp, data.pid_21_kp, data.pid_12_kp, data.pid_22_kp];            
+                var ki_values = [data.pid_11_ki, data.pid_21_ki, data.pid_12_ki, data.pid_22_ki];             
+                var kd_values = [data.pid_11_kd, data.pid_21_kd, data.pid_12_kd, data.pid_22_kd];              
+                var inv_values = [data.pid_11_inverted, data.pid_21_inverted, data.pid_12_inverted, data.pid_22_inverted];                
+                var hold_values = [data.pid_11_hold, data.pid_21_hold, data.pid_12_hold, data.pid_22_hold];               
+                var int_res_values = [data.pid_11_int_res, data.pid_21_int_res, data.pid_12_int_res, data.pid_22_int_res];               
+                var int_auto_reset_values = [data.pid_11_int_auto_reset, data.pid_21_int_auto_reset, data.pid_12_int_auto_reset, data.pid_22_int_auto_reset];               
+                var relock_min_values = [data.pid_11_relock_min, data.pid_21_relock_min, data.pid_12_relock_min, data.pid_22_relock_min];               
+                var relock_max_values = [data.pid_11_relock_max, data.pid_21_relock_max, data.pid_12_relock_max, data.pid_22_relock_max];             
+                var relock_slew_rate_values = [data.pid_11_relock_slew_rate, data.pid_21_relock_slew_rate, data.pid_12_relock_slew_rate, data.pid_22_relock_slew_rate];               
+                var relock_enabled_values = [data.pid_11_relock_enabled, data.pid_21_relock_enabled, data.pid_12_relock_enabled, data.pid_22_relock_enabled];  
+                var relock_input_values = [data.pid_11_relock_input, data.pid_21_relock_input, data.pid_12_relock_input, data.pid_22_relock_input];            
+                var limit_values = [data.limit_min_1, data.limit_min_2, data.limit_max_1, data.limit_max_2];               
+                var sg_amp_offset_values = [data.sg_1_amp, data.sg_2_amp, data.sg_1_offset, data.sg_2_offset];
+
+                for(i=0; i<4; i++){
+                    $(spinner_pid_sp_name[i]).not(":focus").val(sp_values[i].toFixed(3));
+                    $(spinner_pid_kp_name[i]).not(":focus").val(kp_values[i].toFixed(3));
+                    $(spinner_pid_ki_name[i]).not(":focus").val(ki_values[i].toFixed(2));
+                    $(spinner_pid_kd_name[i]).not(":focus").val(kd_values[i]);
+                    $(checkbox_pid_inv_name[i]).not(":focus").prop("checked", inv_values[i]);
+                    $(checkbox_pid_hold_name[i]).not(":focus").prop("checked", hold_values[i]);
+                    $(checkbox_pid_int_res_name[i]).not(":focus").prop("checked", int_res_values[i]);
+                    $(checkbox_pid_int_auto_reset_name[i]).not(":focus").prop("checked", int_auto_reset_values[i]);
+                    $(spinner_relock_min_name[i]).not(":focus").val(relock_min_values[i].toFixed(3));
+                    $(spinner_relock_max_name[i]).not(":focus").val(relock_max_values[i].toFixed(3));
+                    $(spinner_relock_slew_rate_name[i]).not(":focus").val(relock_slew_rate_values[i].toFixed(2));
+                    $(checkbox_relock_enabled_name[i]).not(":focus").prop("checked", relock_enabled_values[i]);
+                    $(relock_input_name[i]).not(":focus").val(relock_input_values[i]);
+                    $(spinner_limit_name[i]).not(":focus").val(limit_values[i].toFixed(3));
+                    $(spinner_sg_amp_offset_name[i]).not(":focus").val(sg_amp_offset_values[i].toFixed(3));
+                }
+
+                $("#spinner_sg_1_freq").not(":focus").val(data.sg_1_freq.toFixed(2));
 				$("#spinner_sg_2_freq").not(":focus").val(data.sg_2_freq.toFixed(2));
-				$("#spinner_sg_1_offset").not(":focus").val(data.sg_1_offset.toFixed(3));
-				$("#spinner_sg_2_offset").not(":focus").val(data.sg_2_offset.toFixed(3));
-				$("#sg_1_waveform").not(":focus").val(data.sg_1_waveform);
+                $("#sg_1_waveform").not(":focus").val(data.sg_1_waveform);
 				$("#sg_2_waveform").not(":focus").val(data.sg_2_waveform);
 				$("#checkbox_sg_1_enabled").not(":focus").prop("checked", data.sg_1_enabled);
 				$("#checkbox_sg_2_enabled").not(":focus").prop("checked", data.sg_2_enabled);
@@ -823,6 +801,18 @@
             setTimeout(update_parameters, update_interval);
         };
 
+       
+        function update_values() {
+            var relock_input_value = [0, 0, 0, 0];
+            $.getJSON("_get_input_voltage").done(function(data){ 
+                var data_values = [data.ain0_voltage, data.ain1_voltage, data.ain2_voltage, data.ain3_voltage];
+                for(i=0; i<4; i++){
+                    relock_input_value[i] = $(relock_input_name[i]).val();
+                    $(ain_voltage_name[i]).val(data_values[relock_input_value[i]-4].toFixed(3));
+                }
+            });
+            setTimeout(update_values, update_interval_values);
+        }; 
 
     // Runs after page has loaded
     $(function() {
@@ -854,12 +844,12 @@
             max: 8191
             });
         $( ".kd_spinner" ).width(105);
-		$( ".relock_limit_spinner" ).spinner({
+		$( ".relock_limit_min_spinner, .relock_limit_max_spinner" ).spinner({
             step: 0.001,
             min: 0.,
             max: 7.
             });
-        $( ".relock_limit_spinner" ).width(105);
+        $( ".relock_limit_min_spinner, .relock_limit_max_spinner" ).width(105);
 		$( ".slew_rate_spinner" ).spinner({
             step: 1.,
             min: 0.058,
@@ -901,59 +891,30 @@
 		$( ".kp_spinner" ).on("spinstop", kp_changed);
 		$( ".ki_spinner" ).on("spinstop", ki_changed);
 		$( ".kd_spinner" ).on("spinstop", kd_changed);
+
+        $( ".inv_checkbox" ).on("change", inverted_changed);
+        $( ".hold_checkbox" ).on("change", hold_changed);
+        $( ".int_res_checkbox" ).on("change", int_reset_changed);
+        $( ".int_auto_reset_checkbox" ).on("change", int_auto_changed);
 		
-        $( "#checkbox_pid_11_inv" ).on("change", inverted_changed);
-		$( "#checkbox_pid_11_hold" ).on("change", hold_changed);
-		$( "#checkbox_pid_11_int_res" ).on("change", int_reset_changed);
-		$( "#checkbox_pid_11_int_auto_reset" ).on("change", int_auto_changed);
-		
-		$( "#checkbox_pid_21_inv" ).on("change", inverted_changed);
-		$( "#checkbox_pid_21_hold" ).on("change", hold_changed);
-		$( "#checkbox_pid_21_int_res" ).on("change", int_reset_changed);
-		$( "#checkbox_pid_21_int_auto_reset" ).on("change", int_auto_changed);
-		
-		$( "#checkbox_pid_12_inv" ).on("change", inverted_changed);
-		$( "#checkbox_pid_12_hold" ).on("change", hold_changed);
-		$( "#checkbox_pid_12_int_res" ).on("change", int_reset_changed);
-		$( "#checkbox_pid_12_int_auto_reset" ).on("change", int_auto_changed);
-		
-		$( "#checkbox_pid_22_inv" ).on("change", inverted_changed);
-		$( "#checkbox_pid_22_hold" ).on("change", hold_changed);
-		$( "#checkbox_pid_22_int_res" ).on("change", int_reset_changed);
-		$( "#checkbox_pid_22_int_auto_reset" ).on("change", int_auto_changed);
-		
-		$(".relock-select").on("change", relock_input_changed);
-		
-		$( "#spinner_relock_11_min").on("spinstop", relock_min_changed);
-		$( "#spinner_relock_11_max").on("spinstop", relock_max_changed);
-		$( ".slew_rate_spinner").on("spinstop", relock_slew_rate_changed);
-		$( "#checkbox_relock_11_enabled").on("change", relock_enabled_changed);
-		
-		$( "#spinner_relock_12_min").on("spinstop", relock_min_changed);
-		$( "#spinner_relock_12_max").on("spinstop", relock_max_changed);
-		$( "#checkbox_relock_12_enabled").on("change", relock_enabled_changed);
-		
-		$( "#spinner_relock_21_min").on("spinstop", relock_min_changed);
-		$( "#spinner_relock_21_max").on("spinstop", relock_max_changed);
-		$( "#checkbox_relock_21_enabled").on("change", relock_enabled_changed);
-		
-		$( "#spinner_relock_22_min").on("spinstop", relock_min_changed);
-		$( "#spinner_relock_22_max").on("spinstop", relock_max_changed);
-		$( "#checkbox_relock_22_enabled").on("change", relock_enabled_changed);
+		$( ".relock_enabled_checkbox").on("change", relock_enabled_changed);
+        $( ".relock_limit_min_spinner").on("spinstop", relock_min_changed);
+        $( ".relock_limit_max_spinner").on("spinstop", relock_max_changed);
+        $( ".slew_rate_spinner").on("spinstop", relock_slew_rate_changed);
+        $(".relock-select").on("change", relock_input_changed);
 		
 		$( "#spinner_limit_1_min").on("spinstop", limit_min_changed);
 		$( "#spinner_limit_2_min").on("spinstop", limit_min_changed);
 		$( "#spinner_limit_1_max").on("spinstop", limit_max_changed);
 		$( "#spinner_limit_2_max").on("spinstop", limit_max_changed);
 		
-		$( ".waveform-select" ).on("change", waveform_changed);
-		$( "#spinner_sg_1_amp" ).on("spinstop", sg_amp_changed);
-		$( "#spinner_sg_2_amp" ).on("spinstop", sg_amp_changed);
+		$( ".sg_enabled_checkbox").on("change", sg_enabled_changed);
 		$( ".freq_spinner" ).on("spinstop", sg_freq_changed);
+        $( "#spinner_sg_1_amp" ).on("spinstop", sg_amp_changed);
+		$( "#spinner_sg_2_amp" ).on("spinstop", sg_amp_changed);
 		$( "#spinner_sg_1_offset" ).on("spinstop", sg_offset_changed);
 		$( "#spinner_sg_2_offset" ).on("spinstop", sg_offset_changed);
-		$( "#checkbox_sg_1_enabled").on("change", sg_enabled_changed);
-        $( "#checkbox_sg_2_enabled").on("change", sg_enabled_changed);
+        $( ".waveform-select" ).on("change", waveform_changed);
         
         $("#save_pams").on("click", save_parameters);
         $("#load_pams").on("click", load_parameters);
@@ -964,8 +925,10 @@
 
         $( "#checkbox_opt_hide").on("change", opt_hide_changed);
 		
+        
         // Start the update loop
         update_parameters();
+        update_values();
     });
 </script>
 </head>
@@ -1003,19 +966,19 @@
 					
                     <div class="controlgroup-vertical">
                         <label class="checkbox-container">Inverted
-                            <input type="checkbox" id="checkbox_pid_11_inv" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_11_inv" class="inv_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Hold internal state
-                                <input type="checkbox" id="checkbox_pid_11_hold" class="checkbox">
+                                <input type="checkbox" id="checkbox_pid_11_hold" class="hold_checkbox">
                                 <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Integrator reset
-                                <input type="checkbox" id="checkbox_pid_11_int_res" class="checkbox">
+                                <input type="checkbox" id="checkbox_pid_11_int_res" class="int_res_checkbox">
                                 <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Automatic integrator reset
-                                <input type="checkbox" id="checkbox_pid_11_int_auto_reset" class="checkbox">
+                                <input type="checkbox" id="checkbox_pid_11_int_auto_reset" class="int_auto_reset_checkbox">
                                 <span class="checkmark"></span>
                         </label>
                         <button id="button_toggle_11" class="button">Toggle Lock/Scan</button>
@@ -1029,17 +992,17 @@
                     <table>
                         <tr>
                             <label class="checkbox-container">Enabled
-                                <input type="checkbox" id="checkbox_relock_11_enabled" class="checkbox">
+                                <input type="checkbox" id="checkbox_relock_11_enabled" class="relock_enabled_checkbox">
                                 <span class="checkmark"></span>
                             </label>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_11_min">Min (V)</label></td>
-                            <td><input id="spinner_relock_11_min" class="relock_limit_spinner"></td>
+                            <td><input id="spinner_relock_11_min" class="relock_limit_min_spinner"></td>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_11_max">Max (V)</label></td>
-                            <td><input id="spinner_relock_11_max" class="relock_limit_spinner"></td>
+                            <td><input id="spinner_relock_11_max" class="relock_limit_max_spinner"></td>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_11_slew_rate">Slew Rate (V/s)</label></td>
@@ -1055,6 +1018,10 @@
                                     <option value="7">AIN3</option>
                                 </select>
                             </td>
+                        </tr>
+                        <tr>
+                            <td><a>Input Voltage (V)</a></td>
+                            <td><output id="ain_voltage_11">0</output></td>
                         </tr>
                     </table>
 					    
@@ -1089,19 +1056,19 @@
 					
                     <div class="controlgroup-vertical">
                         <label class="checkbox-container">Inverted
-                            <input type="checkbox" id="checkbox_pid_21_inv" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_21_inv" class="inv_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Hold internal state
-                            <input type="checkbox" id="checkbox_pid_21_hold" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_21_hold" class="hold_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Integrator reset
-                            <input type="checkbox" id="checkbox_pid_21_int_res" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_21_int_res" class="int_res_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Automatic integrator reset
-                            <input type="checkbox" id="checkbox_pid_21_int_auto_reset" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_21_int_auto_reset" class="int_auto_reset_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <button id="button_toggle_21" class="button">Toggle Lock/Scan</button>
@@ -1115,17 +1082,17 @@
                     <table>
                         <tr>
                             <label class="checkbox-container">Enabled
-                                <input type="checkbox" id="checkbox_relock_21_enabled" class="checkbox">
+                                <input type="checkbox" id="checkbox_relock_21_enabled" class="relock_enabled_checkbox">
                                 <span class="checkmark"></span>
                             </label>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_21_min">Min (V)</label></td>
-                            <td><input id="spinner_relock_21_min" class="relock_limit_spinner"></td>
+                            <td><input id="spinner_relock_21_min" class="relock_limit_min_spinner"></td>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_21_max">Max (V)</label></td>
-                            <td><input id="spinner_relock_21_max" class="relock_limit_spinner"></td>
+                            <td><input id="spinner_relock_21_max" class="relock_limit_max_spinner"></td>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_21_slew_rate">Slew Rate (V/s)</label></td>
@@ -1141,6 +1108,10 @@
                                     <option value="7">AIN3</option>
                                 </select>
                             </td>
+                        </tr>
+                        <tr>
+                            <td><a>Input Voltage (V)</a></td>
+                            <td><output id="ain_voltage_21">0</output></td>
                         </tr>
                     </table>
 					  
@@ -1178,19 +1149,19 @@
 					
                     <div class="controlgroup-vertical">
                         <label class="checkbox-container">Inverted
-                            <input type="checkbox" id="checkbox_pid_12_inv" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_12_inv" class="inv_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Hold internal state
-                            <input type="checkbox" id="checkbox_pid_12_hold" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_12_hold" class="hold_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Integrator reset
-                            <input type="checkbox" id="checkbox_pid_12_int_res" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_12_int_res" class="int_res_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Automatic integrator reset
-                            <input type="checkbox" id="checkbox_pid_12_int_auto_reset" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_12_int_auto_reset" class="int_auto_reset_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <button id="button_toggle_12" class="button">Toggle Lock/Scan</button>
@@ -1204,17 +1175,17 @@
                     <table>
                         <tr>
                             <label class="checkbox-container">Enabled
-                                <input type="checkbox" id="checkbox_relock_12_enabled" class="checkbox">
+                                <input type="checkbox" id="checkbox_relock_12_enabled" class="relock_enabled_checkbox">
                                 <span class="checkmark"></span>
                             </label>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_12_min">Min (V)</label></td>
-                            <td><input id="spinner_relock_12_min" class="relock_limit_spinner"></td>
+                            <td><input id="spinner_relock_12_min" class="relock_limit_min_spinner"></td>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_12_max">Max (V)</label></td>
-                            <td><input id="spinner_relock_12_max" class="relock_limit_spinner"></td>
+                            <td><input id="spinner_relock_12_max" class="relock_limit_max_spinner"></td>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_12_slew_rate">Slew Rate (V/s)</label></td>
@@ -1230,6 +1201,10 @@
                                     <option value="7">AIN3</option>
                                 </select>
                             </td>
+                        </tr>
+                        <tr>
+                            <td><a>Input Voltage (V)</a></td>
+                            <td><output id="ain_voltage_12">0</output></td>
                         </tr>
                     </table>	
                     
@@ -1263,19 +1238,19 @@
 					
                     <div class="controlgroup-vertical">
                         <label class="checkbox-container">Inverted
-                            <input type="checkbox" id="checkbox_pid_22_inv" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_22_inv" class="inv_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Hold internal state
-                            <input type="checkbox" id="checkbox_pid_22_hold" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_22_hold" class="hold_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Integrator reset
-                            <input type="checkbox" id="checkbox_pid_22_int_res" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_22_int_res" class="int_res_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <label class="checkbox-container">Automatic integrator reset
-                            <input type="checkbox" id="checkbox_pid_22_int_auto_reset" class="checkbox">
+                            <input type="checkbox" id="checkbox_pid_22_int_auto_reset" class="int_auto_reset_checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <button id="button_toggle_22" class="button">Toggle Lock/Scan</button>
@@ -1289,17 +1264,17 @@
                     <table>
                         <tr>
                             <label class="checkbox-container">Enabled
-                                <input type="checkbox" id="checkbox_relock_22_enabled" class="checkbox">
+                                <input type="checkbox" id="checkbox_relock_22_enabled" class="relock_enabled_checkbox">
                                 <span class="checkmark"></span>
                             </label>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_22_min">Min (V)</label></td>
-                            <td><input id="spinner_relock_22_min" class="relock_limit_spinner"></td>
+                            <td><input id="spinner_relock_22_min" class="relock_limit_min_spinner"></td>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_22_max">Max (V)</label></td>
-                            <td><input id="spinner_relock_22_max" class="relock_limit_spinner"></td>
+                            <td><input id="spinner_relock_22_max" class="relock_limit_max_spinner"></td>
                         </tr>
                         <tr>
                             <td><label for="spinner_relock_22_slew_rate">Slew Rate (V/s)</label></td>
@@ -1316,6 +1291,10 @@
                                 </select>
                             </td>
                         </tr>
+                        <tr>
+                            <td><a>Input Voltage (V)</a></td>
+                            <td><output id="ain_voltage_22">0</output></td>
+                        </tr>
                     </table>	
                     
                 </fieldset>
@@ -1330,7 +1309,7 @@
                 <table>
                     <tr>
                         <label class="checkbox-container">Enabled
-                            <input type="checkbox" id="checkbox_sg_1_enabled" class="checkbox">
+                            <input type="checkbox" id="checkbox_sg_1_enabled" class="sg_enabled_checkbox">
                             <span class="checkmark"></span>
                         </label>
                     </tr>
@@ -1366,7 +1345,7 @@
                 <table>
                     <tr>
                         <label class="checkbox-container">Enabled
-                            <input type="checkbox" id="checkbox_sg_2_enabled" class="checkbox">
+                            <input type="checkbox" id="checkbox_sg_2_enabled" class="sg_enabled_checkbox">
                             <span class="checkmark"></span>
                         </label>
                     </tr>
