@@ -476,6 +476,14 @@ int rp_AOpinGetRange(int unsigned pin, float* min_val,  float* max_val) {
     return RP_OK;
 }
 
+int rp_GetInVoltage(rp_channel_t channel, float* value) {
+    return ams_GetInVoltage(channel, value);
+}
+
+int rp_GetOutVoltage(rp_channel_t channel, float* value) {
+    return ams_GetOutVoltage(channel, value);
+}
+
 
 /**
  * Acquire methods

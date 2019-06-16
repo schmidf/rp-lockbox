@@ -669,6 +669,28 @@ int rp_AOpinSetValueRaw(int unsigned pin, uint32_t value);
 int rp_AOpinGetRange(int unsigned pin, float* min_val,  float* max_val);
 
 
+/*
+ * Get the current voltage on the specified input channel
+ * @param channel The input channel to read out (see rp_channel_t documentation
+ * for details).
+ * @param value Pointer where the value in V will be returned.
+ * @return If the function is successful, the return value is RP_OK.
+ * If the function is unsuccessful, the return value is any of RP_E* values that
+ * indicate an error.
+ */
+int rp_GetInVoltage(rp_channel_t channel, float* value);
+
+/*
+ * Get the current voltage on the specified output channel
+ * @param channel The output channel to read out (see rp_channel_t documentation
+ * for details).
+ * @param value Pointer where the value in V will be returned.
+ * @return If the function is successful, the return value is RP_OK.
+ * If the function is unsuccessful, the return value is any of RP_E* values that
+ * indicate an error.
+ */
+int rp_GetOutVoltage(rp_channel_t channel, float* value);
+
 ///@}
 /** @name Acquire
  */
