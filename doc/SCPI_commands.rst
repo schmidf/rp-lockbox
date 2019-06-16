@@ -48,22 +48,27 @@ Parameter options:
 * ``<ain> = {AIN0, AIN1, AIN2, AIN3}``
 * ``<aout> = {AOUT0, AOUT1, AOUT2, AOUT3}``
 * ``<pin> = {ain, aout}``
+* ``<n> = {1,2}`` (input or output channel 1 or 2)
 * ``<value> = {value in Volts}``
    
 .. tabularcolumns:: |p{28mm}|p{28mm}|p{28mm}|p{28mm}|
 
-+---------------------------------------+---------------------+------------------------------------------------------+
-| SCPI                                  | API                 | description                                          |
-+=======================================+=====================+======================================================+
-| | ``ANALOG:PIN <pin>,<value>``        | ``rp_ApinSetValue`` | | Set analog voltage on slow analog outputs.         |
-| | Examples:                           |                     | | Voltage range of slow analog outputs is: 0 - 1.8 V |
-| | ``ANALOG:PIN AOUT2,1.34``           |                     |                                                      |
-+---------------------------------------+---------------------+------------------------------------------------------+
-| | ``ANALOG:PIN? <pin>`` > ``<value>`` | ``rp_ApinGetValue`` | | Read analog voltage from slow analog inputs.       |
-| | Examples:                           |                     | | Voltage range of slow analog inputs is: 0 3.3 V    |
-| | ``ANALOG:PIN? AOUT2`` > ``1.34``    |                     |                                                      |
-| | ``ANALOG:PIN? AIN1`` > ``1.12``     |                     |                                                      |
-+---------------------------------------+---------------------+------------------------------------------------------+
++---------------------------------------+----------------------+------------------------------------------------------+
+| SCPI                                  | API                  | description                                          |
++=======================================+======================+======================================================+
+| | ``ANALOG:PIN <pin>,<value>``        | ``rp_ApinSetValue``  | | Set analog voltage on slow analog outputs.         |
+| | Examples:                           |                      | | Voltage range of slow analog outputs is: 0 - 1.8 V |
+| | ``ANALOG:PIN AOUT2,1.34``           |                      |                                                      |
++---------------------------------------+----------------------+------------------------------------------------------+
+| | ``ANALOG:PIN? <pin>`` > ``<value>`` | ``rp_ApinGetValue``  | | Read analog voltage from slow analog inputs.       |
+| | Examples:                           |                      | | Voltage range of slow analog inputs is: 0 3.3 V    |
+| | ``ANALOG:PIN? AOUT2`` > ``1.34``    |                      |                                                      |
+| | ``ANALOG:PIN? AIN1`` > ``1.12``     |                      |                                                      |
++---------------------------------------+----------------------+------------------------------------------------------+
+| | ``ANALOG:IN<n>:VOLT?                | ``rp_GetInVoltage``  | | Read the voltage from fast analog inputs.          |
++---------------------------------------+----------------------+------------------------------------------------------+
+| | ``ANALOG:OUT<n>:VOLT?               | ``rp_GetOutVoltage`` | | Read the voltage from fast analog outputs.         |
++---------------------------------------+----------------------+------------------------------------------------------+
 
 ================
 Signal Generator

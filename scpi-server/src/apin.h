@@ -1,5 +1,7 @@
 /**
- * $Id: $
+ * Copyright (c) 2019, Fabian Schmid
+ *
+ * All rights reserved.
  *
  * @brief Red Pitaya Scpi server apin SCPI commands interface
  *
@@ -19,5 +21,7 @@
 scpi_result_t RP_AnalogPinReset(scpi_t * context);
 scpi_result_t RP_AnalogPinValueQ(scpi_t * context);
 scpi_result_t RP_AnalogPinValue(scpi_t * context);
+scpi_result_t RP_AnalogInVoltageQ(scpi_t * context);
+scpi_result_t RP_AnalogOutVoltageQ(scpi_t * context);
 
 #endif /* APIN_H_ */

@@ -1,5 +1,7 @@
 /**
- * $Id: $
+ * Copyright (c) 2019, Fabian Schmid
+ *
+ * All rights reserved.
  *
  * @brief Red Pitaya Scpi server apin SCPI commands implementation
  *
@@ -113,5 +115,47 @@ scpi_result_t RP_AnalogPinValue(scpi_t * context) {
     }
 
     RP_LOG(LOG_INFO, "*ANALOG:PIN Successfully set port value.\n");
+    return SCPI_RES_OK;
+}
+
+scpi_result_t RP_AnalogInVoltageQ(scpi_t * context) {
+    int result;
+    rp_channel_t channel;
+    float voltage;
+
+    /* Parse input channel */
+    if(RP_ParseChArgv(context, &channel) != RP_OK) {
+        return SCPI_RES_ERR;
+    }
+
+    result = rp_GetInVoltage(channel, &voltage);
+    if(result != RP_OK) {
+        RP_LOG(LOG_ERR, "*ANALOG:IN#:VOLT? Failed to get input voltage: %s\n", rp_GetError(result));
+        return SCPI_RES_ERR;
+    }
+    SCPI_ResultDouble(context, voltage);
+
+    RP_LOG(LOG_INFO, "*ANALOG:IN#:VOLT? Successfully returned voltage to client.\n");
+    return SCPI_RES_OK;
+}
+
+scpi_result_t RP_AnalogOutVoltageQ(scpi_t * context) {
+    int result;
+    rp_channel_t channel;
+    float voltage;
+
+    /* Parse output channel */
+    if(RP_ParseChArgv(context, &channel) != RP_OK) {
+        return SCPI_RES_ERR;
+    }
+
+    result = rp_GetOutVoltage(channel, &voltage);
+    if(result != RP_OK) {
+        RP_LOG(LOG_ERR, "*ANALOG:OUT#:VOLT? Failed to get output voltage: %s\n", rp_GetError(result));
+        return SCPI_RES_ERR;
+    }
+    SCPI_ResultDouble(context, voltage);
+
+    RP_LOG(LOG_INFO, "*ANALOG:OUT#:VOLT? Successfully returned voltage to client.\n");
     return SCPI_RES_OK;
 }

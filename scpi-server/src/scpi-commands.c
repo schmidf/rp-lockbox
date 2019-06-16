@@ -143,6 +143,8 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "ANALOG:RST", .callback                 = RP_AnalogPinReset,},
     {.pattern = "ANALOG:PIN", .callback                 = RP_AnalogPinValue,},
     {.pattern = "ANALOG:PIN?", .callback                = RP_AnalogPinValueQ,},
+    {.pattern = "ANALOG:IN#:VOLT?", .callback           = RP_AnalogInVoltageQ,},
+    {.pattern = "ANALOG:OUT#:VOLT?", .callback          = RP_AnalogOutVoltageQ,},
 
     /* Acquire */
     {.pattern = "ACQ:START", .callback                  = RP_AcqStart,},
