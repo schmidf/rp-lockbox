@@ -29,7 +29,7 @@ typedef struct analog_mixed_signals_control_s {
     uint32_t aif [4];
     uint32_t reserved [4];
     uint32_t dac [4];
-    uint32_t reserved2 [7];
+    uint32_t reserved2 [8];
     uint32_t fadc [2];
     uint32_t fdac [2];
 } analog_mixed_signals_control_t;
