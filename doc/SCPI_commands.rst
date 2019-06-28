@@ -65,9 +65,9 @@ Parameter options:
 | | ``ANALOG:PIN? AOUT2`` > ``1.34``    |                      |                                                      |
 | | ``ANALOG:PIN? AIN1`` > ``1.12``     |                      |                                                      |
 +---------------------------------------+----------------------+------------------------------------------------------+
-| | ``ANALOG:IN<n>:VOLT?                | ``rp_GetInVoltage``  | | Read the voltage from fast analog inputs.          |
+| | ``ANALOG:IN<n>:VOLT?``              | ``rp_GetInVoltage``  | | Read the voltage from fast analog inputs.          |
 +---------------------------------------+----------------------+------------------------------------------------------+
-| | ``ANALOG:OUT<n>:VOLT?               | ``rp_GetOutVoltage`` | | Read the voltage from fast analog outputs.         |
+| | ``ANALOG:OUT<n>:VOLT?``             | ``rp_GetOutVoltage`` | | Read the voltage from fast analog outputs.         |
 +---------------------------------------+----------------------+------------------------------------------------------+
 
 ================
