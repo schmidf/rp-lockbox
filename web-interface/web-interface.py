@@ -418,13 +418,33 @@ def get_input_voltage():
         retval = RP_LIB.rp_ApinGetValue(i, ctypes.byref(ain_voltage[i-4]))
         if retval != 0:
             LOG.error("Failed to get analog input voltage. Error code: %s", ERROR_CODES[retval])
+
+    fast_input_voltage = [0., 0.]
+    for i in range(2):
+        fast_input_voltage[i] = ctypes.c_float()
+        retval = RP_LIB.rp_GetInVoltage(i, ctypes.byref(fast_input_voltage[i]))
+        if retval != 0:
+            LOG.error("Failed to get fast input voltage. Error code: %s", ERROR_CODES[retval])
+
+    fast_output_voltage = [0., 0.]
+    for i in range(2):
+        fast_output_voltage[i] = ctypes.c_float()
+        retval = RP_LIB.rp_GetOutVoltage(i, ctypes.byref(fast_output_voltage[i]))
+        if retval != 0:
+            LOG.error("Failed to get fast output voltage. Error code: %s", ERROR_CODES[retval])
+
     ain_voltage_values = {
         "ain0_voltage": ain_voltage[0].value,
         "ain1_voltage": ain_voltage[1].value,
         "ain2_voltage": ain_voltage[2].value,
-        "ain3_voltage": ain_voltage[3].value
+        "ain3_voltage": ain_voltage[3].value,
+        "in_1_voltage": fast_input_voltage[0].value,
+        "in_2_voltage": fast_input_voltage[1].value,
+        "out_1_voltage": fast_output_voltage[0].value,
+        "out_2_voltage": fast_output_voltage[1].value
     }
     return json.dumps(ain_voltage_values)
+
 
 @route("/_get_parameters")
 def get_parameters():
@@ -856,6 +876,16 @@ class MockRPLib():
     def rp_ApinGetValue(self, ain, ain_voltage):
         LOG.debug("rp_ApinGetValue called")
         ain_voltage._obj.value = 1.3
+        return 0
+    
+    def rp_GetInVoltage(self, input, fast_input_voltage):
+        LOG.debug("rp_GetInVoltage called")
+        fast_input_voltage._obj.value = 0.9
+        return 0
+
+    def rp_GetOutVoltage(self, input, fast_output_voltage):
+        LOG.debug("rp_GetOutVoltage called")
+        fast_output_voltage._obj.value = 0.8
         return 0
 
 try:

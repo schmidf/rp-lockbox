@@ -810,7 +810,14 @@
                     relock_input_value[i] = $(relock_input_name[i]).val();
                     $(ain_voltage_name[i]).val(data_values[relock_input_value[i]-4].toFixed(3));
                 }
+                $("#fast_input_1_voltage").val(data.in_1_voltage.toFixed(3));
+                $("#fast_input_2_voltage").val(data.in_2_voltage.toFixed(3));
+                $("#fast_output_11_voltage").val(data.out_1_voltage.toFixed(3));
+                $("#fast_output_21_voltage").val(data.out_2_voltage.toFixed(3));
+                $("#fast_output_12_voltage").val(data.out_1_voltage.toFixed(3));
+                $("#fast_output_22_voltage").val(data.out_2_voltage.toFixed(3));
             });
+            
             setTimeout(update_values, update_interval_values);
         }; 
 
@@ -936,13 +943,20 @@
 
     <div class="flex-container">
         
-
-        <fieldset id="input_1">
+        <fieldset id="input_1" class="output-group">
             <legend><h1>Lockbox (Input 1)</h1></legend>
+
+            <div>
+                <a>Input Voltage (V)</a>
+                <output id="fast_input_1_voltage">0</output>
+            </div>
 			
             <fieldset class="output-group" id="output_group_11">
                 <legend><h2>Output 1</h2></legend>
-				
+
+				<a>Output Voltage (V)</a>
+                <output id="fast_output_11_voltage">0</output>
+
                 <fieldset>
                     <legend><h3>PID</h3></legend>
                     <table>
@@ -1031,7 +1045,10 @@
 
             <fieldset class="output-group" id="output_group_21">
                 <legend><h2>Output 2</h2></legend>
-				
+
+				<a>Output Voltage (V)</a>
+                <output id="fast_output_21_voltage">0</output>
+
                 <fieldset>
                     <legend><h3>PID</h3></legend>
 					
@@ -1120,11 +1137,19 @@
         </fieldset>
 		
 		
-        <fieldset id="input_2">
+        <fieldset id="input_2" class="output-group">
             <legend><h1>Lockbox (Input 2)</h1></legend>
+
+            <div>
+                <a>Input Voltage (V)</a>
+                <output id="fast_input_2_voltage">0</output>
+            </div>
 			
             <fieldset class="output-group" id="output_group_12">
                 <legend><h2>Output 1</h2></legend>
+
+                <a>Output Voltage (V)</a>
+                <output id="fast_output_12_voltage">0</output>
 				
                 <fieldset>
                     <legend><h3>PID</h3></legend>
@@ -1213,6 +1238,9 @@
 			
             <fieldset class="output-group" id="output_group_22">
                 <legend><h2>Output 2</h2></legend>
+
+                <a>Output Voltage (V)</a>
+                <output id="fast_output_22_voltage">0</output>
 				
                 <fieldset>
                     <legend><h3>PID</h3></legend>
