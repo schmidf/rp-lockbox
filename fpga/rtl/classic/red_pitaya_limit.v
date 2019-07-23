@@ -19,6 +19,8 @@ module red_pitaya_limit (
    output signed [14-1:0] dat_b_o,
    output        [1:0]    dat_a_railed_o, // 0th bit: lower rail, 1st bit:
    output        [1:0]    dat_b_railed_o, // upper rail
+   output signed [14-1:0] center_a_o, // center of channel a range
+   output signed [14-1:0] center_b_o, // center of channel b range
 
    // system bus
    input      [32-1:0] sys_addr,
@@ -35,6 +37,15 @@ reg signed [14-1:0] min_val_a;
 reg signed [14-1:0] max_val_a;
 reg signed [14-1:0] min_val_b;
 reg signed [14-1:0] max_val_b;
+
+wire signed [15-1:0] sum_a;
+wire signed [15-1:0] sum_b;
+
+assign sum_a = max_val_a + min_val_a;
+assign sum_b = max_val_b + min_val_b;
+
+assign center_a_o = sum_a>>>1;
+assign center_b_o = sum_b>>>1;
 
 // Limiters
 red_pitaya_limit_block limit_a (

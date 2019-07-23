@@ -1,10 +1,10 @@
 [*]
-[*] GTKWave Analyzer v3.3.91 (w)1999-2018 BSI
-[*] Sat Jul 14 11:03:48 2018
+[*] GTKWave Analyzer v3.3.98 (w)1999-2019 BSI
+[*] Tue Jul 23 08:17:35 2019
 [*]
 [dumpfile] "limit_tb.vcd"
-[dumpfile_mtime] "Sat Jul 14 11:03:11 2018"
-[dumpfile_size] 9640
+[dumpfile_mtime] "Tue Jul 23 08:17:10 2019"
+[dumpfile_size] 9801
 [savefile] "wave_config.gtkw"
 [timestart] 0
 [size] 1920 1103
@@ -21,8 +21,10 @@ limit_tb.clk
 @420
 limit_tb.dat_a_in[13:0]
 limit_tb.dat_a_out[13:0]
-limit_tb.limit.min_val_a[13:0]
 limit_tb.limit.max_val_a[13:0]
+limit_tb.limit.min_val_a[13:0]
+@421
+limit_tb.limit.center_a_o[13:0]
 @800028
 limit_tb.dat_a_railed_out[1:0]
 @28
