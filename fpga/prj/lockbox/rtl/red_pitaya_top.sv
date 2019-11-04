@@ -179,6 +179,7 @@ logic        [14-1:0] dac_a    , dac_b    ;        // data after saturation
 logic signed [15-1:0] dac_a_sum, dac_b_sum;        // sum of ASG and PID before saturation
 logic signed [14-1:0] dac_a_lim_i, dac_b_lim_i;    // input to the dac limiters
 logic [1:0]           dac_a_railed, dac_b_railed;  // limiter status for integrator reset
+logic signed [14-1:0] dac_a_center, dac_b_center;  // center of the output ranges
 
 // ASG
 SBG_T [2-1:0]            asg_dat;
@@ -543,6 +544,8 @@ red_pitaya_pid i_pid (
   .relock_b_i      (xadc_b_dat),
   .relock_c_i      (xadc_c_dat),
   .relock_d_i      (xadc_d_dat),
+  .out_a_center_i  (dac_a_center),
+  .out_b_center_i  (dac_b_center),
   // System bus
   .sys_addr        (sys[3].addr ),
   .sys_wdata       (sys[3].wdata),
@@ -567,6 +570,8 @@ red_pitaya_limit i_limit (
   .dat_b_o        (dac_b       ), // out 2
   .dat_a_railed_o (dac_a_railed),
   .dat_b_railed_o (dac_b_railed),
+  .center_a_o     (dac_a_center),
+  .center_b_o     (dac_b_center),
   // System bus
   .sys_addr        (sys[6].addr ),
   .sys_wdata       (sys[6].wdata),

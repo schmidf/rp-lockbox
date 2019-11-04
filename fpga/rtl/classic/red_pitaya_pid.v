@@ -53,18 +53,20 @@
 `timescale 1ns / 1ps
 module red_pitaya_pid (
    // signals
-   input                 clk_i           ,  //!< processing clock
-   input                 rstn_i          ,  //!< processing reset - active low
-   input      [ 14-1: 0] dat_a_i         ,  //!< input data CHA
-   input      [ 14-1: 0] dat_b_i         ,  //!< input data CHB
-   input      [    1: 0] railed_a_i      ,  //!< input CHA railed
-   input      [    1: 0] railed_b_i      ,  //!< input CHA railed
-   input      [ 12-1: 0] relock_a_i      ,
-   input      [ 12-1: 0] relock_b_i      ,
-   input      [ 12-1: 0] relock_c_i      ,
-   input      [ 12-1: 0] relock_d_i      ,
-   output     [ 14-1: 0] dat_a_o         ,  //!< output data CHA
-   output     [ 14-1: 0] dat_b_o         ,  //!< output data CHB
+   input                   clk_i           ,  //!< processing clock
+   input                   rstn_i          ,  //!< processing reset - active low
+   input        [ 14-1: 0] dat_a_i         ,  //!< input data CHA
+   input        [ 14-1: 0] dat_b_i         ,  //!< input data CHB
+   input        [    1: 0] railed_a_i      ,  //!< input CHA railed
+   input        [    1: 0] railed_b_i      ,  //!< input CHA railed
+   input        [ 12-1: 0] relock_a_i      ,
+   input        [ 12-1: 0] relock_b_i      ,
+   input        [ 12-1: 0] relock_c_i      ,
+   input        [ 12-1: 0] relock_d_i      ,
+   input signed [ 14-1: 0] out_a_center_i  ,
+   input signed [ 14-1: 0] out_b_center_i  ,
+   output       [ 14-1: 0] dat_a_o         ,  //!< output data CHA
+   output       [ 14-1: 0] dat_b_o         ,  //!< output data CHB
   
    // system bus
    input      [ 32-1: 0] sys_addr        ,  //!< bus address
@@ -95,7 +97,9 @@ reg         [3:0]         pid_inverted              ;
 reg         [3:0]         set_irst                  ;
 reg         [3:0]         set_irst_when_railed      ;
 reg         [3:0]         set_hold                 ;
-wire                      pid_irst             [3:0];
+wire        [3:0]             pid_irst             ;
+wire        [3:0]         pid_ctr_rst               ;
+wire signed [14-1:0]      pid_ctr_val          [3:0];
 wire                      pid_hold             [3:0];
 wire        [1:0]         pid_railed_i         [3:0];
 
@@ -147,12 +151,14 @@ generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
       .dat_o        (  pid_out[pid_index]     ),  // output data
 
        // settings
-      .set_sp_i     (  set_sp[pid_index]      ),  // set point
-      .set_kp_i     (  set_kp[pid_index]      ),  // Kp
-      .set_ki_i     (  set_ki[pid_index]      ),  // Ki
-      .set_kd_i     (  set_kd[pid_index]      ),  // Kd
-      .inverted_i   (  pid_inverted[pid_index]),  // feedback sign
-      .int_rst_i    (  pid_irst[pid_index]    )   // integrator reset
+      .set_sp_i      (  set_sp[pid_index]      ),  // set point
+      .set_kp_i      (  set_kp[pid_index]      ),  // Kp
+      .set_ki_i      (  set_ki[pid_index]      ),  // Ki
+      .set_kd_i      (  set_kd[pid_index]      ),  // Kd
+      .inverted_i    (  pid_inverted[pid_index]),  // feedback sign
+      .int_rst_i     (  pid_irst[pid_index]    ),   // integrator reset
+      .int_ctr_rst_i (  pid_ctr_rst[pid_index] ),
+      .int_ctr_val_i (  pid_ctr_val[pid_index] )
     );
 
     pid_relock #(
@@ -179,14 +185,20 @@ assign pid_in[1] = dat_b_i;
 assign pid_in[2] = dat_a_i;
 assign pid_in[3] = dat_b_i;
 
-assign pid_irst[0] = set_irst[0] || (set_irst_when_railed[0] && (railed_a_i[0] || railed_a_i[1]))
-                     || relock_clear_o[0]; 
-assign pid_irst[1] = set_irst[1] || (set_irst_when_railed[1] && (railed_a_i[0] || railed_a_i[1]))
-                     || relock_clear_o[1]; 
-assign pid_irst[2] = set_irst[2] || (set_irst_when_railed[2] && (railed_b_i[0] || railed_b_i[1]))
-                     || relock_clear_o[2]; 
-assign pid_irst[3] = set_irst[3] || (set_irst_when_railed[3] && (railed_b_i[0] || railed_b_i[1]))
-                     || relock_clear_o[3]; 
+assign pid_irst[0] = set_irst[0];
+assign pid_irst[1] = set_irst[1];
+assign pid_irst[2] = set_irst[2];
+assign pid_irst[3] = set_irst[3];
+
+assign pid_ctr_rst[0] = (set_irst_when_railed[0] && (railed_a_i[0] || railed_a_i[1])) || relock_clear_o[0];
+assign pid_ctr_rst[1] = (set_irst_when_railed[1] && (railed_a_i[0] || railed_a_i[1])) || relock_clear_o[1];
+assign pid_ctr_rst[2] = (set_irst_when_railed[2] && (railed_b_i[0] || railed_b_i[1])) || relock_clear_o[2];
+assign pid_ctr_rst[3] = (set_irst_when_railed[3] && (railed_b_i[0] || railed_b_i[1])) || relock_clear_o[3];
+
+assign pid_ctr_val[0] = out_a_center_i;
+assign pid_ctr_val[1] = out_a_center_i;
+assign pid_ctr_val[2] = out_b_center_i;
+assign pid_ctr_val[3] = out_b_center_i;
 
 assign pid_railed_i[0] = railed_a_i;
 assign pid_railed_i[1] = railed_a_i;

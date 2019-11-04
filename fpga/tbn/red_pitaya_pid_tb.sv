@@ -72,6 +72,8 @@ logic signed [14-1: 0] limit_a_out;
 logic signed [14-1: 0] limit_b_out;
 logic [1:0] dat_a_railed;
 logic [1:0] dat_b_railed;
+logic signed [14-1:0] dac_a_center;
+logic signed [14-1:0] dac_b_center;
 
 logic [ 32-1: 0] pid_sys_addr        ;
 logic [ 32-1: 0] pid_sys_wdata       ;
@@ -144,13 +146,17 @@ initial begin
    wait (rstn)
    repeat(10) @(posedge clk);
    //PID settings
-   pid_config = 32'b11111111;
+   pid_config = 32'b111111111111;
    pid_bus.write(32'h00, pid_config);  // negative gain sign, all integrators reset
    pid_bus.write(32'h10+4*PID_TO_TEST, 14'd7000  );  // set point
    pid_bus.write(32'h20+4*PID_TO_TEST, 24'd2000);  // Kp
    pid_bus.write(32'h30+4*PID_TO_TEST, 24'd1000000 );  // Ki
    pid_bus.write(32'h40+4*PID_TO_TEST, 24'd0  );  // Kd
    repeat(100) @(posedge clk);
+   // limiter settings
+   limit_bus.write(32'h8, 14'd0); // Channel A min
+   limit_bus.write(32'hC, 14'd4000); // Channel A max
+   repeat(10) @(posedge clk);
 
    uut_en <= 1'b1 ;
    repeat(20) @(posedge clk);
@@ -200,18 +206,20 @@ sys_bus_model pid_bus (
 
 red_pitaya_pid pid (
    // signals
-  .clk_i        (clk      ),  // clock
-  .rstn_i       (rstn     ),  // reset - active low
-  .dat_a_i      (dat_a_in ),  // in 1
-  .dat_b_i      (dat_b_in ),  // in 2
-  .railed_a_i   (dat_a_railed),
-  .railed_b_i   (dat_b_railed),
-  .dat_a_o      (dat_a_out),  // out 1
-  .dat_b_o      (dat_b_out),  // out 2
-  .relock_a_i   (relock_a_in),
-  .relock_b_i   (relock_b_in),
-  .relock_c_i   (relock_c_in),
-  .relock_d_i   (relock_d_in),
+  .clk_i          (clk      ),  // clock
+  .rstn_i         (rstn     ),  // reset - active low
+  .dat_a_i        (dat_a_in ),  // in 1
+  .dat_b_i        (dat_b_in ),  // in 2
+  .railed_a_i     (dat_a_railed),
+  .railed_b_i     (dat_b_railed),
+  .dat_a_o        (dat_a_out),  // out 1
+  .dat_b_o        (dat_b_out),  // out 2
+  .relock_a_i     (relock_a_in),
+  .relock_b_i     (relock_b_in),
+  .relock_c_i     (relock_c_in),
+  .relock_d_i     (relock_d_in),
+  .out_a_center_i (dac_a_center),
+  .out_b_center_i (dac_b_center),
    // System bus
   .sys_addr     (pid_sys_addr ),
   .sys_wdata    (pid_sys_wdata),
@@ -246,6 +254,8 @@ red_pitaya_limit limit (
     .dat_b_o        (limit_b_out    ),
     .dat_a_railed_o (dat_a_railed   ),
     .dat_b_railed_o (dat_b_railed   ),
+    .center_a_o     (dac_a_center   ),
+    .center_b_o     (dac_b_center   ),
     // System bus
     .sys_addr       (limit_sys_addr ),
     .sys_wdata      (limit_sys_wdata),

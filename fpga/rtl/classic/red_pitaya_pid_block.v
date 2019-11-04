@@ -70,7 +70,9 @@ module red_pitaya_pid_block #(
    input        [ KI_BITS-1: 0] set_ki_i        ,  // Ki
    input        [ 14-1: 0]      set_kd_i        ,  // Kd
    input                        inverted_i      ,  // feedback sign
-   input                        int_rst_i          // integrator reset
+   input                        int_rst_i       ,  // integrator reset
+   input                        int_ctr_rst_i   ,  // integrator reset to center of the output range
+   input signed [ 14-1: 0]      int_ctr_val_i      // center value of the output range
 );
 
 //---------------------------------------------------------------------------------
@@ -128,6 +130,8 @@ always @(posedge clk_i) begin
 
       if (int_rst_i)
          int_reg <= {15+ISR{1'b0}}; // reset
+      else if (int_ctr_rst_i)
+         int_reg <= {int_ctr_val_i[13], int_ctr_val_i, {ISR{1'b0}}}; // reset to center of output range
       else if (int_sum[15+ISR:15+ISR-1] == 2'b01) // positive saturation
          int_reg <= {1'b0, {15+ISR-1{1'b1}}}; // max positive
       else if (int_sum[15+ISR:15+ISR-1] == 2'b10) // negative saturation
