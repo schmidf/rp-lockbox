@@ -63,8 +63,7 @@ for examples how to do this in various programming languages.
 The available SCPI commands are documented [here](doc/SCPI_commands.rst).
 
 A python module and example GUI application for controlling the lockbox can be found in the
-[examples/python](examples/python) folder. A standalone executable version of the GUI for windows
-can be downloaded [here](https://github.com/schmidf/rp-lockbox/releases).
+[examples/python](examples/python) folder.
 
 ### PIDs
 The FPGA implements four PID controllers that connect the two inputs of the Red Pitaya with the two
