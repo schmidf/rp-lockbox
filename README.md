@@ -72,7 +72,8 @@ outputs in all possible combinations.
 ### Output limiting
 Global limits can be defined for both outputs of the Red Pitaya. When an output is at its limit, the
 integrators of the corresponding PID controllers are frozen in order to avoid integrator windup. If
-automatic integrator reset of the PID is enabled, the integrator register is reset to zero.
+automatic integrator reset of the PID is enabled, the integrator register is reset to the center of
+the output limit range.
 
 ### Relock
 Each of the PID controllers contains an automatic relock feature. When the feature is enabled, it
