@@ -166,7 +166,7 @@ generate for (pid_index = 0; pid_index < 4; pid_index = pid_index + 1) begin
         .STEP_BITS(RELOCK_STEP_BITS)
     ) i_relock (
         .clk_i(clk_i),
-        .on_i(relock_enabled[pid_index]),
+        .on_i(relock_enabled[pid_index] && ~pid_irst[pid_index]), // Turn off relock if integrator reset is enabled
         .min_val_i(relock_minval[pid_index]),
         .max_val_i(relock_maxval[pid_index]),
         .stepsize_i(relock_stepsize[pid_index]),
